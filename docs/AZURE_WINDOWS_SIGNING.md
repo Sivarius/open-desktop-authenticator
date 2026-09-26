@@ -1,8 +1,16 @@
 # Opt-in Windows release signing
 
-This is release infrastructure, not a statement that an existing download is signed.
-The existing v1.5.0 assets are unchanged. Keep the repository variable
-`WINDOWS_SIGNING_READY` unset or `false` until the nonpublishing smoke test succeeds.
+The first signed Windows release is [v1.5.1](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/tag/v1.5.1),
+published on 2026-09-26 after the smoke test, maintainer testing, and final draft
+review. [Release run 36258632957](https://github.com/opendesktopauthenticator/open-desktop-authenticator/actions/runs/36258632957)
+passed signature verification, portable-runtime checks, checksum signing and
+provenance generation. The existing v1.5.0 assets are unchanged and its Windows
+executables remain unsigned. Native ARM64 execution and Linux manual runtime
+testing are not implied by these checks.
+
+For a new signing setup, keep the repository variable `WINDOWS_SIGNING_READY`
+unset or `false` until the nonpublishing smoke test succeeds. The production
+repository enabled it before the v1.5.1 release tag was created.
 Ordinary local builds remain unsigned by default. Microsoft Store AppX packages
 stay separately unsigned for Partner Center ingestion; their Store identity is unchanged.
 Linux and macOS retain their existing packaging and signing policies.

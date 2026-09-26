@@ -9,8 +9,8 @@ Official ODA website: [opendesktopauthenticator.com](https://opendesktopauthenti
 MASTERPANEL LLC also operates Master Panel. ODA and Master Panel are separate
 products with no shared accounts, data, or integration.
 
-> **1.5.0 is available from GitHub Releases and the Microsoft Store.** On
-> Windows, install it from the
+> **1.5.1 is available from GitHub Releases; the Microsoft Store remains on
+> 1.5.0.** On Windows, you can install the Store version from the
 > [Microsoft Store](https://apps.microsoft.com/detail/9NMM2XJ6HZ1D), which
 > currently distributes the x64 package. The
 > [releases page](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/latest)
@@ -20,13 +20,13 @@ products with no shared accounts, data, or integration.
 > claiming to be a build of this is not ours.
 >
 > The Store package is signed, because Microsoft re-signs what it distributes.
-> The existing v1.5.0 direct Windows downloads are unsigned. The v1.5.1 release
-> candidate adds Azure Artifact Signing with **MASTERPANEL LLC** as publisher;
-> preparing that candidate does not replace any published file. Check the exact
-> release's notes and Windows Digital Signatures details. Signing identifies the
-> publisher but does not guarantee that SmartScreen will stop warning. Verify
-> direct downloads against `SHA256SUMS.txt`, its sigstore signature and the
-> build-provenance attestation.
+> The [v1.5.1 direct Windows downloads](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/tag/v1.5.1)
+> are Authenticode-signed and timestamped through Azure Artifact Signing, with
+> **MASTERPANEL LLC** as publisher. The existing v1.5.0 Windows executables remain
+> unsigned and unchanged. Linux files are not platform code-signed. Signing
+> identifies the publisher but does not guarantee that SmartScreen will stop
+> warning. Verify direct downloads against `SHA256SUMS.txt`, its sigstore signature
+> and the build-provenance attestation; check Windows Digital Signatures details too.
 >
 > The core authenticator flows have been **exercised end to end against live
 > Steam accounts** by the maintainer — import from SDA, enrollment, codes,
