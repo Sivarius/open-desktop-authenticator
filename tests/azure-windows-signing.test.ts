@@ -7,6 +7,8 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { DebugLogger } from 'builder-util';
 import type { Configuration } from 'app-builder-lib';
 import { validateConfiguration } from 'app-builder-lib/out/util/config/config';
+import { expandMacro } from 'app-builder-lib/out/util/macroExpander';
+import type { AppInfo } from 'app-builder-lib/out/appInfo';
 
 const loadSigning = () => import('../.github/scripts/windows-signing.mjs');
 type SigningModule = Awaited<ReturnType<typeof loadSigning>>;
@@ -29,6 +31,27 @@ const ENV = {
 	AZURE_SIGNING_CERTIFICATE_PROFILE: 'oda-public-trust'
 };
 const read = (path: string) => readFileSync(join(ROOT, path), 'utf8');
+
+async function builderWindowsArtifactNames(version: string) {
+	const { default: config } = await import('../electron-builder.config.mjs');
+	const builder = config as Configuration;
+	const manifest = JSON.parse(read('package.json')) as { name: string };
+	// These configured patterns use only the package name/version from AppInfo.
+	const appInfo = { name: manifest.name, version } as AppInfo;
+	const installerPattern = builder.nsis?.artifactName;
+	const portablePattern = builder.portable?.artifactName;
+	if (typeof installerPattern !== 'string' || typeof portablePattern !== 'string') {
+		throw new Error('Windows artifact-name templates are missing.');
+	}
+	// NsisTarget.buildInstaller passes null for primaryArch when combining
+	// architectures. Exercise builder's own macro expansion, not a mock suffix.
+	return {
+		installers: ['x64', 'arm64', null].map((arch) =>
+			expandMacro(installerPattern, arch, appInfo, { ext: 'exe' })
+		),
+		portable: expandMacro(portablePattern, 'x64', appInfo, { ext: 'exe' })
+	};
+}
 
 describe('opt-in Windows signing configuration', () => {
 	it.each(['', 'false', undefined])('stays unsigned for readiness %s', (value) => {
@@ -115,6 +138,19 @@ describe('Windows signing release boundaries', () => {
 	const reusable = read('.github/workflows/package-windows.yml');
 	const action = read('.github/actions/package-windows/action.yml');
 	const smoke = read('.github/workflows/windows-signing-smoke.yml');
+	it('expects exactly the filenames produced by the installed builder and current templates', async () => {
+		const { installers, portable } = await builderWindowsArtifactNames('1.5.0');
+		const verifier = read('.github/scripts/verify-windows-signatures.ps1');
+		const expectedBlock = verifier.slice(
+			verifier.indexOf('$expected = @('),
+			verifier.indexOf('$artifacts =')
+		);
+		const expected = [...expectedBlock.matchAll(/"([^"\r\n]+\.exe)"/g)].map((match) =>
+			match[1]!.replace('$version', '1.5.0')
+		);
+		expect(expected.sort()).toEqual([...installers, portable].sort());
+		expect(installers[2]).toBe('open-desktop-authenticator-1.5.0-setup.exe');
+	});
 	it('keeps OIDC and environment approval out of unsigned Windows and other platform jobs', () => {
 		const unsigned = reusable.slice(
 			reusable.indexOf('\n  unsigned:'),
@@ -277,7 +313,7 @@ describe.skipIf(process.platform !== 'win32')('Windows signing PowerShell guards
 		expect(checkSource(root, { ...env, GITHUB_REF: 'refs/heads/topic' }).status).not.toBe(0);
 		expect(checkSource(root, { ...env, GITHUB_SHA: '0'.repeat(40) }).status).not.toBe(0);
 	});
-	it.each(['native', 'short'])('validates complete receipts (%s path)', (pathForm) => {
+	it.each(['native', 'short'])('validates complete receipts (%s path)', async (pathForm) => {
 		const createdRoot = mkdtempSync(join(tmpdir(), 'oda-signature-receipts-'));
 		roots.push(createdRoot);
 		const shortPath = powershell(
@@ -291,12 +327,10 @@ describe.skipIf(process.platform !== 'win32')('Windows signing PowerShell guards
 		// same canonical root; the production exact path/hash checks stay intact.
 		const root = realpathSync.native(pathForm === 'short' ? shortPath.stdout.trim() : createdRoot);
 		writeFileSync(join(root, 'package.json'), '{"version":"1.5.0"}');
-		const installers = ['x64', 'arm64', 'universal'].map(
-			(arch) => `open-desktop-authenticator-1.5.0-${arch}-setup.exe`
-		);
+		const { installers, portable } = await builderWindowsArtifactNames('1.5.0');
 		const files = [
 			...installers,
-			'open-desktop-authenticator-1.5.0-portable.exe',
+			portable,
 			'win-unpacked/Open Desktop Authenticator.exe',
 			'win-arm64-unpacked/Open Desktop Authenticator.exe'
 		];
@@ -341,6 +375,23 @@ describe.skipIf(process.platform !== 'win32')('Windows signing PowerShell guards
 			});
 		const accepted = run();
 		expect(accepted.status, accepted.stderr).toBe(0);
+		const leftover = join(
+			root,
+			'release',
+			'open-desktop-authenticator-1.5.0-setup.__uninstaller.exe'
+		);
+		writeFileSync(leftover, 'unexpected leftover helper');
+		const unexpectedArtifact = run();
+		expect(unexpectedArtifact.status).not.toBe(0);
+		expect(unexpectedArtifact.stderr).toContain('Actual:');
+		expect(unexpectedArtifact.stderr).toContain('setup.__uninstaller.exe');
+		rmSync(leftover);
+		const missingFile = join(root, 'release', portable);
+		rmSync(missingFile);
+		const missingArtifact = run();
+		expect(missingArtifact.status).not.toBe(0);
+		expect(missingArtifact.stderr).toContain('Windows release artifacts do not match');
+		writeFileSync(missingFile, portable);
 		const uninstaller = receipts.pop();
 		save();
 		const missing = run();
