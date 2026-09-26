@@ -81,6 +81,23 @@ a confirmation step to reduce friction. Friction is the feature.
 
 ## PR expectations
 
+All changes to `main`, including the maintainer's, go through a pull request.
+Keep the branch up to date with `main`. The required GitHub Actions checks are
+`verify (windows-latest)`, `verify (ubuntu-latest)`, `spike (reference code)`,
+`dependency audit`, and `the SBOM path a release depends on`. They must pass,
+and review conversations must be resolved before merging. These protections
+also apply to administrators.
+
+Every commit introduced by a PR must be signed and show **Verified** on GitHub.
+Follow [GitHub's commit-signing setup](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+and register your signing key with your account before pushing. An unverified
+commit can block a squash merge even though GitHub signs the final squash
+commit; sign and verify the commits on your branch first.
+
+There are currently zero mandatory approving reviews because the project has
+one maintainer. This does not remove the checks above. Meaningful code review,
+especially of changes affecting secrets or release integrity, is welcome.
+
 - **Conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, `test:`.
 - **Tests for new logic.** Security-relevant behaviour needs a test that fails
   without the fix — assert the defect, not just the happy path.
