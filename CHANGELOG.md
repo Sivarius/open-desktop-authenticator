@@ -10,6 +10,32 @@ public post-mortem — what broke, when we detected it, and what we changed.
 
 ## [Unreleased]
 
+## [1.5.1] — signed Windows downloads
+
+### Added
+
+- **Windows publisher verification.** Direct Windows installers and the portable
+  executable for this release use Azure Artifact Signing, with Authenticode
+  signatures and timestamps identifying **MASTERPANEL LLC**. The packaged app,
+  elevation helpers and embedded uninstallers are signed too. CI checks the
+  signatures before generating checksums and build provenance. Signing does not
+  guarantee that SmartScreen will stop warning.
+
+### Changed
+
+- Windows installer permission prompts use the short name **Open Desktop
+  Authenticator**, rather than the full product description. The application ID,
+  installed executable name and vault locations are unchanged.
+- The app's publisher label and About screen identify MASTERPANEL LLC and clarify
+  that Master Panel is a separate product with no shared accounts or data.
+- Updated development tooling and strengthened release checks. No authenticator
+  protocol, vault-format or production dependency changes are included.
+
+The existing v1.5.0 Windows executables remain unchanged and unsigned. Linux downloads continue
+to use the signed checksum list and build-provenance attestations; they are not
+platform code-signed. Microsoft Store publication is separate from this GitHub
+release. No macOS download is published.
+
 ## [1.5.0] — notifications, a browser, and recovery you can trust
 
 Two things you will notice, and a great deal of work on the paths you should

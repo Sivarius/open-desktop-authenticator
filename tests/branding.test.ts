@@ -95,6 +95,12 @@ describe('branding placeholders', () => {
 		expect(pkg.author.email).not.toMatch(/gmail|outlook|hotmail|yahoo|proton/i);
 	});
 
+	it('uses the concise product name in installer permission prompts', () => {
+		// NSIS uses AppInfo.description for FileDescription, which Windows UAC
+		// displays. productName alone does not prevent a marketing paragraph here.
+		expect(pkg.description).toBe(branding.productName);
+	});
+
 	it('does not flag the company, which is settled', () => {
 		expect(unresolvedBrandingFields()).not.toContain('company');
 		expect(branding.company).toBe('MASTERPANEL LLC');

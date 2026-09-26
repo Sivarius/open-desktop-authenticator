@@ -292,10 +292,8 @@ describe('per-channel publication output', () => {
 	 * markers are still asserted separately — because building an AppX does not
 	 * prove that Partner Center has made it public.
 	 */
-	it('says both public channels carry the checked-in version', () => {
-		const version = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8')).version;
+	it('keeps the verified 1.5.0 publication evidence separate from a newer source version', () => {
 		const site = siteFor(publicationApi.RELEASE_PUBLICATIONS);
-		expect(version).toBe(VERSION);
 
 		expect(
 			site.publication.github.current,
@@ -323,6 +321,18 @@ describe('per-channel publication output', () => {
 		).toHaveProperty('datePublished');
 		expect(software.datePublished).toBe('2026-09-06');
 		expect(software).toHaveProperty('downloadUrl');
+	});
+
+	it('does not turn the 1.5.1 source bump into a publication claim', () => {
+		const { version } = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8')) as {
+			version: string;
+		};
+		expect(version).toBe('1.5.1');
+		const actual = publicationApi.publicationState(version);
+		expect(actual.github.current).toBe(false);
+		expect(actual.store.current).toBe(false);
+		expect(actual.github.latestVersion).toBe('1.5.0');
+		expect(actual.store.latestVersion).toBe('1.5.0');
 	});
 
 	it('wires the same browser availability into generated llms.txt facts and security copy', () => {
