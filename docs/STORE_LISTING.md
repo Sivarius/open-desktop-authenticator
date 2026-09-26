@@ -12,17 +12,17 @@ too.
 
 **Product**: Open Desktop Authenticator · **Store ID**: 9NMM2XJ6HZ1D
 **Package identity**: `TheMaster.OpenDesktopAuthenticator`
-**Live package**: `1.5.0.0` · **Architecture**: `x64`
+**Last verified live package**: `1.5.0.0` · **Architecture**: `x64`
 
 > [!NOTE]
-> **Version 1.5.0 is live in the Microsoft Store.** Submission 2 is the current
-> public listing. Submission 3 was submitted on 2026-09-07, marks the 1.5.0
-> package update as mandatory, uses the approved four-sentence no-backend
-> wording shown verbatim below, and is in certification. The
-> proxy-qualified route sentence below was clarified in this repository after
-> submission and is not part of Submission 3; apply it only when the listing is
-> next editable. Changes unique to Submission 3 are not public until Microsoft
-> publishes it.
+> **Submission status recorded on 2026-09-07:** version 1.5.0 was live in the
+> Microsoft Store, with Submission 2 as the public listing. Submission 3 was
+> submitted that day and was in certification. It marked the 1.5.0 package update
+> as mandatory and used the approved four-sentence no-backend wording shown
+> verbatim below. The proxy-qualified route sentence below was clarified in this
+> repository after submission and was not part of Submission 3. This historical
+> record does not establish today's Partner Center submission status or which
+> submission is public; verify both before preparing the next listing update.
 
 ---
 

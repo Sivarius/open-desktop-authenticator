@@ -40,6 +40,7 @@ export interface PublicationSite {
 export const RELEASE_PUBLICATIONS: PublicationRecords;
 export const FEATURE_INTRODUCED: { browser: string; transfer: string };
 export function compareVersions(left: string, right: string): number;
+export function websiteVersion(sourceVersion: string, releases?: PublicationRecords): string;
 export function publicationState(
 	sourceVersion: string,
 	releases?: PublicationRecords

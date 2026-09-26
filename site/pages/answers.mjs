@@ -305,7 +305,7 @@ export const alternatives = {
 	guide: true,
 	sourced: (s) =>
 		`Compared against <a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Valve's Steam Guard guidance</a> and <a href="${originalSdaRepo(s)}" rel="noopener">SDA's official repository</a>`,
-	updated: '2026-08-27',
+	updated: '2026-09-26',
 	navTitle: 'Alternatives',
 	title: 'Steam authenticator alternatives to SDA, compared',
 	description:

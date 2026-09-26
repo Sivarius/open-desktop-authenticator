@@ -112,10 +112,10 @@ const RELEASE_GAPS = [
 	},
 	{
 		open: (r) => !r.codeSigned,
-		clause: 'the direct downloads carry no code-signing certificate, and none is planned',
-		noun: 'a code-signing certificate for the direct downloads (not planned)',
+		clause: 'the Windows direct downloads in this release are unsigned',
+		noun: 'a code signature for the Windows direct downloads in this release',
 		sentence:
-			'The direct downloads carry no code-signing certificate and none is planned, so Windows warns on them.'
+			'The Windows direct downloads in this release are unsigned. Verify the release before deciding whether to run it.'
 	},
 	{
 		open: (r) => !r.reproducible,

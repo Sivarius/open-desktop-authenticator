@@ -45,10 +45,13 @@ added. What actually helps:
   website hosts no binaries and never will — every button on it is a link
   outward.
 - **The two channels have different failure modes, and the docs say which is
-  which.** A Store package is verified by Windows before it installs and needs
-  nothing checked by hand; a GitHub asset is verified by the person who
-  downloads it, or not at all. Presenting them as interchangeable would leave
-  the second group believing a check happened that did not.
+  which.** Windows verifies a Store package during installation. GitHub v1.5.1
+  Windows downloads also carry an Authenticode publisher signature that Windows
+  can verify; check for a valid signature naming MASTERPANEL LLC. Downloading a
+  file does not perform the separate checksum and build-provenance checks.
+  Linux packages and older unsigned Windows releases rely on those explicit
+  checks. A publisher signature identifies the signer, not the source commit
+  or whether the application is harmless.
 - Every release publishes `SHA256SUMS.txt` and build provenance attestations.
 - We teach one habit above all others: **never download an authenticator from a
   website — including ours.**
@@ -89,8 +92,11 @@ Someone compromises a dependency, our build, or our release pipeline.
 - Builds run in public CI; the workflow is in the repo and its history is public.
 - **Distribution is two channels with different guarantees, and conflating them
   is itself a risk.** The Microsoft Store package is signed, because Microsoft
-  re-signs what it distributes. The GitHub builds are **not** code-signed: they
-  carry published SHA-256 checksums, a sigstore signature over that checksum
+  re-signs what it distributes. Starting with GitHub v1.5.1, the Windows downloads
+  are Authenticode-signed and timestamped as MASTERPANEL LLC through Microsoft
+  Azure Artifact Signing. The older v1.5.0 Windows assets remain unsigned, and
+  Linux packages do not carry a platform code signature. GitHub downloads also
+  carry published SHA-256 checksums, a Sigstore signature over that checksum
   list, and a sigstore build-provenance attestation naming the workflow, commit
   and tag that produced them. A binary that fails the check appropriate to its
   channel is not ours.

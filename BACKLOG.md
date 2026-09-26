@@ -38,13 +38,10 @@ Nothing in this file is a commitment.
 
 ## Raised during Phase 0
 
-- **Reduce the `steamcommunity` dependency surface.** It pulls the deprecated
-  `request` plus `cheerio`, `xml2js`, and `image-size`, and is the bulk of the
-  120-package production tree (finding F-05). Using it _only_ for confirmations
-  and eventually reimplementing that slice against `steam-session` would shrink
-  the tree a lot. **Explicitly not before 1.0** — protocol reimplementation is
-  what D3 rules out, and doing it early trades the plan's core risk mitigation
-  for a smaller number on a marketing page.
+- **Resolved — `steamcommunity` dependency surface.** `steamcommunity` is not
+  shipped. Confirmations use the project's own mobileconf client; `steam-session`
+  handles sign-in. The earlier proposal to defer this work was superseded by
+  Q19 and D14 in [the plan amendments](docs/PLAN_AMENDMENTS.md).
 
 - **Promote the redaction wrapper to a lint rule.** The spike proves the idea
   (`spike/src/redact.ts`): registered secrets are scrubbed from all output. §24.4

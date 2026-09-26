@@ -37,6 +37,8 @@ products with no shared accounts, data, or integration.
 > not an independent audit, and passing Store certification does not change
 > that: certification checks policy compliance, not cryptography.
 
+Find the project on [AlternativeTo](https://alternativeto.net/software/open-desktop-authenticator/about/).
+
 ---
 
 ## Why this exists

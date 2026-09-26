@@ -1,6 +1,6 @@
 export default {
 	slug: 'steam-desktop-authenticator',
-	updated: '2026-09-07',
+	updated: '2026-09-26',
 	navTitle: 'About SDA',
 	title: 'Steam Desktop Authenticator (SDA), explained',
 	description:
@@ -266,9 +266,14 @@ export default {
 						source, builds produced in public CI, and no self-updating. Version
 						${s.release.version} publishes SHA-256 checksums, a Sigstore signature over
 						that checksum list, and build provenance naming the workflow and commit
-						that produced the bytes. Builds are not yet reproducible. Direct GitHub
-						downloads carry no code-signing certificate and none is planned; Microsoft
-						signs the package it distributes through the Store —
+						that produced the bytes. Builds are not yet reproducible.
+						${
+							s.release.codeSigned
+								? 'The direct Windows downloads are signed and timestamped as MASTERPANEL LLC using Microsoft Azure Artifact Signing.'
+								: 'This release has no publisher code signature on its direct Windows downloads.'
+						}
+						Linux packages use the checksum-list signature and provenance checks.
+						Microsoft signs the package it distributes through the Store —
 						<a href="/download">the download page tracks where each one stands</a>.
 					</p>
 				</section>
