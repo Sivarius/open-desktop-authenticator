@@ -20,8 +20,18 @@ import { describe, expect, it } from 'vitest';
  */
 
 const WORKFLOW = readFileSync(join(__dirname, '..', '.github', 'workflows', 'release.yml'), 'utf8');
+const WINDOWS = readFileSync('.github/actions/package-windows/action.yml', 'utf8');
+const PACKAGING = WORKFLOW + '\n' + WINDOWS;
 
 function packageTargets(workflow: string, os: string): string[] {
+	if (os === 'windows-latest') {
+		const command =
+			/run: npx electron-builder --config electron-builder\.config\.mjs (--win nsis[^\r\n]+) --publish never/.exec(
+				workflow
+			);
+		if (!command?.[1]) throw new Error('The Windows packaging command is missing');
+		return command[1].split(/\s+/);
+	}
 	const packageJob = workflow.slice(workflow.indexOf('  package:'), workflow.indexOf('  publish:'));
 	const rows = [
 		...packageJob.matchAll(/^\s*- os:\s*([^\s#]+)\s*\r?\n\s*targets:\s*([^\r\n#]+)$/gm)
@@ -107,26 +117,22 @@ describe('the release publishes only what it attests', () => {
 		"builds every %s architecture in that platform's exact matrix row",
 		(_platform, os, from, to) => {
 			expect(declaredArchitectures(from, to)).toContain('arm64');
-			expect(missingArchitectures(WORKFLOW, os, from, to)).toEqual([]);
+			expect(missingArchitectures(PACKAGING, os, from, to)).toEqual([]);
 		}
 	);
 
 	it('fails when Windows loses arm64 even though the macOS row still names it', () => {
-		const fixture = WORKFLOW.replace(
-			'targets: --win nsis:x64 nsis:arm64 portable:x64',
-			'targets: --win nsis:x64 portable:x64'
+		const fixture = PACKAGING.replace(
+			'--win nsis:x64 nsis:arm64 portable:x64',
+			'--win nsis:x64 portable:x64'
 		);
-		expect(fixture, 'the Windows fixture mutation did not apply').not.toBe(WORKFLOW);
+		expect(fixture, 'the Windows fixture mutation did not apply').not.toBe(PACKAGING);
 		expect(missingArchitectures(fixture, 'windows-latest', '	win: {', '	nsis: {')).toEqual(['arm64']);
 		expect(missingArchitectures(fixture, 'macos-latest', '	mac: {', '	dmg: {')).toEqual([]);
 	});
 
 	it('builds both Store architectures and verifies the complete set', () => {
-		const packageJob = WORKFLOW.slice(
-			WORKFLOW.indexOf('  package:'),
-			WORKFLOW.indexOf('  publish:')
-		);
-		expect(packageJob).toContain('--win appx:x64 appx:arm64 --publish never');
+		expect(WINDOWS).toContain('--win appx:x64 appx:arm64 --publish never');
 		const manifestVerifier = readFileSync(
 			join(__dirname, '..', '.github', 'scripts', 'verify-appx-toast-manifest.ps1'),
 			'utf8'
@@ -137,7 +143,7 @@ describe('the release publishes only what it attests', () => {
 	});
 
 	it('still states that the Store package is not a release asset', () => {
-		expect(WORKFLOW).toContain('not published as a release');
+		expect(WINDOWS).toContain('not published as a release');
 	});
 });
 

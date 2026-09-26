@@ -87,10 +87,15 @@ describe('the first-party licence package boundary', () => {
 
 	it('makes both ordinary packages and AppX non-vacuous release gates', () => {
 		const workflow = readFileSync(join(ROOT, '.github', 'workflows', 'release.yml'), 'utf8');
+		const windows = readFileSync(
+			join(ROOT, '.github', 'actions', 'package-windows', 'action.yml'),
+			'utf8'
+		);
 		const appx = readFileSync(join(ROOT, '.github', 'scripts', 'verify-appx-license.ps1'), 'utf8');
 		expect(workflow).toContain('verify-packaged-license.mjs --tree release');
 		expect(workflow).not.toMatch(/\b(?:mapfile|readarray|coproc)\b|declare\s+-A/);
-		expect(workflow).toContain("steps.store_license.outcome == 'success'");
+		expect(windows).toContain('verify-packaged-license.mjs --tree release');
+		expect(windows).toContain("steps.store_license.outcome == 'success'");
 		expect(appx).toContain('$packages.Count -eq 0');
 		expect(appx).toContain('foreach ($package in $packages)');
 		expect(appx).toContain('$asarEntries.Count -ne 1');

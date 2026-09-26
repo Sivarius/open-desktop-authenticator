@@ -1,0 +1,146 @@
+name: Build and verify Windows packages
+description: Shared packaging path for releases and the nonpublishing signing smoke test
+inputs:
+  signing:
+    required: true
+    description: Explicitly use Azure signing for direct downloads
+  artifact-name:
+    required: true
+    description: Workflow artifact name
+  build-store:
+    default: 'true'
+    description: Also build the separately unsigned Store packages
+outputs:
+  signed:
+    description: True only after all requested signature verification passed
+    value: ${{ steps.result.outputs.signed }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version-file: '.nvmrc'
+        cache: npm
+    - name: Validate the explicit signing configuration
+      shell: pwsh
+      env:
+        SIGNING_REQUEST: ${{ inputs.signing }}
+      run: |
+        if ($env:SIGNING_REQUEST -notin @('true', 'false') -or
+            $env:WINDOWS_SIGNING_READY -cne $env:SIGNING_REQUEST) {
+          throw 'The packaging request and signing environment disagree.'
+        }
+        if ($env:SIGNING_REQUEST -eq 'true') {
+          node .github/scripts/windows-signing.mjs --validate
+          if ($LASTEXITCODE -ne 0) { throw 'Azure signing configuration is invalid.' }
+          $receipt = Join-Path $env:RUNNER_TEMP 'oda-windows-signatures.jsonl'
+          if (Test-Path -LiteralPath $receipt) { throw 'The signing receipt file already exists.' }
+          "WINDOWS_SIGNING_RECEIPTS=$receipt" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        }
+    - name: Log in to Azure using this job's OIDC identity
+      if: inputs.signing == 'true'
+      uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+      with:
+        client-id: ${{ env.AZURE_CLIENT_ID }}
+        tenant-id: ${{ env.AZURE_TENANT_ID }}
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+    - name: Install the pinned .NET SDK for Microsoft's signing module
+      if: inputs.signing == 'true'
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+      with:
+        dotnet-version: '8.0.425'
+    - name: Install the pinned Microsoft signing module
+      if: inputs.signing == 'true'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+        Install-Module TrustedSigning -RequiredVersion 0.5.8 -Repository PSGallery -Scope CurrentUser -Force
+        Import-Module TrustedSigning -RequiredVersion 0.5.8 -Force
+    - name: Install build dependencies
+      shell: pwsh
+      run: npm ci
+    - name: Build the application
+      shell: pwsh
+      run: npm run build
+    - name: Package direct Windows downloads
+      shell: pwsh
+      env:
+        CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      run: npx electron-builder --config electron-builder.config.mjs --win nsis:x64 nsis:arm64 portable:x64 --publish never
+    - name: Verify Windows signatures before collecting artifacts
+      if: inputs.signing == 'true'
+      shell: pwsh
+      run: ./.github/scripts/verify-windows-signatures.ps1
+    - name: Verify the packaged portable runtime contract
+      shell: pwsh
+      run: |
+        $portable = @(Get-ChildItem -LiteralPath release -File -Filter '*-portable.exe')
+        if ($portable.Count -ne 1) { throw "Expected one portable executable, found $($portable.Count)." }
+        ./.github/scripts/verify-portable-runtime.ps1 -PortablePath $portable[0].FullName
+    - name: Verify the first-party licence in every packaged application archive
+      shell: pwsh
+      run: node .github/scripts/verify-packaged-license.mjs --tree release
+    - name: Collect direct-download artifacts
+      shell: pwsh
+      run: |
+        $artifacts = @(Get-ChildItem -LiteralPath release -File -Filter '*.exe')
+        if ($artifacts.Count -eq 0) { throw 'Packaging produced no Windows executable artifacts.' }
+        New-Item -ItemType Directory -Path dist-release -Force | Out-Null
+        $artifacts | Copy-Item -Destination dist-release
+    - name: Save signing verification receipts
+      if: inputs.signing == 'true'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: windows-signing-verification
+        path: ${{ env.WINDOWS_SIGNING_RECEIPTS }}
+        if-no-files-found: error
+        retention-days: 7
+    # Store packages are not published as a release asset. Microsoft signs them.
+    - name: Package for the Store
+      id: store_package
+      if: inputs.build-store == 'true'
+      continue-on-error: true
+      shell: pwsh
+      env:
+        WINDOWS_SIGNING_READY: 'false'
+        CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      run: npx electron-builder --config electron-builder.config.mjs --win appx:x64 appx:arm64 --publish never
+    - name: Verify Store notification activation
+      id: store_manifest
+      if: inputs.build-store == 'true' && steps.store_package.outcome == 'success'
+      continue-on-error: true
+      shell: pwsh
+      run: ./.github/scripts/verify-appx-toast-manifest.ps1
+    - name: Verify the first-party licence in the Store package
+      id: store_license
+      if: inputs.build-store == 'true' && steps.store_manifest.outcome == 'success'
+      continue-on-error: true
+      shell: pwsh
+      run: ./.github/scripts/verify-appx-license.ps1
+    - name: Collect the Store package
+      if: inputs.build-store == 'true' && steps.store_license.outcome == 'success'
+      continue-on-error: true
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Path dist-store -Force | Out-Null
+        Get-ChildItem -LiteralPath release -File -Filter '*.appx' | Copy-Item -Destination dist-store
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      if: inputs.build-store == 'true' && steps.store_license.outcome == 'success'
+      continue-on-error: true
+      with:
+        name: store-package
+        path: dist-store/
+        if-no-files-found: warn
+        retention-days: 7
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: dist-release/
+        if-no-files-found: error
+        retention-days: 7
+    - name: Report the completed signing state
+      id: result
+      shell: pwsh
+      env:
+        SIGNING_REQUEST: ${{ inputs.signing }}
+      run: '"signed=$env:SIGNING_REQUEST" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8'

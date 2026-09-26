@@ -3,6 +3,7 @@ import {
 	storeIdentity,
 	unresolvedStoreFields
 } from './store-identity.mjs';
+import { windowsSigningOptions } from './.github/scripts/windows-signing.mjs';
 
 /**
  * How the application is packaged, for three audiences at once.
@@ -13,8 +14,7 @@ import {
  * strangers walk different parts of it.
  *
  *   appx      The Microsoft Store. Microsoft re-signs the package with its own
- *             certificate, so SmartScreen never warns — not on the first
- *             download, not ever. That matters more here than anywhere, because
+ *             certificate and delivers it through the Store. That matters here because
  *             this application's entire argument is "the fake SDA downloads are
  *             the dangerous ones", and an installer that makes Windows say
  *             "Windows protected your PC" argues the opposite on the user's
@@ -33,10 +33,9 @@ import {
  *             still runs and still tells it a new version exists, but nothing
  *             fetches or installs one, so the user does the swap by hand.
  *
- * Only the Store build gets a free ride on SmartScreen. The nsis and portable
- * builds warn until reputation accrues, which is a property of the channel and
- * not something a certificate fixes any more — EV stopped bypassing SmartScreen
- * in 2024.
+ * Direct-download signing identifies the publisher; it does not guarantee that
+ * SmartScreen will stop warning. Download reputation and Windows policy still
+ * apply. Store distribution has its own signing and delivery path.
  *
  * ## What is deliberately absent
  *
@@ -262,12 +261,10 @@ export default {
 
 	win: {
 		icon: 'build/icon.ico',
-		// Despite its name, this switch also applies the icon, version and publisher
-		// resources. Keep that half on; `signExecutable` below is the switch that
-		// explicitly disables only signing. The Store target is re-signed by
-		// Microsoft, and the direct downloads intentionally remain unsigned.
+		// Resource editing stays on in both modes. Direct-download signing is
+		// deliberately opt-in; AppX is always built separately and left for the Store.
 		signAndEditExecutable: true,
-		signExecutable: false,
+		...windowsSigningOptions(),
 		target: [
 			{ target: 'nsis', arch: ['x64', 'arm64'] },
 			{ target: 'portable', arch: ['x64'] }

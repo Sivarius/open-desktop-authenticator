@@ -160,12 +160,16 @@ describe('the Microsoft Store identity', () => {
 
 	it('is built in CI but never published as a release asset', () => {
 		const workflow = readFileSync(join(__dirname, '../.github/workflows/release.yml'), 'utf8');
+		const windows = readFileSync(
+			join(__dirname, '../.github/actions/package-windows/action.yml'),
+			'utf8'
+		);
 		// A Store appx is deliberately unsigned — Microsoft re-signs it on
 		// ingestion — so a visitor who downloaded one could not install it. It is
 		// uploaded as a workflow artifact for the maintainer, and the release's
 		// own collection step only ever globs exe/AppImage/deb.
-		expect(workflow).toContain('--win appx:x64 appx:arm64 --publish never');
-		expect(workflow).toContain('name: store-package');
+		expect(windows).toContain('--win appx:x64 appx:arm64 --publish never');
+		expect(windows).toContain('name: store-package');
 		const start = workflow.indexOf('- name: Collect artifacts');
 		const end = workflow.indexOf('\n\n', start);
 		expect(start, 'the release-artifact collection step is missing').toBeGreaterThanOrEqual(0);

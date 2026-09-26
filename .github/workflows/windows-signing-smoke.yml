@@ -1,0 +1,20 @@
+name: Windows signing smoke test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signing-smoke:
+    uses: ./.github/workflows/package-windows.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      ref: ${{ github.sha }}
+      mode: smoke
+      signing: true
+      build-store: false
+      artifact-name: windows-signing-smoke
