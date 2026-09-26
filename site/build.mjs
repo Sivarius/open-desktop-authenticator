@@ -30,6 +30,7 @@ import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PAGES } from './pages/index.mjs';
+import basicMetrica from './metrica/basic-metrica.cjs';
 import { rootIcons, hashedIcons, manifest } from './icons.mjs';
 import { checkAddresses } from './addresses.mjs';
 import { escape, releaseGaps, reviewAsk, sentenceList } from './markup.mjs';
@@ -290,7 +291,11 @@ export const SITE = {
 	 */
 	platforms: [
 		{ name: 'Windows', detail: '10 version 1809 or later, and Windows 11', shipping: true },
-		{ name: 'Linux', detail: 'AppImage and .deb', shipping: true },
+		{
+			name: 'Linux',
+			detail: 'x64 AppImage and .deb; distribution compatibility varies',
+			shipping: true
+		},
 		{
 			name: 'macOS',
 			detail: 'not shipped, because we will not publish a build we cannot sign',
@@ -688,7 +693,7 @@ function head(page, collectsReviews) {
 	-->
 	${page.script ? `<script src="${asset(page.script)}" defer></script>` : ''}
 	<!--
-		Google Analytics 4. The loader is the only third-party script on the site;
+		Google Analytics 4. This is one of the third-party integrations on the site;
 		the configuration beside it is served from our own origin so the content
 		security policy never has to allow inline execution. See assets/analytics.js.
 
@@ -699,9 +704,11 @@ function head(page, collectsReviews) {
 	-->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=${SITE.analyticsId}"></script>
 	<script src="${asset('analytics.js')}" defer></script>
+	${!page.noindex ? `<script src="${asset('metrica-public.js')}" defer referrerpolicy="origin"></script>` : ''}
+	${page.slug === 'privacy' ? `<script src="${asset('metrica-preference.js')}" defer></script>` : ''}
 	<!--
-		Trustpilot's widget loader, which turns the review boxes on this site into
-		something a reader can write in without leaving the page.
+		Trustpilot's widget loader renders a link to its review-writing flow.
+		Reviews are written on Trustpilot's site.
 
 		Second third-party script, and the same reasoning as the one above: no
 		integrity attribute, because Trustpilot regenerates the bundle and
@@ -1039,6 +1046,20 @@ function publishAssets() {
 }
 
 const ASSETS = shouldBuild ? publishAssets() : new Map();
+if (shouldBuild) {
+	const metrica = basicMetrica.buildBootstrap({
+		origin: SITE.origin,
+		counterId: 112394427,
+		preferenceKey: 'oda_metrica',
+		publicPaths: PAGES.filter((page) => !page.noindex).map((page) =>
+			page.slug === 'index' ? '/' : '/' + page.slug
+		)
+	});
+	const filename =
+		'metrica-public.' + createHash('sha256').update(metrica).digest('hex').slice(0, 10) + '.js';
+	writeFileSync(join(out, 'assets', filename), metrica);
+	ASSETS.set('/assets/metrica-public.js', '/assets/' + filename);
+}
 
 /** The published path of an asset, hash included. */
 const asset = (name) => ASSETS.get(`/assets/${name}`) ?? `/assets/${name}`;
@@ -1265,9 +1286,9 @@ const LLMS_SECTIONS = [
 
 ## What it is
 
-${SITE.name} is a desktop replacement for Steam Desktop Authenticator (SDA), which its author ${SITE.sda.author} says is ${SITE.sda.unsupported ? SITE.sda.notice : 'still supported'}. Because SDA is abandoned, searching for it returns clone sites that ship malware and steal maFiles — and a maFile is the Steam authenticator itself, so losing one loses the account. Much of this website exists to help someone tell a real download from a fake one, whether or not they choose this application.
+${SITE.name} is an independent desktop alternative to Steam Desktop Authenticator (SDA), which its author ${SITE.sda.author} says is ${SITE.sda.unsupported ? SITE.sda.notice : 'still supported'}. Counterfeit authenticator downloads can steal authentication secrets. Losing your only maFile can remove your local authenticator access, but Steam-side recovery may still be available. This website explains download verification, safe backups and recovery options whether or not someone uses ODA.
 
-No ODA backend. No ODA account. No cloud sync. No telemetry. Steam operations the user requests contact Valve and send the data required for those operations. In direct GitHub builds, an optional update check contacts GitHub; Microsoft Store builds do not perform that check. The user-driven browser contacts the sites the user chooses.
+No ODA backend. No ODA account. No cloud sync. No application telemetry. Steam operations contact Valve and send the data required for those operations. In direct GitHub builds, an optional update check contacts GitHub; Microsoft Store builds do not perform that check. The in-app browser contacts the sites the user opens and external resources those sites load. This website separately uses analytics and review widgets, disclosed at ${SITE.origin}/privacy.
 
 ODA is developed, owned, and published by MASTERPANEL LLC. The company also operates Master Panel at https://masterspanel.com. ODA and Master Panel are separate products with no shared accounts, data, or integration.
 
@@ -1278,7 +1299,7 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 - **Publisher:** ${SITE.publisher}, a Steam trading company — which is why it was written.
 - **Platforms:** ${platformSentence()}
 - **Install from:** Microsoft Store ${SITE.publication.store.latestVersion} (${SITE.store.url}) or GitHub ${SITE.publication.github.latestVersion} (${SITE.repo}/releases/tag/v${SITE.publication.github.latestVersion}).
-- **This website hosts no binaries** and never will; every download control links outward.
+- **This website hosts no application binaries**; its installer links lead to the Store or GitHub releases.
 - **Dependencies:** ${SITE.runtimeDependencies} direct, ${SITE.shippedPackages} shipped in total, plus the Electron runtime.
 
 ## What it does
@@ -1286,8 +1307,8 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 - Encrypted multi-account vault, unlocked with a passphrase the user chooses.
 - Generates Steam Guard codes.
 - Views, accepts and denies Steam trade and market confirmations.
-- Imports existing SDA maFiles, including encrypted ones, which additionally need SDA's manifest.json.
-- Exports back to the maFile format, so leaving later is a supported operation rather than a rescue.
+- Imports existing SDA maFiles. Encrypted SDA files also require their passphrase and matching salt and IV, normally in manifest.json.
+- Exports unencrypted maFiles without Steam refresh tokens or proxy settings. Secure the exports and configure sign-in and routing in the destination app.
 - Adds a Steam authenticator to an account that has none, and moves one from a phone.
 - Stores the Steam revocation code (Valve calls it the recovery code) and can reveal it again.
 - Optional automatic confirmation, per account and per type, off by default.
@@ -1298,7 +1319,7 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 
 Non-goals rather than roadmap items: no trade automation beyond confirmations, no market or inventory tooling, and no analytics of any kind — including "anonymous" or opt-in. No ODA backend. No ODA account. No cloud sync. No telemetry.
 
-**It never downloads or executes its own replacement.** The update check reports that a newer version exists and links to it; nothing is fetched or installed. Self-updating is exactly the mechanism the clone sites depend on, so an authenticator that did it could not argue against them.
+**The app has no built-in update installer.** Its GitHub update check fetches release metadata and links to a newer version, but does not download or install an application package. Microsoft Store installations can update through the Store, subject to Store settings.
 
 ## How secrets are protected
 
@@ -1306,7 +1327,7 @@ Steam secrets are encrypted at rest with scrypt and AES-256-GCM behind the user'
 
 ## How to check a download is genuine
 
-Every release publishes SHA-256 checksums${SITE.release.signed ? ', a signature over that checksum list' : ''}, and build provenance naming the workflow and the commit that produced the bytes. ${SITE.origin}/verify carries commands to copy for each platform.
+The recorded GitHub ${SITE.publication.github.latestVersion} release publishes SHA-256 checksums${SITE.release.signed ? ', a signature over that checksum list' : ''}, and build provenance naming the workflow and commit. These establish integrity and origin, not freedom from malicious code. ${SITE.origin}/verify carries the verification procedure.
 
 ${
 	releaseGaps(SITE).length

@@ -66,15 +66,13 @@ export function reviewAsk(s, { got }) {
 				<div class="ask-body">
 					<h2>${escape(got)}</h2>
 					<p>
-						An authenticator nobody has vouched for looks exactly like one nobody
-						should trust — which is the whole problem this site is about. A review on
-						a platform we do not own is something the next person can check without
-						taking our word for it, the same as a checksum or the source.
+						If you used this guide or the app, describe what helped and what did not.
+						Reviews can help other readers assess usability and support. They do not
+						verify a download or establish that an authenticator is secure.
 					</p>
 					<p class="hint">
-						Nothing is offered in return and nothing is filtered: the profile is
-						public and negative reviews stay up. If the honest answer is that this did
-						not help, that is worth writing too.
+						We offer no incentive and welcome positive and negative feedback.
+						Reviews are posted on Trustpilot and are subject to its moderation rules.
 					</p>
 				</div>
 				<div class="ask-collector">${reviewCollector(s)}</div>
@@ -115,7 +113,7 @@ const RELEASE_GAPS = [
 		clause: 'the direct downloads carry no code-signing certificate, and none is planned',
 		noun: 'a code-signing certificate for the direct downloads (not planned)',
 		sentence:
-			'The direct downloads carry no code-signing certificate and none is planned, so Windows warns on them.'
+			'The direct downloads carry no code-signing certificate and none is planned. Windows may warn or block them; verify the release before deciding whether to run it.'
 	},
 	{
 		open: (r) => !r.reproducible,

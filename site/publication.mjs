@@ -92,11 +92,11 @@ export function browserFeatureCopy(site) {
 			? `How Steam secrets are stored, including the routed in-app browser and which published channel contains it.`
 			: `How Steam secrets are stored. The routed in-app browser is upcoming in ${site.features.browser.introducedVersion} and is not in the current public builds.`,
 		fact: site.features.browser.anyPublic
-			? `An in-app browser, signed in as one account and routed like it, for finishing a trade on Steam or a third-party trading site. ${status}`
-			: `Upcoming in ${site.features.browser.introducedVersion}: an in-app browser signed in as one account and routed like it for finishing a trade. ${status}`,
+			? `An in-app browser signed in as one Steam account, with a choice of browser routes, for finishing a trade on Steam or a third-party trading site. ${status}`
+			: `Upcoming in ${site.features.browser.introducedVersion}: an in-app browser signed in as one Steam account, with a choice of browser routes, for finishing a trade. ${status}`,
 		security: site.features.browser.anyPublic
-			? `The in-app browser is the deliberate exception: it is a user-driven window with no vault access that loads the sites the user chooses over that account's configured route. ${status}`
-			: `${status} In ${site.features.browser.introducedVersion}, that user-driven window is the deliberate exception to the no-remote-content interface: it has no vault access and uses the account's configured route.`
+			? `The in-app browser is the deliberate exception: its web pages have no vault API access and can load external resources. The browser holds login cookies scoped to Steam domains so Steam pages open signed in; those cookies are not sent to arbitrary third-party sites. The selected browser route determines which traffic uses the account's proxy; Steam-only mode permits specified third-party sites to connect directly. ${status}`
+			: `${status} In ${site.features.browser.introducedVersion}, that window is the deliberate exception to the no-remote-content interface. Its web pages have no vault API access; the browser holds Steam-domain login cookies and routing depends on the selected browser mode.`
 	};
 }
 

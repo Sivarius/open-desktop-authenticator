@@ -3,9 +3,11 @@ import { browserFeatureCopy } from '../publication.mjs';
 
 /** The three pages that exist to stop somebody being robbed. */
 
+const publishedSourceVersion = (site) => site.publication?.github?.latestVersion ?? site.version;
+
 export const scamClones = {
 	slug: 'scam-clones',
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Scam clones',
 	title: 'Fake Steam authenticator downloads',
 	description:
@@ -23,119 +25,126 @@ export const scamClones = {
 			<h1>Fake Steam authenticator downloads</h1>
 			<p class="lede">
 				A counterfeit authenticator does not need to break any cryptography. It only
-				needs you to open your maFile with it once. This page describes what those
-				builds actually do, the signs that separate a real release from a trap, and
+				needs access to your readable maFile or an unlocked vault. This page describes
+				what a malicious build can do, how to check a release's origin, and
 				what to do if you think you have already run one.
 			</p>
 
 			<div class="callout">
 				<p>
-					<strong>Evidence and scope.</strong> The attack path below is grounded in
-					<a href="/steam-inventory-stolen">a first-hand incident from this team</a>:
-					a working counterfeit copied a maFile, then the account was liquidated later.
-					The release checks and recovery steps are independently inspectable. This is
-					a defensive model and response checklist, not a claim that every counterfeit
-					uses identical code or timing.
+					<strong>Evidence and scope.</strong>
+					<a href="https://github.com/Jessecar96/SteamDesktopAuthenticator" rel="noopener">SDA's own repository warns about fake builds that steal accounts</a>.
+					Our <a href="/steam-inventory-stolen">team member's account of a theft</a>
+					is personal testimony, not a forensic analysis of a binary. The capabilities
+					below explain the risk of handing secrets to malware; they do not establish
+					what every counterfeit does or how long it waits.
 				</p>
 			</div>
 
 			<h2>What the malicious build actually does</h2>
 			<p>
-				It works. That is the part people find hardest to believe. A stealer that
-				failed to generate codes would be deleted within a minute, so it generates
-				codes correctly and looks like the real thing. In the background it does one
-				or more of:
+				A malicious authenticator can generate correct codes while stealing the same
+				secrets it uses to generate them. Working codes are not evidence of safety.
+				A program you run may be able to:
 			</p>
 			<ul>
 				<li>
 					<strong>Copies the maFile out.</strong> The whole file, containing the shared
-					secret, the identity secret and the revocation code, uploaded on first run.
+					secret, the identity secret, a revocation code and possibly session tokens.
 				</li>
 				<li>
 					<strong>Keeps the passphrase.</strong> If your maFiles are encrypted, the
-					program has to see your passphrase to decrypt them. So it records it.
+					program receives the passphrase when you type it and can retain it or the
+					decrypted secrets. Encryption at rest cannot stop this.
 				</li>
 				<li>
 					<strong>Auto-approves a confirmation it created.</strong> With the identity
-					secret, an attacker can raise a trade and confirm it from their own copy.
-					Nothing appears on your screen.
+					secret <em>and a valid Steam session</em>, software can approve a pending
+					confirmation. An attacker with sufficient account access can initiate the
+					transaction too. The identity secret alone is not a logged-in session.
 				</li>
 				<li>
-					<strong>Waits.</strong> Often weeks. Theft timed to the moment you enabled it
-					would point straight at the download.
+					<strong>Keep access for later.</strong> Copied authenticator secrets do not
+					expire with each login code. A quiet period does not establish that a download
+					was safe; there is no reliable delay to wait out.
 				</li>
 			</ul>
 
 			<h2>&ldquo;My items are trade-locked, so I am safe&rdquo;</h2>
 			<div class="callout callout-warn">
 				<p>
-					<strong>This is the assumption that costs people the most</strong>, and it is
-					wrong. A trade hold stops items being <em>traded</em> away. It does not stop
-					them being <em>sold</em>.
+					<strong>Check the actual restriction; do not infer safety from the word
+					&ldquo;locked&rdquo;.</strong> A trade hold, a Market hold, an item-specific
+					cooldown and CS2 Trade Protection are different mechanisms.
 				</p>
 			</div>
 			<p>
-				When an attacker finds half an inventory under a trade hold, they do not wait it
-				out. They use the Community Market instead. This is the sequence in the case
-				this project came out of, and the one described most often when people compare
-				notes afterwards:
+				Valve documents <a href="https://help.steampowered.com/en/faqs/view/34A1-EA3F-83ED-54AB" rel="noopener">both trade and Market holds</a>:
+				a trade hold delays delivery after acceptance, while a Market hold delays a
+				sell listing becoming available. Other restrictions can block both features.
+				Check the item's description and the account's
+				<a href="/steam-guard-trade-holds">trade and Market restrictions</a>.
+				Where selling is allowed, a compromised account can lose value through this route:
 			</p>
 			<ol class="signs">
 				<li>
-					<strong>Everything is listed on the Community Market and sold.</strong> Market
-					sales are not blocked by the trade holds that were protecting those items,
-					and the proceeds land in the account's Steam Wallet.
+					<strong>Eligible items are sold on the Community Market.</strong> Only items
+					that are marketable and not blocked by applicable restrictions can be sold.
+					The proceeds, after fees, become Steam Wallet funds.
 				</li>
 				<li>
-					<strong>The wallet balance is spent on the attacker's own listings.</strong>
-					They have already listed near-worthless items at enormous prices. Your balance
-					buys them. The money moves to an account they control, and what you are left
-					holding is a handful of items genuinely worth a few cents.
+					<strong>The wallet balance is spent without permission.</strong> Our team
+					member describes purchases of overpriced items that they believe benefited
+					the attacker. This is spending through Market transactions, not a direct
+					withdrawal or transfer of Steam Wallet funds.
 				</li>
 				<li>
-					<strong>Nothing can be reversed.</strong> Steam Wallet funds cannot be
-					withdrawn to a bank, and market purchases are not refundable. By the time the
-					emails arrive, the value has already left.
+					<strong>Completed Market transactions are final under Valve's policy.</strong>
+					The <a href="https://help.steampowered.com/en/faqs/view/61F0-72B7-9A18-C70B" rel="noopener">Community Market FAQ</a>
+					distinguishes completed purchases from unsold listings, which you can still
+					remove. Report unauthorised activity and secure the account promptly.
 				</li>
 			</ol>
 			<p>
-				It is worth being precise about what this means: <strong>the trade hold never
-				failed.</strong> It did exactly what it was designed to do, and the attacker
-				simply used a route it was never meant to cover. Anyone reassuring themselves
-				that a locked inventory makes a compromised authenticator survivable is
-				protecting against the wrong thing.
+				<strong>There is also a time-sensitive recovery route for eligible CS2 trades.</strong>
+				Valve's <a href="https://help.steampowered.com/en/faqs/view/365F-4BEE-2AE2-7BDD" rel="noopener">Trade Protection</a>
+				allows reversal within seven days. It reverses all eligible protected trades
+				from that period and applies a 30-day trade and Market restriction to the
+				initiating account. It does not reverse Community Market sales. Secure the
+				account first, then check Trade History for eligibility.
 			</p>
 			<p>
-				It also explains the timing. These thefts tend to arrive a couple of weeks after
-				the download rather than the same evening — long enough that nobody connects the
-				two, and long enough for a trade hold to look like it held.
+				A restriction may buy time, but it does not remove malware or invalidate copied
+				credentials. Use that time to recover control, not to test whether the attacker waits.
 			</p>
 
-			<h2>The signs, in order of how much they tell you</h2>
+			<h2>Warning signs and their limits</h2>
 			<ol class="signs">
 				<li>
-					<strong>The download is not on the project's own source repository.</strong>
-					This is the one that matters most. Real projects release from the same place
-					the code lives. A download hosted on a marketing page, a file locker, a
-					shortened link, or a Discord attachment has no chain back to any source.
+					<strong>The download has no verified connection to the project.</strong>
+					Follow release links from an independently established official address.
+					Projects can legitimately use stores and distribution sites; a familiar logo,
+					GitHub page or search position alone does not establish their identity.
 				</li>
 				<li>
-					<strong>There are no checksums, or the checksums are not published
-					separately from the file.</strong> A hash printed next to the download by the
-					same person who could swap the download proves nothing.
+					<strong>You cannot authenticate the published checksum.</strong> A hash
+					checks byte equality. If an attacker controls both file and hash, matching
+					them does not prove origin. A signature or attestation checked against the
+					expected publisher adds evidence; a missing checksum alone does not prove malware.
 				</li>
 				<li>
 					<strong>The site asks for your maFile, your password, or your API key.</strong>
-					No authenticator needs to be given anything through a web page. Ever.
+					A download or support page does not need these secrets. Steam's own sign-in
+					pages are different: check the actual Valve hostname before entering credentials.
 				</li>
 				<li>
 					<strong>It arrived through an advertisement or a video description.</strong>
-					Paid placement above the real result is a standard part of this.
+					That placement is not a verification of the publisher or download.
 				</li>
 				<li>
-					<strong>It wants to be installed rather than unpacked, and asks for
-					administrator rights.</strong> An authenticator does not need administrator
-					rights.
+					<strong>It requests unexplained administrator rights.</strong> Generating
+					codes does not require elevation. A legitimate machine-wide installer may
+					need it; an installer format by itself is not evidence of a counterfeit.
 				</li>
 				<li>
 					<strong>The page pressures you.</strong> A limited-time build, an urgent
@@ -145,13 +154,12 @@ export const scamClones = {
 
 			<h2>What a genuine release looks like</h2>
 			<p>
-				Ours looks like this — and so does any other project worth
-				trusting:
+				For ODA's direct releases, these are the checks and current limitations:
 			</p>
 			<ul>
 				<li>Published on the repository that holds the source, at a tagged version.</li>
 				<li>
-					A <code>SHA256SUMS</code> file listing every artifact. Ideally a signature
+					A <code>SHA256SUMS.txt</code> file listing release artifacts. Ideally a signature
 					over that list too —
 					${
 						s.release.checksums && s.release.signed
@@ -168,19 +176,18 @@ export const scamClones = {
 						s.release.reproducible
 							? `<strong>Ours can be</strong> — rebuild the tag and the bytes match.`
 							: `<strong>Ours cannot be, yet</strong> — it is on the list because it is
-								what the ideal looks like, not because we have it. What stands in for it
-								today is the provenance attestation, which proves which workflow and
-								which commit produced the bytes even though you cannot rebuild them
-								yourself.`
+								an additional assurance we have not achieved. Build provenance records
+								the workflow and source commit; it does not replace independent reproduction
+								or establish that the source and dependencies are safe.`
 					}
 				</li>
 				<li>
-					<strong>No self-update.</strong> Nothing here downloads and runs its own
-					replacement — that is the mechanism the clone sites rely on, and the update
-					check only ever tells you a version exists and links you to it.
+					<strong>No updater inside ODA.</strong> The optional direct-build update
+					check reports a new version and links to it. Microsoft Store updates are
+					managed by the Store. Neither policy proves that a release is safe.
 				</li>
 				<li>
-					An installer that writes only where it says it will. Our portable build keeps
+					Documented storage locations. Our portable build keeps
 					vaults, settings and recovery data beside its executable; its single-file
 					launcher extracts Electron and Chromium runtime files to Windows Temp while
 					it runs and normally removes them on exit. The ordinary installed build uses
@@ -192,29 +199,46 @@ export const scamClones = {
 			<h2>If you think you already ran one</h2>
 			<div class="callout callout-warn">
 				<p>
-					Assume the secret is copied. Speed matters more than certainty here — the
-					steps below cost you an afternoon if you are wrong, and save the account if
-					you are right.
+					Treat credentials exposed to the suspect program as compromised. Use a
+					different, trusted device for recovery. Importing the same maFile into a
+					genuine application does not invalidate an attacker's copy.
 				</p>
 			</div>
 			<ol>
 				<li>
-					<strong>Detach the authenticator from Steam using the revocation code.</strong>
-					This invalidates the shared and identity secrets. A copy of your maFile
-					becomes worthless. This is the step that actually stops the theft.
+					<strong>Stop using the suspect computer and secure your email account.</strong>
+					Disconnect the computer from the network. From a trusted device, change any
+					exposed email password and review its sessions and recovery settings.
+					Email access can let an attacker undo Steam recovery.
 				</li>
-				<li><strong>Change your Steam password</strong>, from a machine you trust.</li>
+				<li><strong>Recover control of Steam and change its password.</strong> Start at
+					<a href="https://help.steampowered.com/" rel="noopener">Steam Support</a> if
+					you cannot sign in. Review authorised devices and revoke unfamiliar sessions.
+					Do not approve sign-in requests you did not initiate.</li>
 				<li>
-					<strong>Deauthorise all other devices</strong> in Steam's settings, which
-					kills any session the attacker is holding.
+					<strong>Replace the compromised authenticator.</strong> Use Steam's
+					<a href="/lost-authenticator">removal or recovery process</a>, then set up a
+					fresh authenticator, preferably in Valve's mobile app. Removing it invalidates
+					its old authenticator secrets; changing a vault passphrase does not. Removal
+					also brings Steam trade and Market restrictions. This step does not revoke
+					every other kind of stolen credential, so complete the other steps too.
 				</li>
 				<li>
-					<strong>Revoke your Steam Web API key</strong> if you have ever created one.
-					An API key left behind is a common way access survives a password change.
+					<strong>Review and revoke any Steam Web API key</strong> at
+					<a href="https://steamcommunity.com/dev/apikey" rel="noopener">Steam's API-key page</a>,
+					including one you did not create. A key is a separate credential, not the same
+					as a password or session; its presence is not required for account theft.
 				</li>
 				<li>
-					<strong>Re-enable Steam Guard fresh</strong>, and treat the machine you ran
-					the build on as compromised until you have dealt with it.
+					<strong>Cancel pending unauthorised activity.</strong> Review trade offers,
+					held trades, unsold Market listings and buy orders. Check eligible protected
+					trades immediately. Report the incident through Steam Support and retain
+					transaction IDs and the suspect download address without sharing your maFile.
+				</li>
+				<li>
+					<strong>Clean or reinstall the affected system before trusting it again.</strong>
+					Deleting the authenticator program alone does not establish that malware is
+					gone. Change other credentials exposed on that computer from a trusted device.
 				</li>
 			</ol>
 
@@ -234,7 +258,7 @@ export const verify = {
 	slug: 'verify',
 	parent: 'download',
 	guide: true,
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	sourced: (s) =>
 		`Version covered: GitHub release ${s.publication.github.latestVersion}. Provenance command checked against <a href="https://cli.github.com/manual/gh_attestation_verify" rel="noopener">GitHub CLI's attestation verification reference</a>; checksum-list verification against <a href="https://docs.sigstore.dev/cosign/verifying/verify/" rel="noopener">Sigstore's Cosign documentation</a>`,
 	navTitle: 'Verify',
@@ -259,9 +283,10 @@ export const verify = {
 		<article class="guide">
 			<h1>How to verify a download is genuine</h1>
 			<p class="lede">
-				Verification is the difference between trusting a file and knowing what it is.
-				It takes about a minute. These instructions work for our releases and, with the
-				filenames changed, for anything else you download.
+				These checks establish whether a file matches the release and its recorded
+				publisher workflow. They do not prove the program is free of malware or bugs.
+				Hash commands are general-purpose; the signing and attestation identities below
+				are specific to ODA. Initial tool setup may take longer than the checks themselves.
 			</p>
 
 			<div class="callout">
@@ -288,21 +313,22 @@ export const verify = {
 			<dl class="pairs">
 				<dt>From the Microsoft Store</dt>
 				<dd>
-					Windows verified the package before it installed anything, and it will keep
-					doing so on every update. <strong>There is nothing for you to check by
-					hand.</strong> The signature on a Store package is Microsoft's, not ours —
-					so if you inspect it you will see Microsoft named as the signer, and that is
-					correct rather than suspicious.
+					Use the ODA listing linked from <a href="/download">our download page</a>
+					and check its product and publisher. Windows verifies the Store package on
+					installation and update; no manual checksum step is needed. Microsoft
+					<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">re-signs the MSIX/AppX package it distributes</a>.
+					That package signature does not mean each executable inside is individually signed.
 				</dd>
 				<dt>From the GitHub release page</dt>
 				<dd>
-					Nothing has checked this file for you. The steps below are the whole of the
-					verification, and they are worth the minute they take.
+					Use the following checks before running it. Browser or antivirus scans,
+					if present, do not establish that it came from the intended release workflow.
 				</dd>
 			</dl>
 			<p>
-				Anywhere else is neither of those. No download of this application is genuine
-				unless it came from the Store or from the release page linked on
+				Those are our two official distribution channels. A copy elsewhere might be
+				identical, modified or unrelated; its appearance cannot tell you which. Obtain
+				the release from the Store or the release page linked on
 				<a href="/download">our download page</a>, both of which appear on
 				<a href="/official">the list of addresses we publish from</a> — see
 				<a href="/scam-clones">what a counterfeit build does</a>.
@@ -324,20 +350,21 @@ export const verify = {
 			<p>
 				macOS ships <code>shasum</code> rather than <code>sha256sum</code>, so the Linux
 				command above returns &ldquo;command not found&rdquo; on a stock Mac. There is no
-				macOS build of this application — this is here for someone checking a download
+				published macOS build of this application — this is here for someone checking a download
 				on a Mac before moving it to the machine that will run it.
 			</p>
 			<pre><code>shasum -a 256 open-desktop-authenticator-${s.publication.github.latestVersion}-x86_64.AppImage</code></pre>
 			<p>Or check everything you downloaded at once, from that folder (Linux):</p>
 			<pre><code>sha256sum --check --ignore-missing SHA256SUMS.txt</code></pre>
-			<p>On macOS, the same thing:</p>
-			<pre><code>shasum -a 256 --check --ignore-missing SHA256SUMS.txt</code></pre>
+			<p>On macOS, use the single-file command above and compare its output manually;
+				<code>shasum</code> options vary by the version supplied with macOS.</p>
 			<p>
 				<code>--ignore-missing</code> matters. The list covers every file in the
 				release, and you almost certainly downloaded one of them &mdash; without it,
-				<code>sha256sum</code> reports <code>FAILED open or read</code> for each file
-				you do not have and exits non-zero, which looks exactly like the thing you
-				were checking for. With it, you get one line per file you actually have.
+				<code>sha256sum</code> reports <code>FAILED open or read</code> for absent
+				files. That differs from a checksum mismatch. With <code>--ignore-missing</code>,
+				make sure your actual download is named in the output with <code>OK</code>;
+				an unrelated file or no matching files does not verify your download.
 			</p>
 			<p>
 				PowerShell prints its hash in upper case and the list is in lower case. That
@@ -354,25 +381,30 @@ export const verify = {
 
 			<h2>4. Check where the bytes came from</h2>
 			<p>
-				A checksum proves the file was not corrupted on the way to you. It does not
+				A matching SHA-256 checksum establishes equality with the expected bytes. It does not
 				prove who produced it — anyone who can replace the download can also replace the
 				list of hashes sitting next to it. What closes that gap is a statement, made by
 				something other than us, about which build produced these bytes.
 			</p>
 			<p>
-				Every release is built by a public workflow on GitHub's runners, from a tag
-				anyone can read, and GitHub signs a record of that. You can check it:
+				The release workflow publishes a signed provenance statement for the executable
+				artifacts. Its signing identity is tied to GitHub Actions. You can check it:
 			</p>
 			<pre><code>gh attestation verify &lt;file&gt; --repo ${new URL(s.repo).pathname.slice(1)} --signer-workflow ${new URL(s.repo).pathname.slice(1)}/.github/workflows/release.yml --source-ref refs/tags/vX.Y.Z --deny-self-hosted-runners</code></pre>
 			<p>
-				Replace <code>vX.Y.Z</code> with the version you downloaded. A pass confirms that
-				the file's digest is covered by GitHub-signed provenance for this repository,
-				this release workflow and that exact tag, running on a GitHub-hosted runner. It
+				Replace <code>&lt;file&gt;</code> with the downloaded filename and
+				<code>vX.Y.Z</code> with its release tag. A pass confirms that the file's digest
+				is covered by verified provenance naming this repository, workflow and tag,
+				with a GitHub-hosted attestation runner. It
 				does not prove the program is safe or reproducible; it narrows the claim to the
 				producer and source you intended to trust instead of accepting any repository or
 				workflow under the same organisation. The command needs the
-				<a href="https://cli.github.com/" rel="noopener">GitHub CLI</a>, which is the
-				only tool here you may not already have.
+				<a href="https://cli.github.com/" rel="noopener">GitHub CLI</a>. If it asks you
+				to authenticate, use <code>gh auth login</code> through GitHub's own flow.
+				Network errors, missing attestations and identity mismatches are different
+				failures: resolve the reported cause before running the file, and do not remove
+				identity checks to make a command pass. For commit-level pinning, add
+				<code>--source-digest</code> with the independently checked full commit SHA.
 			</p>
 
 			${
@@ -397,7 +429,7 @@ export const verify = {
 			</p>
 			<p>
 				Both files are on the release beside the list itself. The signature is keyless —
-				there is no long-lived private key anywhere, because the certificate is minted
+				there is no long-lived release-signing private key held by this project; the certificate is minted
 				for the workflow run that produced the release and expires minutes later. That
 				is deliberate: a key held by one maintainer is a key that can be lost or taken,
 				and this project has one maintainer.
@@ -438,13 +470,16 @@ export const verify = {
 			<dl class="pairs">
 				<dt>A Store install</dt>
 				<dd>
-					Signed, and the signer is Microsoft. Windows checked it before installing.
+				The Store package is signed and Windows checks it when installing. The
+				command above checks a standalone <code>.exe</code>, not its enclosing
+				MSIX/AppX package; an executable inside a signed package can report
+				<code>NotSigned</code> without contradicting the package signature.
 				</dd>
 				<dt>A download from the release page, today</dt>
 				<dd>
 					<strong><code>Status</code> will read <code>NotSigned</code>.</strong> These
 					builds carry no code-signing certificate, and none is planned, so Windows
-					will also warn on first run. That is expected and it is stated here rather
+					may also warn on first run, depending on Windows policy. That is stated here rather
 					than left for you to discover — but it does mean this step cannot tell you
 					anything about our direct downloads, and steps 3 and 4 are doing all the
 					work. The Store build is the one that carries a signature, and there the
@@ -452,16 +487,17 @@ export const verify = {
 				</dd>
 			</dl>
 			<p>
-				A build signed by a name you do not recognise is the one result that should stop
-				you outright. "Unsigned" is what our direct downloads are and will stay;
-				"signed by someone else" means the file is not from us at all.
+				An unexpected signature or any checksum/provenance failure is a reason to stop
+				and investigate. <code>NotSigned</code> alone is not a successful verification:
+				counterfeits can be unsigned too. Use the release's stated signing status and
+				the preceding checks together.
 			</p>
 
 			<h2>Going further: build it yourself</h2>
 			<p>
-				The strongest check available is not to trust our binary at all: clone the tag,
-				build it yourself, and run only what you compiled. The source is public, so that
-				is possible today.
+				You can inspect the source and build the tag yourself using the repository's
+				build instructions. This changes which build environment you trust; it does
+				not eliminate trust in source code, dependencies or your compiler.
 			</p>
 			<p>
 				<strong>Comparing your build's hash against ours is not yet meaningful.</strong>
@@ -485,7 +521,7 @@ ${reviewAsk(s, { got: 'Did these steps help you check a download?' })}
 
 export const security = {
 	slug: 'security',
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Security',
 	title: 'Security model: how your Steam secrets are stored',
 	description: (s) =>
@@ -514,25 +550,33 @@ export const security = {
 
 			<h2>Where secrets live</h2>
 			<p>
-				Every account's shared secret, identity secret and revocation code is held in an
-				encrypted vault file on your machine. Nothing is transmitted to us; we operate no
-				account system and no sync service.
+				The vault encrypts each account's authenticator secrets, any available revocation
+				code, saved Steam session token and proxy settings on your machine. The
+				authenticator service does not upload these to an ODA backend; we operate no
+				ODA account system or vault-sync service.
 			</p>
 			<p>
-				<strong>That vault is not the only file, and saying so would be tidier than
-				true.</strong> Two others hold the same class of secret, both encrypted the same
-				way, under the same passphrase-derived key:
+				<strong>The vault is not the only secret-bearing file.</strong> Local recovery
+				data and backups also use encrypted envelopes:
 			</p>
 			<ul>
 				<li>
-					<strong>A recovery file per account</strong>, written the moment an
-					authenticator is created. It exists for the person who removes an account
-					from the vault and only then discovers they never wrote the revocation code
-					down.
+					<strong>A recovery file per account</strong>, created during enrollment or
+					transfer. If writing it fails, ODA reports that recovery still needs attention.
+					It remains after local account removal and needs the passphrase in use when
+					it was written; changing the vault passphrase does not rewrite existing
+					standalone recovery files.
 				</li>
 				<li>
-					<strong>The previous version of the vault</strong>, kept as a backup so an
-					interrupted write cannot leave you with nothing.
+					<strong>The previous version of the vault</strong>, kept as a backup so a
+					failed write can often be recovered. This is on the same disk and does not
+					protect against disk loss.
+				</li>
+				<li>
+					<strong>Operation and write-recovery records</strong> can retain encrypted
+					secrets or encrypted key material after an interrupted enrollment, transfer
+					or passphrase change. Keep the whole app-data directory when backing up or
+					recovering an interrupted operation; resolve its warning before deleting records.
 				</li>
 			</ul>
 			<p>
@@ -547,38 +591,42 @@ export const security = {
 				<dd>
 					scrypt, deliberately tuned to take a noticeable moment on ordinary hardware.
 					That cost is the point: it is paid once when you unlock, and paid again by
-					anyone trying to guess your passphrase, several billion times. The current
+					anyone making offline passphrase guesses. A weak passphrase can still be found.
+					The current
 					defaults are
 					<strong><code>N=131072</code>, <code>r=8</code>, <code>p=1</code></strong>,
-					which is <strong>128&nbsp;MiB</strong> of scrypt memory per attempt, with a
+					which uses approximately <strong>128&nbsp;MiB</strong> for scrypt's main memory array per attempt, plus overhead, with a
 					32-byte random salt and a 256-bit derived key. Every vault records the
 					parameters it was written with, so an old file still opens after the
 					defaults are raised.
 					<span class="hint">
 						Stated exactly rather than described, because "tuned to take a moment" is
 						not something anybody can check. These values are in
-						<a href="${s.repo}/blob/main/src/shared/vault-format.ts" rel="noopener">src/shared/vault-format.ts</a>
+						<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/shared/vault-format.ts" rel="noopener">src/shared/vault-format.ts</a>
 						and are the numbers the application actually uses.
 					</span>
 				</dd>
 				<dt>Encryption</dt>
 				<dd>
 					AES-256-GCM, with a 12-byte (96-bit) nonce generated fresh for every write.
-					The authentication tag covers the vault's version, the key derivation
-					parameters and the nonce as additional data, so a file cannot be
-					altered — including downgrading it to weaker parameters — without the
-					decryption failing outright rather than silently producing something wrong.
+					The authentication tag covers the encrypted contents, vault version, key
+					derivation parameters and nonce. Changing those without the key causes
+					validation or decryption to fail. The envelope's informational modification
+					timestamp is not authenticated; it is not proof that a file is the newest copy.
 				</dd>
 				<dt>Writing</dt>
 				<dd>
 					Every save is written to a temporary file, flushed to disk, and renamed over
-					the target. A crash mid-write leaves either the old vault or the new one,
-					never a half-written file. The previous version is kept as a backup.
+					the target, with recovery handling for interrupted replacements. This reduces
+					the risk of partial saves; disk failure, filesystem behavior and failed flushes
+					can still prevent durable storage. The previous version is kept as a backup.
 				</dd>
 				<dt>Locking</dt>
 				<dd>
-					The vault locks on idle and on demand, and the derived key is dropped from
-					memory when it does. Unlocking requires the passphrase again — being logged
+					The vault locks on idle and on demand. ODA zeroes its live key buffer and
+					drops the unlocked state. This is best-effort cleanup: JavaScript strings,
+					runtime copies, swap or crash dumps cannot be guaranteed erased.
+					Unlocking requires the passphrase again — being logged
 					in to the computer is not treated as being present at it.
 				</dd>
 			</dl>
@@ -586,17 +634,17 @@ export const security = {
 			<h2>How the application is put together</h2>
 			<ul>
 				<li>
-					<strong>Secrets reach the interface twice, and only when you ask.</strong> The
+					<strong>Stored authenticator secrets have a narrow display boundary.</strong> The
 					window is a sandboxed renderer with no Node access and no direct filesystem
-					access. Ordinarily it receives generated codes — which expire in thirty
-					seconds and cannot be turned back into the secret that made them — and never
+					access. Ordinarily it receives generated codes — which change on a thirty-second
+					cycle and do not reveal the secret that made them — and never
 					the secrets themselves. The exceptions are both revocation codes you
 					deliberately asked to see: the backup ceremony, which makes you re-enter your
 					passphrase first, and the end of a transfer, where Steam has just issued a new
 					code and you must write it down. Each is shown once and cleared when you
-					navigate away. Nothing else long-lived crosses that boundary, and the list is
-					kept short on purpose — a screen that could show every recovery code at once
-					is one screenshot away from being the whole vault.
+					navigate away. Shared and identity secrets are not returned to that interface.
+					The interface does receive passwords and passphrases you type, so a compromised
+					interface is still dangerous. Browser sessions are a separate boundary below.
 				</li>
 				<li>
 					<strong>A closed list of permitted messages.</strong> The interface can ask
@@ -606,8 +654,9 @@ export const security = {
 				<li>
 					<strong>No remote content in the interface.</strong> A strict content
 					security policy with no remote origins, and navigation locked to the
-					application's own files. There is nothing for an injected script to fetch
-					and nowhere for it to send.
+					application's own files. This blocks direct remote loading and network requests
+					from the authenticator interface. It is a defense layer, not a guarantee that
+					a compromised renderer cannot misuse an allowed operation.
 				</li>
 				<li>
 					<strong>${browserFeatureCopy(s).security}</strong>
@@ -636,34 +685,35 @@ export const security = {
 			<h2>Check these claims against the release</h2>
 			<p>
 				A security page is only useful when its claims lead back to something a reader
-				can inspect. These links are pinned to the <strong>v${s.version}</strong> release
-				rather than the moving main branch, so they show the implementation described
-				on this page and the tests that shipped with it.
+				can inspect. These links are pinned to <strong>v${publishedSourceVersion(s)}</strong>,
+				the latest published GitHub release, rather than a future source version or the
+				moving main branch. Compare that version with the copy you run; the
+				<a href="/download">download page</a> lists each channel's published version.
 			</p>
 			<dl class="defs">
 				<dt>Vault format and encryption</dt>
 				<dd>
-					<a href="${s.repo}/blob/v${s.version}/src/shared/vault-format.ts" rel="noopener">Parameters and authenticated metadata</a>,
-					<a href="${s.repo}/blob/v${s.version}/src/main/vault/crypto.ts" rel="noopener">encryption and decryption</a>, and
-					<a href="${s.repo}/blob/v${s.version}/tests/vault-crypto.test.ts" rel="noopener">the regression tests</a>.
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/shared/vault-format.ts" rel="noopener">Parameters and authenticated metadata</a>,
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/main/vault/crypto.ts" rel="noopener">encryption and decryption</a>, and
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/tests/vault-crypto.test.ts" rel="noopener">the regression tests</a>.
 				</dd>
 				<dt>Renderer and message boundary</dt>
 				<dd>
-					<a href="${s.repo}/blob/v${s.version}/src/main/security.ts" rel="noopener">Window isolation and navigation policy</a>,
-					<a href="${s.repo}/blob/v${s.version}/src/preload/index.ts" rel="noopener">the deliberately narrow preload bridge</a>, and
-					<a href="${s.repo}/blob/v${s.version}/tests/security-posture.test.ts" rel="noopener">the posture tests</a>.
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/main/security.ts" rel="noopener">Window isolation and navigation policy</a>,
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/preload/index.ts" rel="noopener">the deliberately narrow preload bridge</a>, and
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/tests/security-posture.test.ts" rel="noopener">the posture tests</a>.
 				</dd>
 				<dt>Network destinations</dt>
 				<dd>
-					<a href="${s.repo}/blob/v${s.version}/src/shared/security-policy.ts" rel="noopener">The shared egress policy</a>,
-					<a href="${s.repo}/blob/v${s.version}/src/main/net/egress.ts" rel="noopener">its enforcement</a>, and
-					<a href="${s.repo}/blob/v${s.version}/tests/egress.test.ts" rel="noopener">tests for allowed and refused routes</a>.
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/shared/security-policy.ts" rel="noopener">The interface security policy</a>,
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/main/net/egress.ts" rel="noopener">Steam transport egress enforcement</a>, and
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/tests/egress.test.ts" rel="noopener">tests for allowed and refused routes</a>.
 				</dd>
 				<dt>Deliberate refusals</dt>
 				<dd>
-					<a href="${s.repo}/blob/v${s.version}/src/main/update/checker.ts" rel="noopener">The notification-only update check</a>,
-					<a href="${s.repo}/blob/v${s.version}/src/main/confirmations/policy.ts" rel="noopener">the fixed confirmation allowlist</a>, and
-					<a href="${s.repo}/blob/v${s.version}/tests/confirmation-policy.test.ts" rel="noopener">the policy tests</a>.
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/main/update/checker.ts" rel="noopener">The notification-only update check</a>,
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/src/main/confirmations/policy.ts" rel="noopener">the fixed confirmation allowlist</a>, and
+					<a href="${s.repo}/blob/v${publishedSourceVersion(s)}/tests/confirmation-policy.test.ts" rel="noopener">the policy tests</a>.
 				</dd>
 			</dl>
 
@@ -671,16 +721,18 @@ export const security = {
 			<ul>
 				<li>
 					<strong>No self-updating.</strong> The application checks whether a newer
-					version exists and links to it. It never downloads or executes one.
+					version exists and links to it when the optional direct-build check is enabled.
+					It never downloads or executes an update. Store updates are handled by Microsoft Store.
 				</li>
 				<li>
-					<strong>Automatic confirmation is allowlisted, not configurable.</strong> It
+					<strong>Automatic confirmation has a fixed type allowlist.</strong> It
 					can act on market listings and trades. Account recovery confirmations are
 					held back and reported to you, and no setting exists to widen the list.
 				</li>
 				<li>
-					<strong>Revealing a revocation code requires the passphrase again</strong>,
-					even with the vault already unlocked.
+					<strong>Revealing a stored revocation code through the backup screen requires
+					the passphrase again</strong>, even with the vault already unlocked. The new
+					code displayed at the end of a transfer is the separate exception described above.
 				</li>
 				<li>
 					<strong>Removing an account requires an explicit acknowledgement</strong>,
@@ -691,16 +743,17 @@ export const security = {
 
 			<h2>The honest caveat about automatic confirmation</h2>
 			<p>
-				Automatic confirmation can act on market listings. That is the same route
-				<a href="/scam-clones">a compromised account is emptied through</a> — everything
-				listed on the Community Market, the balance spent on the attacker's own
-				listings — and it would be dishonest to describe the feature without saying so.
+				Automatic confirmation can approve the sale of eligible items. On a compromised
+				account, that can help an attacker turn items into Wallet funds and spend the
+				balance. <a href="/scam-clones">The incident-response guide</a> explains pending
+				transactions, completed Market sales and the separate CS2 Trade Protection rules.
 			</p>
 			<p>
-				The distinction is where the listing comes from. This application only ever
-				confirms what Steam is already asking about; it cannot raise a listing itself.
+				The confirmation service only confirms what Steam is already asking about;
+				it does not create listings. A user can still create listings on Steam pages
+				in the separate browser.
 				But if something else with access to your account can raise one — a stolen
-				session, a leaked Web API key, a trading bot you have authorised — then leaving
+				session or an authorised trading tool — then leaving
 				automatic confirmation on for market listings means this application will
 				approve it without showing you.
 			</p>
@@ -708,22 +761,22 @@ export const security = {
 				So: it is off unless you turn it on, it is set per account rather than globally,
 				and it is worth turning on only for accounts where the convenience is worth that
 				trade. If you are not listing in volume, leave it off and confirm by hand. The
-				<a href="/docs">Activity screen</a> records everything it did either way.
+				<a href="/docs">Activity screen</a> records confirmation actions and outcomes;
+				it is not a replacement for Steam's transaction history.
 			</p>
 
 			<h2>What this cannot protect you from</h2>
 			<div class="callout callout-warn">
 				<p>
-					Any page describing a security model without this section is selling
-					something.
+					These limits apply even when the checksum and provenance checks pass.
 				</p>
 			</div>
 			<ul>
 				<li>
 					<strong>A compromised computer.</strong> Malware running as you, while the
-					vault is unlocked, can read what the application can read. Full-disk
-					encryption and a machine you control matter more than anything in this
-					application.
+					vault is unlocked, may read secrets or intercept your next passphrase.
+					Full-disk encryption helps with a lost powered-off device; it does not stop
+					malware running in your session.
 				</li>
 				<li>
 					<strong>A weak passphrase.</strong> scrypt raises the cost of guessing; it
@@ -736,19 +789,18 @@ export const security = {
 				</li>
 				<li>
 					<strong>Phishing.</strong> No software prevents someone typing their
-					passphrase into a convincing copy of it. <a href="/verify">Verifying what you
-					run</a> is the defence.
+					passphrase into a convincing copy of it. <a href="/verify">Verify downloads</a>,
+					check Steam hostnames and review sign-in and transaction requests before approving.
 				</li>
 			</ul>
 
 			<h2>Reporting a vulnerability</h2>
 			<p>
-				Privately, please, rather than as a public issue. Two routes, both live:
+				Report security issues privately. Use
 				<a href="${'https://github.com/opendesktopauthenticator/open-desktop-authenticator/security/advisories/new'}" rel="noopener">GitHub
 				private vulnerability reporting</a>, which is preferred, or email — the address
 				is in <a href="/.well-known/security.txt">security.txt</a> rather than on this
-				page, so that it is somewhere a researcher looks first and a scraper does
-				not.
+				page, as a standard discovery location. That file is public and can be scraped.
 				<a href="/support#security-reports">What we commit to</a> is written down:
 				acknowledgement in 72 hours, an assessment in 7 days, a fix or a dated plan in
 				30 for a confirmed high or critical.

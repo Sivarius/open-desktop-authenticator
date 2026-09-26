@@ -43,11 +43,11 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 	),
 	'scam-clones': record(
 		'An actionable explanation of how counterfeit authenticators steal an inventory, how to spot one, and what to do after exposure.',
-		'It traces the attack from a stolen maFile through delayed liquidation, orders warning signs by evidential weight, and contrasts them with tagged source-repository releases, checksums and provenance.'
+		'It explains what copied secrets can enable, distinguishes trade holds, Market restrictions and CS2 Trade Protection, and gives an ordered incident-response path with primary sources and release-verification limits.'
 	),
 	'steam-inventory-stolen': record(
-		'A first-hand timeline showing why a plausible SDA search result can remain dangerous even while items are trade-locked.',
-		'It recounts the reinstall, the two-week delay and the Community Market liquidation, then turns those observed failures into specific download and verification precautions.'
+		'A clearly attributed account of a suspected counterfeit authenticator, explaining why working codes do not establish that a download is safe.',
+		'It separates the unnamed team member’s recollection from unverified conclusions about exfiltration and recipient accounts, avoids an unsupported monetary estimate, and links current Valve rules independently of the story.'
 	),
 	verify: record(
 		'A copyable procedure for deciding whether a Store or GitHub download is the file its publisher released.',
@@ -98,7 +98,7 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'Every duration is linked to Valve’s own holds, restrictions or Guard pages, and the page explicitly declines to invent a number where Valve gives none.'
 	),
 	'steam-guard-code-not-working': record(
-		'A troubleshooting sequence that begins with the most common mechanical cause—clock drift—and continues only if time is correct.',
+		'A troubleshooting sequence that begins with an easy, non-destructive check for clock drift, then examines account selection and authenticator changes.',
 		'It explains the 30-second-window calculation with an original diagram, quotes Valve’s own checks, and gives concrete Windows/phone time-sync and account-mismatch steps.'
 	),
 	'steam-guard-without-phone': record(
@@ -154,8 +154,8 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'Every address comes from one checked data source, the page links the build-time validation code, identifies checksum limits by network, and warns users to verify the pasted address and chain.'
 	),
 	privacy: record(
-		'A line-item disclosure of what the app, website and support system store, for how long, who else receives data and how to request early deletion.',
-		'It separates local vault data from server data, names report fields, attachments, logs, browser flags and third parties, supplies exact retention periods, and links the analytics opt-out.'
+		'A line-item disclosure of what the app, website and support system store, who else receives data and how to request early deletion.',
+		'It separates local vaults and exports from server data, names support cookies and external services, distinguishes live-data deletion from backup expiry, and explains the scope of analytics controls.'
 	)
 });
 
@@ -183,7 +183,7 @@ const PROOFS_BY_SLUG = {
 	'steam-inventory-stolen': [
 		'Two weeks of nothing',
 		'Community Market',
-		'Around three thousand dollars'
+		"Today's rules are not inferred from this story"
 	],
 	verify: ['cosign verify-blob', 'Get-AuthenticodeSignature', 'SHA256SUMS.txt.sig'],
 	security: ['src/shared/vault-format.ts', 'tests/confirmation-policy.test.ts', 'N=131072'],

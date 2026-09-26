@@ -1,25 +1,16 @@
 /**
  * The account of the theft this project came out of.
  *
- * **Told in the first person, unattributed, on purpose.** The voice is what
- * makes it useful — people discount a case study about somebody else — but a
- * name adds nothing a reader can act on and follows one person around for good.
- *
- * The framing is deliberate too. The person this happened to had done it
- * correctly the first time and got the file from the project's own releases.
- * What changed between the first download and the second was the search results,
- * not their judgement. Written as a confession it reads as carelessness and
- * teaches nobody anything; written as what it was — a poisoned result catching
- * somebody mid-routine — it is a warning that applies to careful people, who
- * are most of the ones this happens to.
- *
- * Only details that were stated plainly are here. A number in the original
- * telling was unclear, so it is absent rather than guessed at.
+ * The participant is unnamed. This is testimony, not an independently verified
+ * forensic report. Keep observations separate from conclusions about exfiltration
+ * and account ownership. The original amount was unclear; do not publish a
+ * numerical valuation without a source record resolving it. Historical item
+ * restrictions must not be presented as today's general Steam rules.
  */
 
 export default {
 	slug: 'steam-inventory-stolen',
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Our story',
 	title: 'A fake SDA download emptied my Steam inventory',
 	description:
@@ -40,9 +31,9 @@ export default {
 			<h1>A fake SDA download emptied my Steam inventory</h1>
 
 			<p class="lede">
-				This happened to one of us, about five years ago. It is the reason this project
-				exists, and the reason the rest of this site is written the way it is. Nothing
-				here is hypothetical.
+				A member of our team recounts losing their Steam inventory after installing a
+				counterfeit SDA download. Their experience motivated this project. The story
+				below records their recollection; it is not an independently verified incident report.
 			</p>
 
 			<div class="callout">
@@ -50,9 +41,10 @@ export default {
 					<strong>First-hand basis.</strong> A member of the MASTERPANEL LLC team
 					wrote this from their own experience. The person is deliberately unnamed, but
 					the publisher is accountable for the page. It is a personal account, not a
-					forensic analysis of the counterfeit binary: only details the person could
-					state plainly are included, and an unclear figure from the original telling was
-					left out rather than reconstructed.
+					forensic analysis of the counterfeit binary. We have not published the binary,
+					transaction records or evidence identifying the recipient accounts. Timing
+					is the person's recollection. The suspected copying of a maFile and
+					control of the receiving accounts are conclusions, not independently established facts.
 				</p>
 			</div>
 
@@ -60,8 +52,7 @@ export default {
 			<p>
 				I was starting out in trading and I needed Steam Guard on my PC. I got Steam
 				Desktop Authenticator the correct way: from the project's own releases page. The
-				fake sites existed even then, but they were buried — you had to go looking to
-				find one.
+				fake sites I remember seeing then were below the genuine result in my searches.
 			</p>
 			<p>
 				That is the part I want to be clear about, because it is the part that gets
@@ -81,9 +72,10 @@ export default {
 				confirmations, all of it, exactly as before.
 			</p>
 			<p>
-				<strong>It working is the whole trick.</strong> A build that failed would have
-				been deleted within a minute. This one did its job perfectly and copied my
-				<a href="/what-is-a-mafile">maFile</a> out at the same time.
+				<strong>Working codes did not establish that the download was safe.</strong>
+				I believe this was when my <a href="/what-is-a-mafile">maFile</a> was copied.
+				The evidence accompanying this account does not establish exactly what the
+				program sent or when.
 			</p>
 
 			<h2>Two weeks of nothing</h2>
@@ -95,46 +87,50 @@ export default {
 
 			<h2>What they actually did</h2>
 			<p>
-				Half my inventory was under a trade hold, so they could not simply trade it
-				away. I had genuinely believed that made me relatively safe. It does not, and
-				here is the route they used instead:
+				I remember about half my inventory being unavailable to trade. I thought that
+				made me relatively safe. This account does not identify the exact
+				item restrictions, so they cannot be generalised to today's Steam rules. What
+				I saw next was Market activity:
 			</p>
 			<ol class="signs">
 				<li>
 					<strong>They listed and sold the entire inventory on the Community Market.</strong>
-					Trade holds do not stop a market sale. Everything went, and the proceeds
-					landed in my Steam Wallet.
+					As I remember it, the items were sold and the proceeds landed in my Steam Wallet.
 				</li>
 				<li>
-					<strong>They spent the balance on their own listings.</strong> They had
-					already put up items worth a few cents each, priced enormously. My wallet
-					bought them. The money left for an account they controlled and I was holding
-					the worthless items.
+					<strong>The balance bought overpriced listings.</strong> My account bought
+					items I understood to be worth only a few cents. I believe the sellers were
+					connected to the attacker; I do not have independent proof of who controlled them.
 				</li>
 				<li>
-					<strong>None of it could be undone.</strong> Wallet funds cannot be withdrawn
-					to a bank and market purchases are not refundable. By the time I had read the
-					first email it was already finished.
+					<strong>I did not recover the value.</strong> By the time I read the first
+					emails, the transactions I describe here had already happened.
 				</li>
 			</ol>
 			<p>
-				Around three thousand dollars, converted into items genuinely worth cents. They
-				did not even leave the balance — they emptied it to the last penny, and bought a
-				few stickers worth about five dollars with what was left. I have never been able
-				to read that as anything other than deliberate.
+				I remember low-value stickers among the final purchases. The account was left
+				with items worth very little compared with what had been there.
 			</p>
+			<div class="callout">
+				<p><strong>Today's rules are not inferred from this story.</strong>
+					Valve documents <a href="https://help.steampowered.com/en/faqs/view/34A1-EA3F-83ED-54AB" rel="noopener">both trade and Market holds</a>,
+					and <a href="https://help.steampowered.com/en/faqs/view/61F0-72B7-9A18-C70B" rel="noopener">completed Market purchases are final</a>.
+					Eligible CS2 trades have a separate
+					<a href="https://help.steampowered.com/en/faqs/view/365F-4BEE-2AE2-7BDD" rel="noopener">seven-day Trade Protection reversal route</a>.
+					Do not assume that a trade restriction always permits selling, or that every
+					kind of stolen-item transaction is irreversible.</p>
+			</div>
 
 			<h2>What I would tell myself</h2>
 			<ul class="plain next">
 				<li>
-					<strong>The dangerous moment is the reinstall, not the first install.</strong>
-					You are moving quickly, restoring things you already trust, and not
-					re-examining any of them. That is exactly when the search result gets you.
+					<strong>Reinstalls deserve the same checks as first installs.</strong>
+					Familiarity with a product can make it easy to skip checking a new download.
 				</li>
 				<li>
-					<strong>A trade hold protects the items, not the value.</strong> Anything
-					sellable is reachable through the Market. Believing otherwise is what stopped
-					me worrying earlier than I should have.
+					<strong>A restriction is not a substitute for securing the account.</strong>
+					Check what the specific restriction covers and respond to exposed credentials
+					immediately.
 				</li>
 				<li>
 					<strong>Bookmark the real release page.</strong> Not the search. The search is
@@ -142,17 +138,16 @@ export default {
 				</li>
 				<li>
 					<strong>Check the file, not the website.</strong> A convincing page proves
-					nothing. <a href="/verify">A checksum and a provenance check take a minute</a> and
-					prove what you actually have.
+					nothing. <a href="/verify">Check the checksum and provenance where available</a>
+					to establish release origin. They do not establish that the program is safe.
 				</li>
 			</ul>
 
 			<h2>Why this exists</h2>
 			<p>
-				Because it is still happening, in the same way, to people being no more careless
-				than I was. The name still outranks the source, the fake builds still work
-				perfectly on the day you install them, and the two-week delay still means almost
-				nobody connects the theft back to the download.
+				SDA's <a href="https://github.com/Jessecar96/SteamDesktopAuthenticator" rel="noopener">own repository warns about fake downloads</a>.
+				My experience is a reason to take that warning seriously. It is not evidence
+				that today's search results or the timing of other thefts match mine.
 			</p>
 			<p>
 				So <a href="/">this application</a> is built to be checked rather than trusted:
@@ -162,13 +157,14 @@ export default {
 				Published checksums and build provenance ship with
 				each release. Reproducible builds do not yet, and the binaries themselves are
 				not code-signed —
-				<a href="/download">the download page says where each one stands</a>. It cannot update itself, because that is the same door left open.
+				<a href="/download">the download page says where each one stands</a>. ODA has
+				no built-in updater; updates to the Store edition are managed by Microsoft Store.
 			</p>
 			<p>
 				If you use something else, use something else. Just
 				<a href="/verify">verify what you downloaded</a> — and if a page like this ever
-				becomes your story, <a href="/scam-clones">the recovery steps are here</a> and
-				the first one matters more than all the rest.
+				becomes your story, <a href="/scam-clones">follow the recovery steps here</a>
+				from a trusted device and check promptly for pending or reversible transactions.
 			</p>
 		</article>`
 };

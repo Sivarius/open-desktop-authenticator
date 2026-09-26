@@ -155,7 +155,8 @@ describe('what the project says about signing', () => {
 	 */
 	it('still tells the reader the direct downloads are unsigned', () => {
 		expect(POLICY).toMatch(/not code-signed|carry a code-signing certificate/i);
-		expect(DOWNLOAD).toMatch(/no code-signing certificate, and none is planned/i);
+		expect(DOWNLOAD).toMatch(/direct Windows downloads have no publisher code signature/i);
+		expect(DOWNLOAD).toMatch(/none is currently planned/i);
 	});
 
 	it('says so on the verification page too, where the check comes back NotSigned', () => {

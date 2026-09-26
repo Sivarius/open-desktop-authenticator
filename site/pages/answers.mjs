@@ -28,7 +28,7 @@ const originalSdaRepo = (site) =>
 export const mafile = {
 	slug: 'what-is-a-mafile',
 	parent: 'docs',
-	updated: '2026-08-14',
+	updated: '2026-09-12',
 	navTitle: 'maFiles',
 	title: 'What is a .maFile?',
 	description:
@@ -46,21 +46,21 @@ export const mafile = {
 		<article>
 			<h1>What is a <code>.maFile</code>?</h1>
 			<p class="lede">
-				A maFile is a small JSON file holding one Steam account's authenticator. Not a
-				copy of it, not a reference to it — the authenticator itself. Anyone with the
+				A readable maFile is a small JSON file holding one Steam account's authenticator
+				secrets and metadata; SDA can also store it as encrypted ciphertext. Anyone with the
 				<code>shared_secret</code> from it can generate that account's Steam Guard
 				codes; with the <code>identity_secret</code> <em>and</em> a valid Steam
 				session they can also
 				<a href="/approve-steam-confirmations-desktop">approve confirmations</a>. A
 				maFile can carry session material too, which is why losing one is treated here
-				as losing the account.
+				as a credential exposure that needs prompt investigation.
 			</p>
 
 			<h2>What is inside one</h2>
 			<dl class="defs">
 				<dt><code>shared_secret</code></dt>
 				<dd>
-					The seed the login codes are generated from. Base64, twenty bytes decoded.
+					The seed the login codes are generated from, stored as base64 text.
 					Combined with the current thirty-second time window it produces the five
 					characters you type into Steam. It does not expire with time: it stays valid
 					until the authenticator is removed or replaced, which is the only thing that
@@ -78,8 +78,9 @@ export const mafile = {
 					authenticator yourself — the one that still works when the device is gone
 					and no phone number is linked.
 					<a href="https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31" rel="noopener">Valve also documents</a> removing it from
-					inside the Steam Mobile App, transferring it to a new device with an SMS
-					code if you no longer have the old one, and printed backup codes. <a href="/lost-authenticator">Losing it is a
+					inside the Steam Mobile App and transferring it to a new device with an SMS
+					code if you no longer have the old one. Printed backup codes are emergency
+					sign-in codes, not replacement revocation codes. <a href="/lost-authenticator">Losing it is a
 					different kind of problem</a>.
 				</dd>
 				<dt><code>Session</code></dt>
@@ -91,14 +92,17 @@ export const mafile = {
 				<dt><code>account_name</code>, <code>steamid</code>, <code>device_id</code></dt>
 				<dd>
 					Identifying fields. The SteamID is a 64-bit number — large enough that
-					software handling it as a floating-point number silently corrupts the last
-					digits, which is a real and common bug.
+					software handling it as a JavaScript <code>Number</code> can round the last
+					digits. Keep SteamIDs as strings or losslessly parsed integers.
 				</dd>
 			</dl>
 
 			<h2>Encrypted maFiles</h2>
 			<p>
-				SDA can encrypt them. When it does, the file's contents are base64 ciphertext
+				SDA can encrypt them. Its
+				<a href="https://github.com/Jessecar96/SteamDesktopAuthenticator/blob/master/Steam%20Desktop%20Authenticator/FileEncryptor.cs" rel="noopener">encryption implementation</a>
+				and <a href="https://github.com/Jessecar96/SteamDesktopAuthenticator/blob/master/Steam%20Desktop%20Authenticator/Manifest.cs" rel="noopener">manifest code</a>
+				show that the file's contents are base64 ciphertext
 				and the parameters needed to decrypt — the salt and the initialisation vector —
 				are stored separately in <code>manifest.json</code>, keyed by SteamID.
 			</p>
@@ -111,8 +115,9 @@ export const mafile = {
 					with something you cannot open.</strong> You need the manifest too.
 				</li>
 				<li>
-					An encrypted maFile is not a backup of a readable maFile. If you lose the
-					passphrase, the contents are gone the same way any AES ciphertext is gone.
+					An encrypted maFile, its matching manifest and the correct passphrase can
+					make a usable backup. Without the passphrase there is no supported decryption
+					shortcut; recovering account access through Steam is a separate process.
 				</li>
 				<li>
 					Encryption protects the file at rest on your disk. It does not protect it
@@ -123,14 +128,14 @@ export const mafile = {
 			<h2>How to handle one</h2>
 			<ul>
 				<li>
-					<strong>Treat it as more valuable than the account password.</strong> A
-					password can be changed in a minute. A leaked shared secret keeps working
-					until the authenticator is detached from Steam entirely.
+					<strong>Treat it as an account credential.</strong> A password change alone
+					does not rotate a leaked shared secret. Replace the compromised authenticator
+					through Steam and revoke other exposed credentials too.
 				</li>
 				<li>
-					<strong>Never upload one anywhere.</strong> Not to a support ticket, not to a
-					"maFile checker", not to a Discord bot, not to us. No legitimate service
-					needs it.
+					<strong>Do not send a readable maFile to a website, bot or support ticket.</strong>
+					ODA support does not need it. Anyone you give it to gains access to those
+					credentials. Encrypt backups before placing them on storage outside your control.
 				</li>
 				<li>
 					<strong>Keep the revocation code somewhere the file is not.</strong> A backup
@@ -162,7 +167,7 @@ export const lostAuthenticator = {
 		'Recovery routes checked against <a href="https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31" rel="noopener">Valve\'s current Steam Guard guidance</a>; no undocumented bypass or support duration is asserted',
 	// Edited 14 Aug (UTC) to drop the unsupported Support durations. Without
 	// this the page inherits SITE.updated and advertises a stale lastmod.
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Lost access',
 	title: 'Lost your Steam authenticator?',
 	description:
@@ -181,9 +186,9 @@ export const lostAuthenticator = {
 		 */
 		step: [
 			{ '@type': 'HowToStep', name: 'Find any surviving copy of the secret' },
-			{ '@type': 'HowToStep', name: 'Use the revocation code if you have it' },
 			{ '@type': 'HowToStep', name: 'Try Steam recovery with a linked phone number' },
 			{ '@type': 'HowToStep', name: 'Try a printed Steam backup code' },
+			{ '@type': 'HowToStep', name: 'Use the revocation code if you have it' },
 			{ '@type': 'HowToStep', name: 'Contact Steam Support if none of those work' }
 		]
 	}),
@@ -192,29 +197,35 @@ export const lostAuthenticator = {
 			<h1>Lost your Steam authenticator?</h1>
 			<p class="lede">
 				A dead phone, a wiped machine, a deleted folder. This page is the order to try
-				things in, from the option that takes a minute to the one that hands the
-				problem to Steam Support. Work down it — do not skip to the bottom.
+				things in, based on what you still have. If you suspect theft rather than
+				device loss, start with <a href="/scam-clones">the compromised-account steps</a>
+				from a trusted device; restoring a leaked secret will not make it safe again.
 			</p>
 
 			<div class="callout callout-warn">
 				<p>
-					<strong>Everything on this page happens on Steam's own site or in Steam's own
-					app.</strong> Searching for a tool that promises to recover a Steam
-					authenticator will find you something that steals accounts. There is no such
-					tool and there cannot be one.
+					<strong>Account recovery happens through Steam's own site or app.</strong>
+					A surviving local backup can also restore desktop authenticator data. No
+					third-party tool can reconstruct a missing strong secret from an account name
+					or bypass Steam's ownership checks. Do not upload maFiles or pay a stranger
+					promising to unlock the account.
 				</p>
 			</div>
 
 			<h2>1. Is there a copy of the secret anywhere?</h2>
 			<p>
-				More recoverable than people assume. Any of these is a working authenticator:
+				Look for a backup containing the authenticator that is still active on Steam:
 			</p>
 			<ul>
 				<li>A <code>.maFile</code> in an old SDA folder, or in a backup of one.</li>
 				<li>
 					The same folder on a machine you still have — an old laptop, a drive you kept.
 					<a href="/what-is-a-mafile">Encrypted ones also need
-					<code>manifest.json</code></a>.
+					<code>manifest.json</code></a> and the original encryption passphrase.
+				</li>
+				<li>
+					An ODA vault or per-account recovery file, with the passphrase that encrypted
+					that file. See <a href="/docs">ODA's recovery-file instructions</a>.
 				</li>
 			</ul>
 			<p>
@@ -223,30 +234,38 @@ export const lostAuthenticator = {
 			</p>
 
 			<p>
-				<strong>A phone still signed in to Steam is not one of these.</strong> A session
-				is not an authenticator: there is no secret in it to export or import, and
-				nothing to bring into this application or any other. What it is good for is
-				better than that — while that device is still signed in you can usually add a
-				new authenticator from the Steam mobile app directly, which is the fastest route
-				back and needs nothing from us. Do that before the session expires.
+				<strong>Being signed in does not prove that a device holds the authenticator.</strong>
+				Check the Steam Mobile app's Steam Guard screen for a working code or recovery
+				code before signing out or reinstalling it. An existing session may help you
+				access account settings, but it does not guarantee that Steam will let you
+				replace the authenticator without further verification.
 			</p>
 
 			<h2>2. Is a phone number still linked to the account?</h2>
 			<p>
-				If it is, you may not need the recovery code at all.
+				If you can receive messages at that number, you may not need the recovery code.
 				<a href="https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31" rel="noopener">Valve's own instructions</a> say that when you
 				no longer have access to your authenticator, you can choose
 				<em>"I no longer have access to my authenticator"</em> at the sign-in
 				confirmation and transfer it to a new device using an SMS code sent to that
-				number. Printed backup codes, if you made a set, work here too. Both are
-				self-service and neither needs a support ticket.
+				number. Follow the app's prompts; a linked number you cannot access is not
+				an available SMS recovery route.
 			</p>
 
-			<h2>3. Do you have the revocation code?</h2>
+			<h2>3. Do you have unused Steam backup codes?</h2>
+			<p>
+				A previously generated backup code can replace a generated Steam Guard code
+				at sign-in. It does not replace the password, recover the authenticator secret
+				or guarantee a transfer. Once signed in, follow Steam's account-recovery prompts.
+			</p>
+
+			<h2>4. Do you have the revocation code?</h2>
 			<p>
 				It looks like <code>R12345</code> and was shown when the authenticator was first
 				added. With it, you can remove the authenticator yourself from Steam's help
-				pages, then set a new one up. This is the fast path: minutes, not days.
+				pages, then set a new one up. Use
+				<a href="https://help.steampowered.com/" rel="noopener">Steam's help site</a>
+				and follow the lost-authenticator prompts; the checks depend on your account.
 			</p>
 			<p>
 				Removing the authenticator puts a hold on trading and the Market for a period.
@@ -254,17 +273,19 @@ export const lostAuthenticator = {
 				otherwise is a scam.
 			</p>
 
-			<h2>4. No recovery code and no phone number</h2>
+			<h2>5. No recovery code and no phone number</h2>
 			<p>
 				Then it is Steam Support, through a help request to remove the authenticator.
-				Expect to prove ownership: purchase history, payment details, the original email
-				address, when the account was created. It is slower than the routes above
-				because Steam verifies ownership before detaching a second factor, and it
-				generally works if the account is genuinely yours.
+				Follow the evidence requests in your ticket.
+				<a href="https://help.steampowered.com/en/faqs/view/40A0-8B4B-B54B-C51A" rel="noopener">Steam's ownership guidance</a>
+				covers historical payment evidence and activated product codes; account names, public
+				profile details and guesses about creation dates do not establish ownership.
+				Provide requested evidence only through the official help site. We cannot
+				promise a response time or recovery outcome.
 			</p>
 			<p>
-				Nobody else can do this for you. A service offering to recover a Steam account
-				is either lying or planning to sell it.
+				Only Valve can change Steam's account-access decision. A third-party service
+				cannot guarantee recovery, and handing it credentials creates another exposure.
 			</p>
 
 			<h2>Making sure this does not happen again</h2>
@@ -284,9 +305,9 @@ export const lostAuthenticator = {
 			</ul>
 			<p>
 				This is the reasoning behind two decisions in our own application: a recovery
-				file is written the moment an account is enrolled rather than when someone
-				remembers to ask, and it is deliberately kept when an account is removed —
-				because that is exactly the moment people discover they needed it.
+				file is created during enrollment or transfer, and it is kept when an account
+				is removed locally. Resolve any recovery-write warning before relying on that
+				file, keep the passphrase used when it was created, and copy it off the daily-use disk.
 			</p>
 
 			<h2>Related</h2>
@@ -305,7 +326,7 @@ export const alternatives = {
 	guide: true,
 	sourced: (s) =>
 		`Compared against <a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Valve's Steam Guard guidance</a> and <a href="${originalSdaRepo(s)}" rel="noopener">SDA's official repository</a>`,
-	updated: '2026-08-27',
+	updated: '2026-09-12',
 	navTitle: 'Alternatives',
 	title: 'Steam authenticator alternatives to SDA, compared',
 	description:
@@ -331,43 +352,46 @@ export const alternatives = {
 			<p>
 				<a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Valve's own app</a>.
 				It is maintained by the people who run the service, it comes
-				from Apple's or Google's store rather than a search result — so it is far
-				harder to substitute a fake, though phishing pages still imitate Steam's
-				branding — and losing your phone is a recoverable problem rather than a
-				catastrophe.
+				from the stores linked by <a href="https://store.steampowered.com/mobile" rel="noopener">Valve's mobile page</a>.
+				Keeping the authenticator on a separate phone reduces the chance that malware
+				on the trading PC compromises both factors. Phone loss is recoverable when
+				you retain a recovery route; plan that before changing devices.
 			</p>
 			<p>
 				<strong>Choose it if:</strong> you are not confirming listings in bulk, you are
 				not sure what a maFile is, or you would rather not be responsible for storing a
-				secret. This is not a consolation prize — it is the safest option available and
-				most people should stop here.
+				maFile. It is our recommended default; you still need to secure the phone,
+				review approvals and preserve recovery access.
 			</p>
 			<p>
-				<strong>Against it:</strong> confirming thirty market listings means thirty taps.
-				Codes have to be read and retyped. The secret lives on a device that can break.
+				<strong>Trade-offs:</strong> using a separate device can interrupt a desktop
+				workflow. The app supports QR sign-in and approval prompts as well as generated
+				codes, so manual retyping is optional. A lost or broken phone still requires
+				the recovery preparations described above.
 			</p>
 
-			<h2>Steam Desktop Authenticator — the incumbent</h2>
+			<h2>Steam Desktop Authenticator — no longer supported</h2>
 			<p>
-				The tool most traders have used for years, and the reason this category exists.
-				It works, it is widely understood, and there is a large body of community
-				knowledge about it.
+				The original SDA is a longstanding community desktop implementation. Its
+				<a href="${originalSdaRepo(s)}" rel="noopener">README says it is no longer supported</a>,
+				will receive no more updates, and recommends Steam's official mobile app.
 			</p>
 			<p>
-				<strong>Choose it if:</strong> you already use it, it works for you, and you got
-				it from <a href="${originalSdaRepo(s)}" rel="noopener">its own repository</a>.
+				<strong>If you already use it:</strong> back up the maFiles, matching manifest
+				and passphrase, preserve recovery access, and plan a move to a supported option.
+				The original repository remains the reference for identifying genuine SDA;
+				we do not recommend starting with unsupported software.
 			</p>
 			<p>
-				<strong>Against it:</strong> its name is what the counterfeit sites rank for, so
-				every new user has to run a gauntlet to get a genuine copy.
-				<a href="/scam-clones">The clone problem is real and specific</a>, and it is a
-				problem of the ecosystem around the tool rather than of the tool itself.
+				<strong>Against it:</strong> there is no promised maintenance when Steam or
+				security requirements change. The project's own warning about
+				<a href="/scam-clones">counterfeit downloads</a> adds a separate acquisition risk.
 			</p>
 
 			<h2>Open Desktop Authenticator — this project</h2>
 			<p>
-				An independent implementation built around one idea: you should not have to
-				trust us. Public source, built in public CI, no self-updating, and
+				An independent implementation published by the team writing this comparison.
+				Public source, builds in public CI, no updater inside ODA, and
 				<a href="/security">a documented security model that includes what it cannot
 				protect you from</a>. Every release publishes checksums and build provenance.
 				${
@@ -386,10 +410,10 @@ export const alternatives = {
 			<p>
 				<strong>Against it, plainly:</strong> it is new. Version 1.0 was published on
 				${s.releasedOn}, with no years of community scrutiny behind it and no track
-				record. Those are real
-				disadvantages and no amount of open source substitutes for them. If that matters
-				more to you than auditability, one of the options above is the better choice
-				today.
+				record comparable to a mature project. Source availability and provenance do
+				not substitute for an independent security audit. Desktop custody puts the
+				second factor on the same computer you may use to trade; use Valve's mobile
+				app if you do not need that trade-off.
 			</p>
 
 			<h2>The comparison that actually matters</h2>
@@ -401,7 +425,7 @@ export const alternatives = {
 				<li><strong>Can I verify that what I ran is what was published?</strong></li>
 				<li><strong>Where does the secret live, and who else can read it?</strong></li>
 				<li><strong>What happens when I lose the device?</strong> <a href="/lost-authenticator">Answer that before you need it.</a></li>
-				<li><strong>Can it update itself?</strong> If yes, whoever controls the update controls the secret.</li>
+				<li><strong>Who controls updates, and how are they authenticated?</strong> Every update changes the code entrusted with the secret; delaying security fixes also carries risk.</li>
 				<li><strong>What can it approve without asking me?</strong></li>
 			</ol>
 			<p>

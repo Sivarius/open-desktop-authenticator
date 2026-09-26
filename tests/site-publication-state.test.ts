@@ -308,7 +308,9 @@ describe('per-channel publication output', () => {
 			verifiedOn: '2026-09-06',
 			architectures: ['x64']
 		});
-		expect(text(download.body(site))).toContain('The current Store 1.5.0 package is x64.');
+		expect(text(download.body(site))).toMatch(
+			/Store 1\.5\.0 package recorded in our publication record is x64/
+		);
 		expect(text(download.body(site))).toContain(
 			'the Store does not currently offer a native ARM64 ODA package'
 		);
@@ -368,7 +370,7 @@ describe('per-channel publication output', () => {
 		const start = html.indexOf('<h2>What it pays for</h2>');
 		expect(start, 'the expenses section disappeared').toBeGreaterThanOrEqual(0);
 		const expenses = html.slice(start, html.indexOf('<div class="origin-note">', start));
-		expect(expenses).toContain('The server this runs on');
+		expect(expenses).toContain('Website hosting and the domain');
 		expect(expenses).toContain('Time');
 		expect(expenses).not.toMatch(/code-signing certificate/i);
 		expect(expenses).not.toContain('the largest single cost');

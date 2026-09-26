@@ -35,11 +35,16 @@ import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { PAGES } from './pages/index.mjs';
+import { formatPublicationDate } from './quality.mjs';
 
 const REPO = join(fileURLToPath(new URL('.', import.meta.url)), '..');
 // Unique per run: CI and a local audit may execute this harness concurrently.
 const DIR = mkdtempSync(join(tmpdir(), 'oda-site-selftest-'));
 const swapVerifier = process.argv[2];
+const ownersPage = PAGES.find((page) => page.slug === 'owners');
+const ownersReviewed = ownersPage.reviewed ?? ownersPage.updated;
+const storyUpdated = PAGES.find((page) => page.slug === 'steam-inventory-stolen').updated;
 
 const ANCHOR_FILE = 'pages/home.mjs';
 /*
@@ -242,7 +247,11 @@ const QUALITY_CASES = [
 	{
 		name: 'impossible material-update date',
 		beforeBuild: () =>
-			replaceOnce('site/pages/owners.mjs', "updated: '2026-09-08'", "updated: '2026-02-30'"),
+			replaceOnce(
+				'site/pages/owners.mjs',
+				`updated: '${ownersPage.updated}'`,
+				"updated: '2026-02-30'"
+			),
 		expected: /owners: updated date is not a real calendar date/
 	},
 	{
@@ -292,17 +301,17 @@ const QUALITY_CASES = [
 		afterBuild: () =>
 			replaceOnce(
 				'site/dist/owners.html',
-				'<time datetime="2026-09-08">8 September 2026</time>',
-				'<time datetime="2026-09-08">31 February 1900</time>'
+				`<time datetime="${ownersReviewed}">${formatPublicationDate(ownersReviewed)}</time>`,
+				`<time datetime="${ownersReviewed}">31 February 1900</time>`
 			),
-		expected: /owners: review row does not render reviewed date 2026-09-08/
+		expected: new RegExp(`owners: review row does not render reviewed date ${ownersReviewed}`)
 	},
 	{
 		name: 'stale nested structured-data modification date',
 		afterBuild: () =>
 			replaceOnce(
 				'site/dist/steam-inventory-stolen.html',
-				'"dateModified":"2026-09-08"',
+				`"dateModified":"${storyUpdated}"`,
 				'"dateModified":"2020-01-01"'
 			),
 		expected: /steam-inventory-stolen: structured data renders dateModified 2020-01-01/
@@ -310,7 +319,7 @@ const QUALITY_CASES = [
 	{
 		name: 'declared structured-data modification date removed',
 		afterBuild: () =>
-			replaceOnce('site/dist/steam-inventory-stolen.html', ',"dateModified":"2026-09-08"', ''),
+			replaceOnce('site/dist/steam-inventory-stolen.html', `,"dateModified":"${storyUpdated}"`, ''),
 		expected: /steam-inventory-stolen: renders 0 structured dateModified values, expected 1/
 	}
 ];

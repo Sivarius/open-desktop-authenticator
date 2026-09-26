@@ -361,16 +361,12 @@ describe('the pages that carry the sentence', () => {
 		expect(page({ ...NOTHING, reproducible: true })).not.toMatch(/cannot be, yet/i);
 	});
 
-	/*
-	 * The FAQ is the one that promised the guarantee it was breaking: its last
-	 * sentence says the site refuses to build if a page goes on saying something
-	 * is missing after it is not, while the paragraph above it said exactly that
-	 * about the checksum signature. The promise has to survive the rewrite.
-	 */
-	it('keeps the FAQ’s enforcement promise, which is now true', () => {
+	// Mechanical publication checks catch their specified patterns, not every
+	// possible false sentence. Keep that boundary alongside the release gaps.
+	it('does not present automated site checks as a complete factual review', () => {
 		const text = words(pageBySlug('faq').body(site({ ...NOTHING, signed: true })));
-		expect(text).toMatch(/refuses to build/);
-		expect(text).toMatch(/goes on saying it is missing after it is not/);
+		expect(text).toMatch(/Automated site checks catch specified contradictory claims/);
+		expect(text).toMatch(/do not establish that every sentence is correct/);
 	});
 
 	/*

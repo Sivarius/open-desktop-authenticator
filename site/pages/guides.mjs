@@ -5,7 +5,8 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-07',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Download',
 	script: 'download.js',
 	title: 'Open Desktop Authenticator download and release status',
@@ -17,10 +18,10 @@ export const download = {
 			<div class="callout" data-download>
 				<h2>Two places, and nowhere else</h2>
 				<p>
-					${publicationSummary(s)} <strong>Those are the only two places a genuine build
-					comes from.</strong> Not a mirror, not a lookalike domain, not a sponsored
-					search result, and not this page — every button here is a link somewhere
-					else, never a file we serve.
+					${publicationSummary(s)} <strong>Those are our two official download
+					channels.</strong> Follow those exact listings rather than a mirror or a
+					lookalike domain. This site links to the downloads; it does not serve an
+					installer itself.
 					<a href="/official">The full list of addresses we publish from</a> is
 					short, and anything outside it is not ours.
 				</p>
@@ -30,13 +31,19 @@ export const download = {
 						<a class="button" href="${s.store.url}" rel="noopener" data-got-it="the Store build">Get it from the Microsoft Store</a>
 					</p>
 					<p class="download-why">
-						Microsoft re-signs every package it distributes, so Windows never warns,
-						updates arrive on their own, and there is nothing for you to check by
-						hand. On Windows this is the right answer for almost everybody.
+						Microsoft signs ODA's Store AppX package and checks its integrity during
+						installation. This avoids the SmartScreen download warning associated with
+						direct downloads; it is not a guarantee that an application is safe.
+						Check that the listing names <strong>MASTERPANEL LLC</strong> as publisher.
+						Store updates can install automatically, subject to your Store settings.
+						<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">Microsoft's package-signing requirements</a> and
+						<a href="https://support.microsoft.com/en-us/windows/apps/turn-on-automatic-app-updates" rel="noopener">update settings</a> explain those checks.
 					</p>
 					<p class="download-why">
-						<strong>The current Store ${s.publication.store.latestVersion} package is
-						x64.</strong> Windows 11 on Arm can run it through Windows' x64 emulation.
+						<strong>The Store ${s.publication.store.latestVersion} package recorded in our
+						<a href="${s.repo}/blob/main/site/publication.mjs" rel="noopener">publication record</a> is
+						x64.</strong> Windows 11 on Arm supports
+						<a href="https://support.microsoft.com/en-us/surface/drivers-firmware/using-software-and-peripherals-on-surface-arm-based-devices" rel="noopener">x64 emulation</a>.
 						For a native ARM64 build, use the ARM64 installer on
 						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">the GitHub ${s.publication.github.latestVersion} release</a>;
 						the Store does not currently offer a native ARM64 ODA package.
@@ -48,30 +55,33 @@ export const download = {
 						<a class="button" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="the Linux build">Download ${s.publication.github.latestVersion} for Linux</a>
 					</p>
 					<p class="download-why">
-						An AppImage and a <code>.deb</code>, published on the releases page.
-						Nothing has checked these for you, so
-						<a href="/verify">verify them</a> — the checksums and the build
-						provenance attestation are both on that release.
+						An x64 AppImage and a Debian/Ubuntu <code>.deb</code>, published on the
+						releases page. There is no native Linux ARM64 package in this release.
+						<a href="/verify">Verify the downloaded file</a> using the checksums,
+						checksum-list signature and build provenance attestation.
 					</p>
 				</div>
 
 				<details class="download-alt">
 					<summary>Can't use the Store, or want to check the bytes yourself?</summary>
 					<p>
-						The same builds are on
+						Direct installation packages are on
 						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="a build from the release page">the GitHub ${s.publication.github.latestVersion} release page</a>,
 						including the portable build, which has no Store equivalent — its vault,
 						settings and recovery data stay beside the executable, so it can run from
 						a USB stick. The single-file launcher extracts Electron and Chromium runtime
-						files to Windows Temp while it runs and normally removes them on exit. Take this route
-						if the Store is missing from your Windows image, if the machine is locked
-						down, or if you would rather verify a download than be told it is fine.
+						files to Windows Temp while it runs and normally removes them on exit. Use this route
+						if the Store is unavailable or you need a portable build. An organisation's
+						device policy may still block unsigned applications; a portable build does
+						not bypass that policy.
 					</p>
 					<p>
-						<strong>These carry no code-signing certificate, and none is planned, so
-						Windows warns on first run.</strong> That warning is about a missing certificate, not about
-						the file being wrong — <a href="/verify">the verification steps</a> are
-						how you tell those two apart instead of guessing.
+						<strong>The direct Windows downloads have no publisher code signature,
+						and none is currently planned.</strong> Windows may warn or block them.
+						An unrecognised-app warning and a malware detection are different findings;
+						do not dismiss a security alert because this page mentions unsigned builds.
+						<a href="/verify">The verification steps</a> establish the published origin
+						of a file, not whether its code is harmless.
 					</p>
 				</details>
 			</div>
@@ -87,20 +97,22 @@ export const download = {
 			-->
 			<h2>What to use today</h2>
 			<p>
-				In order, and the first one is the right answer for most people:
+				Start with Valve's app. If you specifically need a desktop tool, compare the
+				alternatives and their limitations before installing:
 			</p>
 			<ol class="signs">
 				<li>
 					<strong>Steam's official mobile authenticator.</strong> Maintained by the
 					people who run the service, distributed through Apple's and Google's own
-					stores rather than a search result, and a lost phone is recoverable rather
-					than fatal. If you are here
+					stores. Valve provides account-recovery routes if the phone is lost.
+					Use <a href="https://store.steampowered.com/mobile" rel="noopener">Valve's mobile-app page</a>
+					to find the store links. If you are here
 					because you searched for a desktop authenticator, this is still probably what
 					you want.
 				</li>
 				<li>
-					<strong>The original Steam Desktop Authenticator, if you understand what you
-					are taking on.</strong> Its own README says it is
+					<strong>The original Steam Desktop Authenticator: a legacy option we do not
+					recommend for a new setup.</strong> Its own README says it is
 					${s.sda.notice}, and its authors' position is that
 					${s.sda.authorsAdvice}. That is their assessment of their own software and it
 					deserves more weight than ours. Unmaintained software that holds a Steam Guard
@@ -137,9 +149,9 @@ export const download = {
 
 			<h2>What is finished</h2>
 			<ul>
-				<li>The application itself: codes, confirmations, enrollment, import and export, encrypted vault, recovery files.</li>
+				<li>Implemented features: codes, confirmations, enrollment, import and export, encrypted vault and recovery files.</li>
 				<li>The security posture described on the <a href="/security">security page</a>.</li>
-				<li>An automated test suite that runs on every change.</li>
+				<li>An automated test suite configured to run on pushes to main and pull requests.</li>
 				${
 					/*
 					 * **The checksum-list signature is listed here, under the flag, rather
@@ -174,7 +186,7 @@ export const download = {
 					 */
 					s.release.signed
 						? `<li>
-					A signature over the checksum list: every release carries
+					A signature over the checksum list: the current GitHub release carries
 					<code>SHA256SUMS.txt.sig</code> and the certificate that goes with it, so
 					you can check that the list itself came from our workflow rather than only
 					that your download matches the list.
@@ -183,9 +195,12 @@ export const download = {
 						: ''
 				}
 				<li>
-					End-to-end testing against live Steam accounts — import from SDA,
-					enrollment, codes, confirmations, backup and recovery — with the defects it
-					surfaced fixed. Maintainer testing, not an independent audit.
+					Maintainer testing against live Steam accounts, documented in
+					<a href="${s.repo}/blob/main/docs/PHASE0_FINDINGS.md" rel="noopener">the protocol findings</a> and
+					<a href="${s.repo}/blob/main/docs/AUTHENTICATOR_TRANSFER.md" rel="noopener">the transfer record</a>.
+					The transfer record covers sign-in, a real transfer, codes and fetching the
+					confirmation list; it explicitly does not claim a live approval of a pending
+					trade. These records and automated tests are not an independent audit.
 				</li>
 			</ul>
 
@@ -194,17 +209,18 @@ export const download = {
 			<ul>
 				<li>
 					<strong>A code-signing certificate for the direct downloads.</strong> The
-					Store build is signed by Microsoft; the <code>.exe</code> and Linux builds on
-					GitHub are not, so Windows warns on first run. The checksums and the
+					Store AppX package is signed by Microsoft; the direct Windows executables
+					are not publisher-signed and may trigger Windows warnings. The checksums and the
 					provenance attestation are how you check them.
 					<br />
-					<strong>No certificate is planned.</strong> We applied to the SignPath
-					Foundation and were declined — their free-certificate programme asks for
-					public visibility a project this young does not have. Buying one would not
-					change what you see today either: since March 2024 no certificate, Extended
-					Validation included, clears the Windows warning on its own. So nothing you
-					download directly is signed by us, and we would rather say that than imply
-					it is coming. See
+					<strong>No certificate is currently planned.</strong> The maintainer reports
+					that an application to the SignPath Foundation was declined; this is
+					documented in the project's release notes. Buying a certificate would not
+					guarantee an immediate SmartScreen reputation either: Microsoft says Extended
+					Validation certificates no longer receive an automatic reputation bypass.
+					Signing still provides publisher identity and integrity checks; the separate
+					checksum-list signature does not make these executables code-signed. See
+					<a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation" rel="noopener">Microsoft's explanation</a> and
 					<a href="/code-signing-policy">our code signing policy</a>.
 				</li>
 				${
@@ -229,17 +245,17 @@ export const download = {
 				}
 				<li>
 					<strong>Reproducible builds.</strong> You cannot yet rebuild the tag and
-					compare bytes with ours. The provenance attestation is what stands in for it.
+					compare bytes with ours. The provenance attestation identifies the build
+					workflow and commit; it does not substitute for an independent rebuild.
 				</li>
 				<li>
-					<strong>An independent audit.</strong> This has been tested end to end
-					against live Steam accounts by the maintainer. That is testing, not review by
-					someone with no stake in the answer.
+					<strong>An independent audit.</strong> The project has maintainer test records
+					and automated checks, but no published independent security audit.
 				</li>
 			</ul>
 
 			<p>
-				Free software under the MIT licence — no account, no agreement to accept, and
+				Free software under the MIT licence — no ODA account or subscription, and
 				nothing to cancel. <a href="${s.repo}/blob/main/LICENSE" rel="noopener">Read the
 				licence</a>, or <a href="/uninstall">read how to remove it and its data</a>
 				before you install rather than after.
@@ -249,14 +265,25 @@ export const download = {
 			<p>
 				The source is public and can be built and run by anyone comfortable with
 				Node.js. You no longer have to — there are builds now — but the option is the
-				point: every claim on this site is checkable against the thing that produced the
-				download.
+				point: the public source lets you inspect the implementation behind a
+				release. That inspection still requires expertise; public code alone is not
+				a security assessment.
 			</p>
 			<p><a class="button" href="${s.repo}" rel="noopener">View the source repository</a></p>
 
+			<h2>Installing a verified Linux download</h2>
+			<p>
+				Choose one package. On Debian or Ubuntu, from the download directory, run
+				<code>sudo apt install ./open-desktop-authenticator-${s.publication.github.latestVersion}-amd64.deb</code>.
+				For the AppImage, enable its executable permission in your file manager, or run
+				<code>chmod +x ./open-desktop-authenticator-${s.publication.github.latestVersion}-x86_64.AppImage</code>,
+				then open it. Run ODA as your normal user. If it does not launch, report the
+				error and your distribution/version through <a href="/support">support</a>.
+			</p>
+
 			<h2>Checking what you downloaded</h2>
 			<p>
-				Every artifact is listed with a SHA-256 checksum in
+				Each application download is listed with a SHA-256 checksum in
 				<code>SHA256SUMS.txt</code> on the release page, alongside a build provenance
 				attestation that ties those exact bytes to the public workflow run that produced
 				them. <a href="/verify">The verification steps walk through both</a> — worth
@@ -287,15 +314,15 @@ ${reviewAsk(s, { got: 'Did this page stop you downloading the wrong thing?' })}
 				<div class="ask-body">
 					<h2 id="review-prompt-title">One thing before you go</h2>
 					<p>
-						Your download is one click away and this does not hold it up. When you have
+						Continue to the download below. When you have
 						actually used it — today, next week, whenever — come back and say how it
-						went. The next person has no way to tell this project apart from the sites
-						that steal inventories, and a review on a platform we do not own is
-						something they can check without taking our word for it.
+						went. Reviews can describe other users' experiences; they do not verify an
+						installer's origin or safety. Use the release verification guide for that
+						origin check.
 					</p>
 					<p class="hint">
-						Nothing is offered in return and nothing is filtered. If it turns out not to
-						work for you, that is the review worth leaving most.
+						Nothing is offered in return. Positive and negative feedback are welcome,
+						subject to the review platform's moderation rules.
 					</p>
 					<div class="ask-actions">
 						<a class="button" href="#" data-review-continue rel="noopener">Continue to the download →</a>
@@ -313,8 +340,8 @@ export const importFromSda = {
 	slug: 'import-from-sda',
 	parent: 'docs',
 	guide: true,
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	sourced: (s) =>
 		`Version covered: ODA ${s.version}. Import behavior checked against <a href="${s.repo}/tree/v${s.version}/src/main/import" rel="noopener">the tagged implementation</a>, <a href="${s.repo}/blob/v${s.version}/tests/import-service.test.ts" rel="noopener">its service tests</a>, and <a href="${s.sda.repo}" rel="noopener">SDA's published format</a>`,
 	navTitle: 'Import',
@@ -347,6 +374,8 @@ export const importFromSda = {
 					<strong>Do not delete your SDA installation.</strong> Keep it until you have
 					confirmed the imported accounts generate the same codes. Importing copies;
 					it does not move. There is no step here that alters your existing files.
+					Turn off automatic confirmation while checking the new setup, so neither
+					application approves items before you have reviewed them.
 				</p>
 			</div>
 
@@ -386,8 +415,9 @@ export const importFromSda = {
 					<code>shared_secret</code> is usable, but confirmations will not.
 				</li>
 				<li>
-					A maFile with no revocation code, which means detaching that authenticator
-					later will need Steam Support.
+					A maFile with no revocation code. ODA cannot use its built-in deactivation
+					option without that code; Steam may offer recovery through a linked phone
+					number or Steam Support. <a href="/lost-authenticator">Recovery routes</a>.
 				</li>
 				<li>A proxy setting found inside the file, which you can adopt or discard.</li>
 				<li>
@@ -395,21 +425,34 @@ export const importFromSda = {
 					<code>identity_secret</code> is rejected here rather than imported.
 				</li>
 			</ul>
-			<p>Tick what you want. Everything else is discarded when you close the screen.</p>
+			<p>
+				Tick the accounts you want and confirm the import. Read the result for each
+				account: a warning or failed row is not a successful import. If you replace an
+				existing entry, you replace that vault's stored copy; keep a backup first.
+				Uncommitted staged files are discarded when you leave, lock the vault, or the
+				ten-minute staging window expires.
+			</p>
 
 			<h2>5. Confirm the codes match</h2>
 			<p>
 				Put the two applications side by side and check that an imported account shows
 				the same five characters as SDA does. Same secret, same clock, same code. That
-				is your proof the import worked before you rely on it.
+				checks the code-generating secret at that moment. It does not check the
+				confirmation secret, recovery code or Steam session. Sign in when ODA requests
+				it and check that confirmations load; review the recipient and items before
+				approving anything. Keep an independent backup even after these checks pass.
 			</p>
 
 			<h2>Leaving again</h2>
 			<p>
-				Export writes an account back out as a standard <code>.maFile</code>, readable
-				by SDA. There is no lock-in, and that is deliberate: a tool that made your
-				secrets hard to take elsewhere would be behaving like the thing it is meant to
-				replace.
+				Use an account's <strong>Export</strong> button to save a standard
+				<code>.maFile</code>. The file is <strong>unencrypted</strong>, even when the
+				original import was encrypted. It contains authenticator secrets and any
+				revocation code. Store it in a secure location and never upload it to a website
+				or support report. ODA deliberately omits the Steam refresh token and proxy
+				configuration: sign in again and configure routing in the destination app.
+				Code compatibility does not guarantee that an unmaintained app's Steam login
+				or confirmation features still work.
 			</p>
 
 			<h2>Related</h2>
@@ -425,8 +468,8 @@ export const importFromSda = {
 export const uninstall = {
 	slug: 'uninstall',
 	guide: true,
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	sourced: (s) =>
 		`Version covered: ODA ${s.version}. Installed and portable data roots checked against <a href="${s.repo}/blob/v${s.version}/src/main/index.ts" rel="noopener">the tagged application path setup</a>; vault and backup names against <a href="${s.repo}/blob/v${s.version}/src/main/vault/storage.ts" rel="noopener">storage</a>; recovery paths against <a href="${s.repo}/blob/v${s.version}/src/main/vault/recovery.ts" rel="noopener">recovery</a>; package behavior against <a href="${s.repo}/blob/v${s.version}/electron-builder.config.mjs" rel="noopener">the release configuration</a>`,
 	navTitle: 'Uninstall',
@@ -442,8 +485,8 @@ export const uninstall = {
 		step: [
 			{
 				'@type': 'HowToStep',
-				name: 'Detach the authenticator first',
-				text: 'Remove the authenticator from each Steam account, or make sure the revocation code for each is written down somewhere outside the vault.'
+				name: 'Preserve access before deleting data',
+				text: 'For each account, verify another working authenticator or a usable backup, or deliberately remove the authenticator through Steam. Keep the recovery code outside the vault.'
 			},
 			{
 				'@type': 'HowToStep',
@@ -471,15 +514,22 @@ export const uninstall = {
 				<p>
 					<strong>Uninstalling does not remove the authenticator from your Steam
 					account.</strong> Steam still expects codes from an authenticator this
-					application was generating. Delete the vault without dealing with that and
-					you are locked out of every account it held.
+					application was generating. Deleting your only usable copy can leave you
+					unable to sign in until you complete Steam's recovery process.
 				</p>
 				<p>Either, for each account:</p>
 				<ul>
 					<li>
-						<strong>Detach it in the application first</strong> — Remove account, which
-						can also deactivate the authenticator on Steam's side. Do this while the
-						vault still opens.
+						<strong>Verify access elsewhere</strong> — check another working copy of
+						the authenticator, or make and test a secure export or backup before
+						removing this one. Uninstalling ODA does not require disabling Steam Guard.
+					</li>
+					<li>
+						<strong>If you intend to deactivate it</strong>, use Remove account and
+						explicitly select <em>Also remove the authenticator from Steam</em>. Ordinary
+						removal only removes the vault entry. Deactivation needs the revocation
+						code and your passphrase; it can cause Steam trading restrictions. Read
+						<a href="/steam-guard-trade-holds">the consequences</a> first.
 					</li>
 					<li>
 						<strong>Or make sure you have the revocation code</strong> — the
@@ -491,7 +541,7 @@ export const uninstall = {
 					</li>
 				</ul>
 				<p>
-					If neither is true and the vault is already gone,
+					If you have no working copy or usable backup and the vault is already gone,
 					<a href="/lost-authenticator">the recovery routes are here</a>.
 				</p>
 			</div>
@@ -501,13 +551,14 @@ export const uninstall = {
 				<dt>Microsoft Store</dt>
 				<dd>
 					Start menu, right-click ${s.name}, Uninstall. Or Settings, Apps, Installed
-					apps. Windows removes the package completely.
+					apps. Back up your data first: package removal may also remove
+					Windows-managed package data.
 				</dd>
 				<dt>Windows installer (the <code>.exe</code> from GitHub)</dt>
 				<dd>
 					Settings, Apps, Installed apps, ${s.name}, Uninstall. The uninstaller
-					deliberately leaves your data behind — see below — because an uninstall that
-					destroys a vault is an uninstall that destroys accounts.
+					deliberately leaves your data behind so that removing the program does not
+					also remove your stored authenticator secrets.
 				</dd>
 				<dt>Windows portable</dt>
 				<dd>
@@ -519,7 +570,8 @@ export const uninstall = {
 					removes that runtime-only stage on exit.
 				</dd>
 				<dt>Linux AppImage</dt>
-				<dd>Delete the <code>.AppImage</code> file. Nothing else was installed.</dd>
+				<dd>Quit ODA and delete the <code>.AppImage</code> file. Remove any launcher or
+				shortcut you created, then deal with application data below.</dd>
 				<dt>Linux <code>.deb</code></dt>
 				<dd>
 					<code>sudo apt remove open-desktop-authenticator</code>, or
@@ -538,15 +590,24 @@ export const uninstall = {
 				what they receive.</a>
 			</p>
 			<dl class="facts">
-				<dt>Windows, installed</dt>
+				<dt>Windows, installed from GitHub</dt>
 				<dd><code>%APPDATA%\\open-desktop-authenticator</code></dd>
+				<dt>Microsoft Store</dt>
+				<dd>Windows may redirect the application's data into the package's private
+				storage under <code>%LOCALAPPDATA%\\Packages</code>. Check the ODA package's
+				<code>LocalCache\\Roaming\\open-desktop-authenticator</code> directory as
+				well as the installed path above. Locate and back up the actual vault before
+				uninstalling; do not delete other applications' package folders.
+				<a href="https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-behind-the-scenes" rel="noopener">Microsoft documents this possible AppData redirection</a>.</dd>
 				<dt>Windows, portable</dt>
 				<dd>
 					<code>open-desktop-authenticator</code>, in the same folder as the
 					<code>.exe</code>
 				</dd>
 				<dt>Linux</dt>
-				<dd><code>~/.config/open-desktop-authenticator</code></dd>
+				<dd><code>~/.config/open-desktop-authenticator</code> by default, or
+				<code>$XDG_CONFIG_HOME/open-desktop-authenticator</code> when that environment
+				variable overrides the configuration directory.</dd>
 			</dl>
 			<p>Inside it:</p>
 			<dl class="facts">
@@ -557,30 +618,37 @@ export const uninstall = {
 				</dd>
 				<dt><code>vault.json.bak</code></dt>
 				<dd>
-					The previous version, kept so an interrupted write cannot leave you with
-					nothing. Encrypted the same way, and <strong>just as usable to somebody who
+					The previous saved version, kept to help recover from a failed write.
+					Encrypted too, and <strong>just as usable to somebody who
 					has your passphrase</strong> — deleting only <code>vault.json</code> leaves
 					this behind.
 				</dd>
 				<dt><code>recovery/</code></dt>
 				<dd>
-					One <code>.oda-recovery</code> file per account enrolled here, holding the
-					revocation code for it. Encrypted under the same passphrase-derived key as
-					the vault, so they are not a way around a forgotten passphrase — but they
-					are secrets, and they are not covered by deleting the vault alone.
+					<code>.oda-recovery</code> files created for imported, enrolled or transferred
+					authenticators. They contain account secrets and any recovery code, not just
+					the recovery code. Each is encrypted using the vault key in force when that
+					file was written. Older copies may need an older passphrase, and a later
+					authenticator transfer can make an old file's secrets obsolete.
 				</dd>
+				<dt>Other application files</dt>
+				<dd>Interrupted-operation records, recovery staging files and Chromium data
+				can also live here. Remove the whole ODA data directory when you intend to
+				remove its local data, not only the three entries listed above.</dd>
 			</dl>
 
 			<h2>3. Remove the data</h2>
 			<p>
-				Delete that directory. There is no uninstaller step that does it for you and no
-				hidden second copy: when the directory is gone, everything this application
-				stored is gone.
+				Quit ODA completely, including its tray icon, then delete its data directory
+				if it remains after uninstalling. This removes that local copy. Check any
+				other installation or portable folder, exports and backups separately.
+				Files in the Recycle Bin, system backups or cloud-synced folders can remain
+				recoverable; ordinary deletion is not a secure-erasure guarantee.
 			</p>
 			<p>
-				It is encrypted at rest either way, so leaving it costs you nothing immediately —
-				but it is a file whose whole purpose is to be worth stealing, and there is no
-				reason to keep one for software you no longer run.
+				Vault and recovery contents are encrypted. Other application data is not
+				necessarily encrypted in the same way. Keep the encrypted backups you still
+				need for access, with their passphrases stored separately.
 			</p>
 			<p>
 				<strong>Exports you made are not in there.</strong> A <code>.maFile</code> you
@@ -594,7 +662,7 @@ export const uninstall = {
 				${s.name} is free software under the MIT licence — you may use, copy, modify and
 				redistribute it, and it comes with no warranty.
 				<a href="${s.repo}/blob/main/LICENSE" rel="noopener">Read the licence</a>. There
-				is no separate end-user agreement, no account, and nothing to cancel.
+				is no separate ODA end-user agreement or ODA account, and nothing to cancel.
 			</p>
 
 			<h2>Related</h2>
@@ -610,8 +678,8 @@ ${reviewAsk(s, { got: 'Did this cover what you needed to remove?' })}
 
 export const docs = {
 	slug: 'docs',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Docs',
 	title: 'Documentation: setup, codes, confirmations and backups',
 	description:
@@ -632,16 +700,19 @@ export const docs = {
 				<dt>Creating a vault</dt>
 				<dd>
 					On first run you choose a passphrase. It protects every secret the
-					application holds and it cannot be recovered — there is no reset, because a
-					reset would be a back door. Write it down before you continue past that
-					screen.
+					vault stores, and ODA cannot reset it. Use a strong, unique passphrase and
+					keep a secure record separately from your vault backup.
 				</dd>
 				<dt>Adding an authenticator</dt>
 				<dd>
-					For an account that does not have Steam Guard on a device yet. You sign in,
-					Steam emails a code, and the application attaches an authenticator and shows
-					your revocation code. Write that code down. The application will keep warning
-					you until you confirm you have.
+					Choose <strong>Add authenticator</strong> for an account without a mobile
+					authenticator. Sign in and complete Steam's sign-in challenge. Activation
+					then uses a separate code delivered by Steam; follow the screen's email or
+					phone-number hint. Record the revocation code outside this computer and
+					confirm the backup when asked. If an authenticator already exists, use
+					<a href="/move-steam-authenticator-to-pc">Move authenticator</a> instead of
+					removing it first. If an operation's outcome is uncertain, follow its
+					recovery instructions before attempting it again.
 				</dd>
 			</dl>
 
@@ -650,14 +721,16 @@ export const docs = {
 				<dt>Codes</dt>
 				<dd>
 					Each account shows its current code and how much of the thirty-second window
-					is left. Copy places it on the clipboard and clears it again shortly after,
-					so it does not sit there for the next thing that reads your clipboard.
+					is left. Copy places it on the clipboard; ODA attempts to clear its own
+					entry after 30 seconds by default, configurable in Settings. This does not
+					clear clipboard history, cloud sync or copies already read by other apps.
 				</dd>
 				<dt>Confirmations</dt>
 				<dd>
 					Trades and market listings awaiting approval, with what Steam said about
 					each: what is being traded, with whom, and when it was raised. Approve or
-					cancel individually.
+					cancel individually. Verify the recipient and items yourself before approving;
+					a familiar account name is not proof that the request is yours.
 				</dd>
 				<dt>Automatic confirmation</dt>
 				<dd>
@@ -665,6 +738,8 @@ export const docs = {
 					else — most importantly an account recovery request — is held back and
 					reported in Activity rather than approved. This limit is in the code, not in
 					a setting.
+					Automatic approval can still authorise an unwanted trade or sale. Leave it
+					off if you need to review each request.
 				</dd>
 				<dt>Activity</dt>
 				<dd>
@@ -685,15 +760,18 @@ export const docs = {
 				<dd>
 					The vault keeps the previous version of itself beside the current one. If the
 					vault file is damaged, the unlock screen offers to load that backup. Restoring
-					returns the vault to how it was when the backup was written: accounts added
-					since will be gone, and accounts removed since will come back.
+					returns local records to how they were when the backup was written. It does
+					not undo a Steam-side transfer or deactivation. The adjacent backup is also
+					lost if the disk fails or the whole data folder is deleted: keep a separate
+					encrypted copy and retain the passphrase that opens it.
 				</dd>
 				<dt>Recovery files</dt>
 				<dd>
-					Written automatically when an account is enrolled, and deliberately kept when
-					an account is removed — recovering from that removal is the reason they
-					exist. They are encrypted with the vault passphrase in force at the time they
-					were written.
+					Written automatically for imported, enrolled and transferred authenticators,
+					and kept when a vault entry is removed. Address any backup warning shown by
+					the application. A file needs the vault passphrase in force when it was
+					written; changing today's passphrase does not unlock an older copy with the
+					new one. A file cannot revive secrets Steam has replaced or deactivated.
 				</dd>
 			</dl>
 
@@ -701,10 +779,10 @@ export const docs = {
 			<dl class="defs">
 				<dt>Steam rejects the codes</dt>
 				<dd>
-					The device clock is Valve's first documented check. Codes are generated from the current time, so a
-					machine more than about half a minute out produces codes Steam will not
-					accept. The application checks its clock against Steam's and warns you when
-					it could not. <a href="/steam-guard-code-not-working">The full
+					Check the clock first. Codes depend on time, and clock drift can make them
+					invalid. ODA attempts to obtain Steam's time offset and shows time-sync
+					failures; do not infer Steam's acceptance tolerance from the 30-second code
+					period. <a href="/steam-guard-code-not-working">The full
 					walkthrough, including the fixes on Windows and phone, is here.</a>
 				</dd>
 				<dt>An imported account cannot confirm trades</dt>
@@ -712,12 +790,17 @@ export const docs = {
 					Its maFile may have an <code>identity_secret</code> whose value is present
 					but unusable; current imports flag this with a warning. Login codes may still
 					work when the <code>shared_secret</code> is usable, but confirmations cannot.
-					Re-import from a good copy, or re-enrol the account if none exists.
+					First check sign-in, connectivity and the account's configured proxy. If
+					the secret is unusable, re-import a known-good copy; if none exists, use
+					<a href="/lost-authenticator">Steam's recovery or transfer routes</a> before
+					considering removal and re-enrollment.
 				</dd>
 				<dt>Sign-in wants approval on another device</dt>
 				<dd>
 					Steam is asking for confirmation on the device that already holds the
-					authenticator. If that device is gone, the revocation code is the way through.
+					authenticator. Use its current code if the sign-in screen offers that route.
+					If the device is gone, <a href="/lost-authenticator">Steam's recovery flow</a>
+					may use your recovery code, linked phone number or proof of ownership.
 				</dd>
 			</dl>
 
@@ -768,7 +851,8 @@ export const docs = {
 export const faq = {
 	slug: 'faq',
 	parent: 'docs',
-	updated: '2026-08-25',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'FAQ',
 	title: 'FAQ: Steam Guard codes, maFiles and security',
 	description:
@@ -832,19 +916,19 @@ const FAQ_ITEMS = [
 	{
 		q: 'Is it free?',
 		plain:
-			'Yes. It is free and open source under the MIT licence. There is no paid tier, no account, and no telemetry.',
-		a: `<p>Yes. Free and open source under the <a href="${'https://github.com/opendesktopauthenticator/open-desktop-authenticator/blob/main/LICENSE'}" rel="noopener">MIT licence</a>. There is no paid tier, no account to create, and no telemetry. It is published by MASTERPANEL LLC as an open-source project.</p>`
+			'Yes. The application is free and open source under the MIT licence. There is no paid tier, ODA account or application telemetry. The website has analytics described in its privacy notice.',
+		a: `<p>Yes. The application is free and open source under the <a href="${'https://github.com/opendesktopauthenticator/open-desktop-authenticator/blob/main/LICENSE'}" rel="noopener">MIT licence</a>. There is no paid tier, ODA account or application telemetry. Steam operations still require your Steam account. This website uses analytics, as described in <a href="/privacy">its privacy notice</a>. MASTERPANEL LLC publishes ODA as an open-source project.</p>`
 	},
 	{
 		q: 'Can I use my existing SDA maFiles?',
 		plain:
-			'Yes. It imports .maFile accounts including encrypted ones, and exports them back out in the same format.',
-		a: `<p>Yes — including encrypted ones, provided you also supply <code>manifest.json</code>. It exports back to the same format too, so moving away later is a supported operation rather than a rescue mission. <a href="/import-from-sda">How importing works</a>.</p>`
+			'Yes. It imports .maFile accounts, including SDA-encrypted files with the matching manifest and passphrase. Exports are unencrypted .maFile files and omit Steam refresh tokens and proxy configuration.',
+		a: `<p>Yes — including SDA-encrypted files with the matching <code>manifest.json</code> and SDA passphrase. Exports are <strong>unencrypted</strong> maFiles and omit Steam refresh tokens and proxy configuration. Keep them secure, and sign in and set routing again in the destination app. <a href="/import-from-sda">How importing and exporting work</a>.</p>`
 	},
 	{
 		q: 'How do I know this is not itself a scam?',
 		plain: (s) =>
-			`Do not take our word for it. The source is public, the publisher is a registered company, and ${s.publication.github.latestVersion ?? s.publication.store.latestVersion} is publicly available — so the honest answer includes what is still not finished.`,
+			`The source and release ${s.publication.github.latestVersion ?? s.publication.store.latestVersion} are public. Check official distribution addresses and verify release signatures and provenance. Those checks establish origin, not that the software is harmless; no independent security audit is published.`,
 		/*
 		 * **Derived, because this paragraph made a promise it was breaking.**
 		 *
@@ -857,8 +941,8 @@ const FAQ_ITEMS = [
 		 */
 		a: (s) => {
 			const open = releaseGaps(s, 'sentence');
-			const enforcement = `<a href="/download">The download page tracks each of those</a>, and the site refuses to build if any page here claims one of them before it is true, or goes on saying it is missing after it is not.`;
-			return `<p>Do not take our word for it — that is the entire design. Here is what you can check <strong>today</strong>: the source is public and you can build and run it yourself; the publisher is a named, registered company you can look up; and the site tells you <a href="/verify">how to check any download</a>, ours or anyone else's.</p>
+			const enforcement = `<a href="/download">The download page tracks those limits</a>. Automated site checks catch specified contradictory claims, but do not establish that every sentence is correct.`;
+			return `<p>Start with <a href="/official">the official addresses</a>, the public source and <a href="/verify">the release verification steps</a>. The publisher identifies itself as MASTERPANEL LLC. A company name, public code or successful signature check is not a guarantee of harmless software: signatures establish origin, while review and testing assess behaviour.</p>
 			<p>${
 				open.length
 					? `And here is what is <strong>not</strong> finished, because a page that only lists the reassuring half is doing the thing it warns you about. ${open.join(' ')} ${enforcement}`
@@ -870,10 +954,10 @@ const FAQ_ITEMS = [
 	{
 		q: 'What happens if I lose my vault passphrase?',
 		plain:
-			'The vault cannot be opened. There is no reset and no recovery, because either would be a back door. The recovery files this application writes are encrypted under the same passphrase, so they do not help. What helps is the revocation code you wrote down outside the vault; without it, Steam Support is the remaining route.',
-		a: `<p>The vault cannot be opened. There is no reset, no master key and no support process that gets around it, because every one of those would be a back door into everyone else's vault too.</p>
-			<p><strong>The recovery files this application writes will not help either.</strong> They are encrypted under the same passphrase-derived key as the vault, so losing the passphrase locks them in exactly the same way. Anything still inside this application is gone with it.</p>
-			<p>What can still work is whatever you kept <em>outside</em> it: the revocation code for each account — the <code>R</code> code Valve now calls your recovery code, stored as <code>revocation_code</code> in a maFile — written down somewhere that is not the vault. With it you can detach the authenticator from Steam yourself. Without it, Steam Support is the remaining route, and they will want to verify the account. This is why the application insists you write that code down before it will call an account active.</p>`
+			'ODA cannot reset a lost vault passphrase. Recovery files need the passphrase used when written; an older known passphrase may open an older backup. Other working authenticator copies, secure exports, or Steam recovery through a recovery code, linked phone or Support may preserve account access.',
+		a: `<p>ODA has no passphrase reset or master key. You need the passphrase that encrypted the vault to open it.</p>
+			<p><strong>Recovery files are also encrypted.</strong> They need the passphrase in force when each was written. An older file may open with an older passphrase you still know, but it will only restore working access if Steam has not replaced or deactivated that authenticator.</p>
+			<p>Check for another working authenticator copy, a secure maFile export, or a usable independent backup. For Steam-side recovery, use the recovery code (the <code>revocation_code</code> field in a maFile) you stored outside the vault, your linked phone where Steam offers it, or Steam Support's ownership checks. <a href="/lost-authenticator">Follow the recovery guide</a>; losing the vault passphrase does not necessarily mean losing the Steam account.</p>`
 	},
 	{
 		q: 'Does it work without an internet connection?',
@@ -884,26 +968,26 @@ const FAQ_ITEMS = [
 		q: 'Is it affiliated with Valve or with SDA?',
 		plain:
 			'No. It is an independent open-source project, not affiliated with Valve Corporation or with the authors of Steam Desktop Authenticator.',
-		a: `<p>No. It is independent: not affiliated with, endorsed by or connected to Valve Corporation, and not connected to the authors of Steam Desktop Authenticator. It shares no code with SDA. It reads the same file format so that nobody is trapped by their choice of tool.</p>`
+		a: `<p>No. It is an independent project, not affiliated with or endorsed by Valve Corporation or the authors of Steam Desktop Authenticator. It supports SDA's maFile format for migration. Format compatibility is not an endorsement from SDA or Valve.</p>`
 	},
 	{
 		q: 'Will it steal my items while I am not looking?',
 		plain:
-			'Automatic confirmation is limited in code to market listings and trades, and cannot be widened by a setting. Account recovery confirmations are always held back and reported.',
-		a: `<p>Automatic confirmation is off unless you turn it on, is set per account, and can only ever act on market listings and trades. That limit is a fixed list in the source, not a preference — an account recovery confirmation is held back and reported to you no matter how the application is configured. <a href="/security">The security model explains why that distinction matters most.</a></p>`
+			'An authenticator that approves trades can authorise item transfers. ODA automatic confirmation is off by default and limited to trades and market listings; it can still approve an unwanted request of those types. Account-recovery confirmations are excluded from automatic approval.',
+		a: `<p>ODA holds secrets that can authorise trade and market confirmations, so it must be treated as sensitive software. <strong>Automatic confirmation can approve an unwanted trade or sale</strong> if the request appears on Steam. It is off by default and configured per account; only trades and market listings are allowed, while account-recovery requests are held back and reported.</p><p>That restriction does not make automatic trading safe on a compromised account. Leave automatic confirmation off when you need to check every recipient and item. <a href="/security">Read the security model and its limits</a>.</p>`
 	},
 	{
 		q: 'Which platforms does it run on?',
 		plain:
-			'Open Desktop Authenticator runs on Windows 10 and 11, and on Linux. Install it from the Microsoft Store or from the GitHub releases page.',
-		a: `<p>Windows 10 version 1809 or later, Windows 11, and Linux. macOS is deferred rather than planned, because we will not ship a macOS build we cannot sign. See <a href="/download">the download page</a> for the Store listing and the direct builds.</p>`
+			'Published builds target Windows 10 version 1809 or later and Windows 11 on x64 or ARM64, plus x64 Linux. The Store package and portable Windows build are x64; a native ARM64 installer is on GitHub. No macOS or Linux ARM64 build is published.',
+		a: `<p>Published builds target Windows 10 version 1809 or later, Windows 11, and x64 Linux. GitHub offers x64 and ARM64 Windows installers; the portable Windows build and the recorded Store package are x64. Linux downloads are an AppImage and a Debian/Ubuntu package. Distribution compatibility depends on system libraries; a Linux package is not a promise that every distribution is supported.</p><p>No macOS or Linux ARM64 build is published. The declared Windows minimum is a compatibility floor, not a statement that an old Windows release still receives security updates. See <a href="/download">the downloads and release limits</a>.</p>`
 	}
 ];
 
 export const support = {
 	slug: 'support',
-	updated: '2026-08-27',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Support',
 	// Reveals the attachment field and uploads the files. The form works without it.
 	script: 'support.js',
@@ -915,8 +999,8 @@ export const support = {
 			<h1>Report a problem</h1>
 			<p class="lede">
 				Bugs, documentation errors, and suspected clone sites. You do not need an
-				account to report something, and you will get a reference you can use to follow
-				it up.
+				account to report something. You receive a private report link: save the whole
+				link, including its key, to follow up.
 			</p>
 
 			<div class="callout callout-warn">
@@ -926,6 +1010,8 @@ export const support = {
 					revocation code, a password or an API key into this form or into any message
 					to us. Nobody here will ever ask for one. A report that needs to describe a
 					secret can describe its shape without its value.
+					For a vulnerability, use <a href="#security-reports">the private security
+					channels below</a> rather than this general report form.
 				</p>
 			</div>
 
@@ -943,7 +1029,6 @@ export const support = {
 						<option value="bug">A bug in the application</option>
 						<option value="documentation">Something on this site is wrong or missing</option>
 						<option value="clone-site">A suspected fake or clone download</option>
-						<option value="security">A security problem</option>
 						<option value="other">Something else</option>
 					</select>
 				</div>
@@ -1001,8 +1086,8 @@ export const support = {
 					<input id="contact" name="contact" type="text" maxlength="120"
 					       placeholder="An email address, or leave this blank">
 					<p class="hint">
-						No account is created either way. You get a reference you can use to check
-						back; leaving an address just means we can ask a follow-up question, which is
+						No account is created either way. Save your full private report link to check
+						back; leaving an address means we can ask a follow-up question, which is
 						often the difference between a fixed bug and a closed one.
 					</p>
 				</div>
@@ -1037,14 +1122,14 @@ export const support = {
 					is no account to recover it from.
 				</li>
 				<li>
-					<strong>It is read.</strong> Reports are triaged rather than queued: anything
+					<strong>Our triage policy:</strong> anything
 					describing lost access, lost items, or a secret behaving unexpectedly is
 					looked at ahead of everything else.
 				</li>
 				<li>
-					<strong>It gets an answer.</strong> Including "we are not going to change
-					this", with a reason. A tracker where reports quietly expire is a tracker
-					nobody reports to twice.
+					<strong>Our aim is to answer each report</strong>, including a reason if we
+					cannot make the requested change. General reports have no guaranteed response
+					time. Steam account recovery and item disputes must go through Steam Support.
 				</li>
 			</ol>
 
@@ -1064,22 +1149,21 @@ export const support = {
 			<h2 id="security-reports">Security reports</h2>
 			<p>
 				<strong>Do not open a public issue for a security problem.</strong> There are
-				two private routes, both live now:
+					two published private routes:
 			</p>
 			<ul class="plain next">
 				<li>
 					<strong><a href="https://github.com/opendesktopauthenticator/open-desktop-authenticator/security/advisories/new" rel="noopener">GitHub private vulnerability
-					reporting</a></strong> — preferred. It is private, it threads, and it does
-					not depend on an address staying monitored.
+					reporting</a></strong> — preferred. It keeps the discussion in a private
+					advisory rather than a public issue and requires a GitHub account. If it is
+					unavailable, use the email route.
 				</li>
 				<li>
 					<strong>By email</strong>, if you would rather not use GitHub. The address is
 					published in
 					<a href="/.well-known/security.txt">our security.txt</a>, which is the
-					standard place to look for it and the one place we keep it. It is
-					deliberately not printed on this page: an address in HTML is harvested within
-					days, and a security contact buried under spam is a security contact that
-					misses the report that mattered.
+					standard place to look for security contact information. The same address
+					is also in the repository's SECURITY.md.
 				</li>
 			</ul>
 			<p>

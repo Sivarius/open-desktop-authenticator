@@ -19,7 +19,7 @@
 
 export const codeSigningPolicy = {
 	slug: 'code-signing-policy',
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Code signing policy',
 	title: 'Code signing policy',
 	description:
@@ -40,7 +40,8 @@ export const codeSigningPolicy = {
 					<strong>The direct downloads are not code-signed, and no certificate is
 					planned.</strong> None of the builds on
 					<a href="${s.repo}/releases/latest" rel="noopener">the releases page</a> carry
-					a code-signing certificate, so Windows warns on first run.
+					a code-signing certificate. Windows may warn or block execution, depending on
+					its reputation checks and local policy.
 				</p>
 				<p>
 					We applied for the SignPath Foundation's free open-source signing service and
@@ -60,11 +61,10 @@ export const codeSigningPolicy = {
 					could display a verified publisher name instead of an unknown publisher. It
 					would not guarantee that SmartScreen stops warning.
 					<a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation" rel="noopener">Microsoft now documents</a>
-					that SmartScreen evaluates both the publisher identity and the individual file's
-					hash. Even a newly signed binary may be flagged as unrecognised until its file hash
-					or publisher certificate has accumulated sufficient positive reputation through
-					download history and clean behaviour; Extended Validation certificates no longer
-					bypass that process.
+					that unsigned, self-signed and newly signed files can receive reputation
+					warnings. Extended Validation certificates no longer bypass the reputation
+					process. Signing identifies a publisher and protects signed bytes; it is not
+					a guarantee of safe behavior.
 					So the honest answer is the one below: use the Store build if you want Microsoft's
 					signature, and verify the direct downloads by checksum and attestation.
 				</p>
@@ -80,10 +80,11 @@ export const codeSigningPolicy = {
 				conventional signature on the executable itself.
 			</p>
 			<p>
-				<strong>The Microsoft Store package is separate.</strong> Microsoft re-signs
-				what it distributes, so that build carries Microsoft's signature rather than
-				this one — <a href="/download">the download page</a> explains which channel
-				gives you which guarantee.
+				<strong>The Microsoft Store package is separate.</strong> Microsoft
+				<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">re-signs the MSIX/AppX package it distributes</a>.
+				Windows verifies that package during installation. This does not individually
+				code-sign every executable inside it. <a href="/download">The download page</a>
+				explains the two distribution channels.
 			</p>
 
 			<h2>Team roles</h2>
@@ -104,9 +105,11 @@ export const codeSigningPolicy = {
 				</dd>
 				<dt>Multi-factor authentication</dt>
 				<dd>
-					Required for every person in both roles on GitHub. It is the only thing
-					standing between a stolen password and a release going out over this
-					project's name, which is true whether or not anything is signed.
+					Our policy requires it for every person in both roles on GitHub. This is a
+					publisher policy statement: GitHub's private membership and account-security
+					settings are not public evidence that every account complies. MFA reduces
+					password-only compromise; stolen sessions, tokens and compromised workflows
+					remain risks that MFA alone does not remove.
 				</dd>
 			</dl>
 
@@ -115,7 +118,9 @@ export const codeSigningPolicy = {
 				No ODA backend. No ODA account. No cloud sync. No telemetry. User-requested
 				Steam operations contact Valve. In direct GitHub builds, the optional update
 				check contacts GitHub; Microsoft Store builds do not perform that check. The
-				user-driven browser contacts the sites the user chooses.
+				user-driven browser contacts the sites the user chooses and the third-party
+				resources those pages load. Visiting our site through that browser is also
+				covered by the website portion of the privacy policy.
 				<a href="/privacy">The full privacy policy is here</a>, and
 				<a href="/security">the security page</a> describes what the application stores
 				and where.
@@ -131,7 +136,7 @@ export const codeSigningPolicy = {
 				worth running whether or not a file is signed.
 			</p>
 			<p>
-				Genuine builds come from two places and no others, listed on
+				Our two official distribution channels are listed on
 				<a href="/official">our official domains page</a>.
 			</p>
 		</article>`

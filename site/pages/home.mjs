@@ -11,7 +11,8 @@ const downloadForSourceVersion = (site) => {
 
 export default {
 	slug: 'index',
-	updated: '2026-09-07',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	title: 'Open Desktop Authenticator — Steam Guard on your PC',
 	navTitle: 'Home',
 	description:
@@ -44,7 +45,7 @@ export default {
 				description: s.tagline,
 				sameAs: [s.repo, s.store.url],
 				applicationCategory: 'SecurityApplication',
-				operatingSystem: 'Windows 10, Windows 11, Linux',
+				operatingSystem: 'Windows 10 version 1809 or later, Windows 11, x64 Linux',
 				softwareVersion: s.version,
 				/*
 				 * **Omitted rather than guessed.** This was a single site-wide date
@@ -82,7 +83,7 @@ export default {
 				<strong>An open-source Steam authenticator for the desktop.</strong>
 				It generates Steam Guard codes on your computer, approves trades and
 				market listings, and imports the <code>.maFile</code> accounts you already
-				have — without ever asking you to take our word for anything.
+				have. The source and release-verification instructions are public.
 			</p>
 			<div class="hero-actions">
 				<a class="button" href="/steam-desktop-authenticator">What this replaces</a>
@@ -99,8 +100,8 @@ export default {
 					<span>No ODA backend. No cloud sync. No telemetry.</span>
 				</li>
 				<li>
-					<b>No self-update</b>
-					<span>It links to a new version. It never replaces itself.</span>
+					<b>Clear update routes</b>
+					<span>Manual updates for direct downloads; Store-managed updates for the Store edition.</span>
 				</li>
 				<li>
 					<b>${s.release.checksums && s.release.signed ? 'Verifiable builds' : 'Built to be verifiable'}</b>
@@ -143,21 +144,20 @@ export default {
 					}
 				</p>
 				<p>
-					<strong>Code signing policy:</strong> who may approve a release for signing,
-					and how to check one — <a href="/code-signing-policy">read it here</a>.
+					<strong>Code signing policy:</strong> Store package signing, unsigned direct
+					downloads and checksum-list signatures — <a href="/code-signing-policy">read it here</a>.
 				</p>
 			</div>
 
 			<h2>Why this exists</h2>
 			<p>
 				<a href="/steam-desktop-authenticator">Steam Desktop Authenticator</a> — SDA —
-				is the tool most traders have used for years to keep Steam Guard on a PC
-				instead of a phone. It works, and this project owes it the idea. But searching
-				for it is dangerous: the name outranks its own source, and a long tail of
-				lookalike sites offer "SDA download" builds that are simply account stealers.
-				A maFile contains the shared secret for your authenticator. Hand it to the
-				wrong binary once and the account is gone, along with everything in the
-				inventory.
+				brought Steam Guard to PCs and helped inspire this project. Its authors now
+				warn that it is unmaintained and unsafe to use. Counterfeit downloads are an
+				additional risk: malicious builds can copy the authenticator secrets inside a
+				maFile and put your account and inventory at risk. A familiar name, search
+				ranking or working code display does not establish that a download is genuine.
+				<a href="/scam-clones">Read the evidence and the checks to make</a>.
 			</p>
 			<p>
 				We think the answer is a tool where the dangerous parts are visible.
@@ -175,8 +175,9 @@ export default {
 					<h3>Steam Guard codes</h3>
 					<p>
 						The five-character code, regenerated every thirty seconds, with the time
-						remaining shown as it drains. Copy puts it on the clipboard and clears it
-						again on a timer.
+						remaining shown as it drains. Copy puts it on the clipboard and attempts
+						to clear that entry on a timer. Clipboard history and other apps' copies
+						are outside that clearing.
 					</p>
 				</section>
 				<section>
@@ -208,15 +209,17 @@ export default {
 					<p>
 						Move Steam Guard onto this app for an account that does not have an
 						authenticator yet, including the revocation code you must write down
-						before anything is activated.
+						and confirm you have saved outside this computer. Complete Steam's separate
+						activation challenge as shown by the app.
 					</p>
 				</section>
 				<section>
 					<h3>Recovery that exists in advance</h3>
 					<p>
-						A recovery file is written when an account is enrolled, not when you ask
-						for one, and it survives removing the account — because that is exactly
-						when people discover they need it.
+						Encrypted account recovery files are created during import, enrollment and
+						transfer, and retained after a vault entry is removed. They need the
+						passphrase used when written. Keep an independent backup: a file on the
+						same disk cannot protect you from losing that disk.
 					</p>
 				</section>
 			</div>
@@ -237,9 +240,10 @@ export default {
 					<a href="/security">The security model</a> sets out what each part can access.
 				</li>
 				<li>
-					<strong>It does not update itself.</strong> It will tell you a newer version
-					exists and link to it. An application that can silently replace its own
-					executable is the exact mechanism the clone sites rely on.
+					<strong>Direct downloads are updated manually.</strong> If enabled, the
+					GitHub update check reports a newer version and links to its release; it
+					does not download or install it. The Microsoft Store manages updates for
+					the Store edition, subject to your Store settings.
 				</li>
 				<li>
 					<strong>It never auto-confirms an account-recovery request.</strong> Automatic
