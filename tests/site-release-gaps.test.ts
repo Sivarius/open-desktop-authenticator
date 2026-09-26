@@ -138,6 +138,14 @@ describe('which gaps are still open', () => {
 		expect(open.join(' ')).not.toMatch(/signs the checksum list/i);
 	});
 
+	it('closes the Windows signing gap independently of checksum-list signing', () => {
+		const signedWindows = gaps({ ...NOTHING, codeSigned: true });
+		expect(signedWindows).toHaveLength(3);
+		expect(signedWindows.join(' ')).not.toMatch(/Windows direct downloads/i);
+		expect(signedWindows.join(' ')).toMatch(/nothing signs the checksum list/i);
+		expect(gaps({ ...NOTHING, signed: true, codeSigned: true })).toHaveLength(2);
+	});
+
 	/*
 	 * A signature over a list nobody publishes is not something to claim. This
 	 * is the one combination where the flag being true does *not* close the gap,
@@ -259,7 +267,9 @@ describe('the pages that carry the sentence', () => {
 				signed,
 				'the page goes on telling the reader nothing signs the checksum list after the flag says something does'
 			).not.toMatch(stale);
-			expect(signed, 'the sentence disappeared entirely').toMatch(/code-signing certificate/i);
+			expect(signed, 'the Windows signing gap disappeared before it was resolved').toMatch(
+				/Windows direct downloads/i
+			);
 		}
 	);
 
@@ -361,16 +371,12 @@ describe('the pages that carry the sentence', () => {
 		expect(page({ ...NOTHING, reproducible: true })).not.toMatch(/cannot be, yet/i);
 	});
 
-	/*
-	 * The FAQ is the one that promised the guarantee it was breaking: its last
-	 * sentence says the site refuses to build if a page goes on saying something
-	 * is missing after it is not, while the paragraph above it said exactly that
-	 * about the checksum signature. The promise has to survive the rewrite.
-	 */
-	it('keeps the FAQ’s enforcement promise, which is now true', () => {
+	// Mechanical publication checks catch their specified patterns, not every
+	// possible false sentence. Keep that boundary alongside the release gaps.
+	it('does not present automated site checks as a complete factual review', () => {
 		const text = words(pageBySlug('faq').body(site({ ...NOTHING, signed: true })));
-		expect(text).toMatch(/refuses to build/);
-		expect(text).toMatch(/goes on saying it is missing after it is not/);
+		expect(text).toMatch(/Automated site checks catch specified contradictory claims/);
+		expect(text).toMatch(/do not establish that every sentence is correct/);
 	});
 
 	/*
@@ -504,6 +510,13 @@ describe('the verify page and the signature that may not exist yet', () => {
 			'v1.5.0 stops claiming a signed checksum list. Its release carries SHA256SUMS.txt.sig ' +
 				'and SHA256SUMS.txt.pem, so saying otherwise hides a check a reader could make'
 		).toContain('signed: true,');
+		expect(entry('1.5.1')).toContain('signed: true,');
+
+		// Authenticode signatures were independently checked on the published
+		// v1.5.1 installer; older release assets were not replaced.
+		expect(entry('1.0.0')).toContain('codeSigned: false,');
+		expect(entry('1.5.0')).toContain('codeSigned: false,');
+		expect(entry('1.5.1')).toContain('codeSigned: true,');
 	});
 
 	it('prints the command once a signed release exists', () => {

@@ -1,0 +1,10 @@
+Official AlternativeTo "Listed on AlternativeTo" badge, downloaded 2026-09-26.
+Asset: https://alternativeto.net/static/badges/badge-compact-color.svg
+Embed instructions: https://alternativeto.net/badges/?app=open-desktop-authenticator
+
+AlternativeTo supplies this badge free to listed apps and permits hosting the
+image locally, provided the link continues to point to the app's listing:
+https://alternativeto.net/software/open-desktop-authenticator/about/
+
+The AlternativeTo logo remains the property of its owner. This badge identifies
+the listing; it does not represent a rating, endorsement or security audit.

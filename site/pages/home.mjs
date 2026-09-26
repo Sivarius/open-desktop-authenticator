@@ -11,7 +11,8 @@ const downloadForSourceVersion = (site) => {
 
 export default {
 	slug: 'index',
-	updated: '2026-09-07',
+	updated: '2026-09-26',
+	reviewed: '2026-09-26',
 	title: 'Open Desktop Authenticator — Steam Guard on your PC',
 	navTitle: 'Home',
 	description:
@@ -42,7 +43,7 @@ export default {
 				alternateName: 'ODA',
 				url: s.origin,
 				description: s.tagline,
-				sameAs: [s.repo, s.store.url],
+				sameAs: [s.repo, s.store.url, ...(s.alternativeTo ? [s.alternativeTo.url] : [])],
 				applicationCategory: 'SecurityApplication',
 				operatingSystem: 'Windows 10, Windows 11, Linux',
 				softwareVersion: s.version,
@@ -85,9 +86,18 @@ export default {
 				have — without ever asking you to take our word for anything.
 			</p>
 			<div class="hero-actions">
-				<a class="button" href="/steam-desktop-authenticator">What this replaces</a>
+				<a class="button" href="/download">Download ${s.publication.github.latestVersion}</a>
 				<a class="button button-quiet" href="/verify">How to verify a build</a>
 			</div>
+			${
+				s.release.codeSigned
+					? `<p class="release-highlight">
+				<strong>Signed Windows downloads are here.</strong>
+				GitHub ${s.publication.github.latestVersion} is signed by MASTERPANEL LLC using
+				Microsoft Azure Artifact Signing. <a href="/code-signing-policy">About the signatures</a>.
+			</p>`
+					: ''
+			}
 
 			<ul class="signals">
 				<li>
@@ -99,8 +109,8 @@ export default {
 					<span>No ODA backend. No cloud sync. No telemetry.</span>
 				</li>
 				<li>
-					<b>No self-update</b>
-					<span>It links to a new version. It never replaces itself.</span>
+					<b>Clear update routes</b>
+					<span>Manual updates for direct downloads; Store-managed updates for the Store edition.</span>
 				</li>
 				<li>
 					<b>${s.release.checksums && s.release.signed ? 'Verifiable builds' : 'Built to be verifiable'}</b>
@@ -108,7 +118,7 @@ export default {
 						${
 							s.release.checksums && s.release.signed
 								? 'Published checksums, a signature over that list, and provenance naming the workflow and commit that built it.'
-								: 'Public source, public CI, published checksums, and build provenance naming the workflow and commit that built it. The checksum list is not signed yet, and the binaries are not code-signed.'
+								: 'Public source, public CI, and build provenance naming the workflow and commit that built it. Check the verification guide for the signatures available in this release.'
 						}
 					</span>
 				</li>
@@ -122,7 +132,7 @@ export default {
 					s.publication.github.current && s.publication.store.current
 						? `${s.version}, in the Microsoft Store and on GitHub`
 						: s.publication.github.current
-							? `${s.version} is on GitHub; the Store update is pending`
+							? `${s.version} is on GitHub; the Store offers ${s.publication.store.latestVersion}`
 							: s.publication.store.current
 								? `${s.version} is in the Store; the GitHub release is pending`
 								: `${s.version} is the upcoming source version`
@@ -143,10 +153,25 @@ export default {
 					}
 				</p>
 				<p>
-					<strong>Code signing policy:</strong> who may approve a release for signing,
-					and how to check one — <a href="/code-signing-policy">read it here</a>.
+					<strong>Code signing policy:</strong> ${s.release.codeSigned ? 'signed Windows downloads, ' : ''}Store package signing,
+					Linux verification and checksum-list signatures — <a href="/code-signing-policy">read it here</a>.
 				</p>
 			</div>
+
+			${
+				s.alternativeTo
+					? `<section class="community-listing" aria-labelledby="community-listing-title">
+				<div>
+					<h2 id="community-listing-title">Find us on AlternativeTo</h2>
+					<p>Explore our listing, compare alternatives, and share your experience with ODA.</p>
+				</div>
+				<a href="${s.alternativeTo.url}?utm_source=badge&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">
+					<img src="${s.alternativeTo.badge}" alt="Open Desktop Authenticator — listed on AlternativeTo"
+						width="244" height="79" loading="lazy">
+				</a>
+			</section>`
+					: ''
+			}
 
 			<h2>Why this exists</h2>
 			<p>
@@ -237,9 +262,10 @@ export default {
 					<a href="/security">The security model</a> sets out what each part can access.
 				</li>
 				<li>
-					<strong>It does not update itself.</strong> It will tell you a newer version
-					exists and link to it. An application that can silently replace its own
-					executable is the exact mechanism the clone sites rely on.
+					<strong>Direct downloads are updated manually.</strong> If enabled, the
+					GitHub update check reports a newer version and links to its release; it
+					does not download or install it. The Microsoft Store manages updates for
+					the Store edition, subject to your Store settings.
 				</li>
 				<li>
 					<strong>It never auto-confirms an account-recovery request.</strong> Automatic

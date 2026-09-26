@@ -40,6 +40,7 @@ import {
 	featureAvailability,
 	FEATURE_INTRODUCED,
 	publicationState,
+	websiteVersion,
 	RELEASE_PUBLICATIONS
 } from './publication.mjs';
 
@@ -393,6 +394,12 @@ export const SITE = {
 		}
 	},
 
+	// Official image-and-link badge; hosted locally with AlternativeTo's permission.
+	alternativeTo: {
+		url: 'https://alternativeto.net/software/open-desktop-authenticator/about/',
+		badge: '/assets/alternativeto.svg'
+	},
+
 	/*
 	 * What the release pipeline can actually do today.
 	 *
@@ -412,7 +419,7 @@ export const SITE = {
 	 */
 	releaseByVersion: {
 		'1.0.0': {
-			/** A signed public build exists and can be downloaded. */
+			/** A public build exists and can be downloaded. */
 			published: true,
 			/** Artifacts are listed with SHA-256 checksums on the release page. */
 			checksums: true,
@@ -441,15 +448,7 @@ export const SITE = {
 			 * yes; signature, not yet" rather than going silent about both.
 			 */
 			signed: false,
-			/*
-			 * **The binaries are not code-signed**, and this is the flag that says
-			 * so. The Microsoft Store package carries Microsoft's signature because
-			 * Microsoft re-signs what it distributes; the `.exe`, `.AppImage` and
-			 * `.deb` on the release page carry none, so Windows warns on first run.
-			 * No certificate is planned: the SignPath Foundation declined, and a paid
-			 * one would not clear the Windows warning on its own anyway. See
-			 * /code-signing-policy, which exists and says the same thing.
-			 */
+			/** Windows direct downloads in this historical release are unsigned. */
 			codeSigned: false,
 			/*
 			 * **No `.asc`, and there never was one.** The signature is sigstore, not
@@ -495,9 +494,21 @@ export const SITE = {
 			checksums: true,
 			/** `.sig` and `.pem` are on the release page, not merely produced by CI. */
 			signed: true,
-			/** Unchanged, and not for want of trying: the SignPath application was declined. */
+			/** v1.5.0 assets remain unchanged and unsigned. */
 			codeSigned: false,
 			/** Still sigstore rather than GPG. No `.asc` exists. */
+			gpgSignature: false,
+			reproducible: false,
+			audited: false
+		},
+		// Checked against the published v1.5.1 assets on 2026-09-26, including
+		// a Valid Authenticode signature and timestamp on the downloaded x64 installer.
+		'1.5.1': {
+			published: true,
+			checksums: true,
+			signed: true,
+			// This flag describes Windows Authenticode only, not Linux package signing.
+			codeSigned: true,
 			gpgSignature: false,
 			reproducible: false,
 			audited: false
@@ -534,9 +545,12 @@ export const SITE = {
 		}
 	},
 
-	/** The release version, read from the package that is actually built. */
+	/** Keep published website facts current without relabelling this app checkout. */
 	get version() {
-		return JSON.parse(readFileSync(join(here, '..', 'package.json'), 'utf8')).version;
+		const sourceVersion = JSON.parse(
+			readFileSync(join(here, '..', 'package.json'), 'utf8')
+		).version;
+		return websiteVersion(sourceVersion, this.publicationRecords);
 	},
 
 	/** The company behind this, and the other things it runs. */
@@ -1278,6 +1292,7 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 - **Publisher:** ${SITE.publisher}, a Steam trading company — which is why it was written.
 - **Platforms:** ${platformSentence()}
 - **Install from:** Microsoft Store ${SITE.publication.store.latestVersion} (${SITE.store.url}) or GitHub ${SITE.publication.github.latestVersion} (${SITE.repo}/releases/tag/v${SITE.publication.github.latestVersion}).
+- **AlternativeTo listing:** ${SITE.alternativeTo.url}
 - **This website hosts no binaries** and never will; every download control links outward.
 - **Dependencies:** ${SITE.runtimeDependencies} direct, ${SITE.shippedPackages} shipped in total, plus the Electron runtime.
 
@@ -1306,7 +1321,9 @@ Steam secrets are encrypted at rest with scrypt and AES-256-GCM behind the user'
 
 ## How to check a download is genuine
 
-Every release publishes SHA-256 checksums${SITE.release.signed ? ', a signature over that checksum list' : ''}, and build provenance naming the workflow and the commit that produced the bytes. ${SITE.origin}/verify carries commands to copy for each platform.
+The recorded GitHub ${SITE.publication.github.latestVersion} release publishes SHA-256 checksums${SITE.release.signed ? ', a signature over that checksum list' : ''}, and build provenance naming the workflow and commit. These establish integrity and origin, not freedom from malicious code. ${SITE.origin}/verify carries the verification procedure.
+
+${SITE.release.codeSigned ? `The Windows downloads in GitHub ${SITE.publication.github.latestVersion} are Authenticode-signed and timestamped as MASTERPANEL LLC through Microsoft Azure Artifact Signing. Older v1.5.0 Windows downloads remain unsigned. Linux packages do not carry a platform code signature. SmartScreen may still warn about signed files. ${SITE.origin}/code-signing-policy explains each channel.` : ''}
 
 ${
 	releaseGaps(SITE).length

@@ -135,12 +135,12 @@ never have to think about.
   sigstore, and `SHA256SUMS.txt.sig` and `SHA256SUMS.txt.pem` are published
   beside it, so the list you check a download against can itself be checked.
   `/verify` gives the command.
-- **The direct downloads are not code-signed, and none is planned.** We applied
+- **The v1.5.0 direct downloads are not code-signed.** At the time, no certificate
+  was planned; that policy was superseded by v1.5.1. We applied
   to the SignPath Foundation for a free certificate during this cycle and were
-  declined, so the Windows and Linux files on the release page carry no
-  certificate and Windows warns on first run. Nothing on this project's pages
-  says otherwise any more. What replaces it is the chain that was always the
-  real answer: public source, a build produced by public CI from a named commit,
+  declined, so the Windows and Linux files published for v1.5.0 carry no
+  certificate and Windows warns on first run. Their verification chain is
+  public source, a build produced by public CI from a named commit,
   provenance attestations, and the signed checksum list above. The Microsoft
   Store package is a separate case — Microsoft re-signs it on ingestion, so
   SmartScreen does not warn on that channel.

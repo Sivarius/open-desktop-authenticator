@@ -5,7 +5,8 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-07',
+	updated: '2026-09-26',
+	reviewed: '2026-09-26',
 	navTitle: 'Download',
 	script: 'download.js',
 	title: 'Open Desktop Authenticator download and release status',
@@ -26,17 +27,33 @@ export const download = {
 				</p>
 
 				<div class="download-primary download-windows">
-					<p>
-						<a class="button" href="${s.store.url}" rel="noopener" data-got-it="the Store build">Get it from the Microsoft Store</a>
+					<div class="download-actions">
+						<a class="button" href="${s.store.url}" rel="noopener" data-got-it="the Store build">Microsoft Store ${s.publication.store.latestVersion}</a>
+						<a class="button button-quiet" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="the Windows GitHub build">${s.release.codeSigned ? 'Signed Windows' : 'Windows'} ${s.publication.github.latestVersion} on GitHub</a>
+					</div>
+					${
+						s.release.codeSigned
+							? `<p class="download-why">
+						<strong>GitHub ${s.publication.github.latestVersion} Windows downloads are signed by MASTERPANEL LLC</strong>
+						using Microsoft Azure Artifact Signing. Choose an x64, ARM64 or combined installer,
+						or the portable x64 build. <a href="/verify">Check the publisher signature</a>.
+					</p>`
+							: ''
+					}
+					<p class="download-why">
+						Microsoft signs ODA's Store AppX package and checks its integrity during
+						installation. This avoids the SmartScreen download warning associated with
+						direct downloads; it is not a guarantee that an application is safe.
+						Check that the listing names <strong>MASTERPANEL LLC</strong> as publisher.
+						Store updates can install automatically, subject to your Store settings.
+						<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">Microsoft's package-signing requirements</a> and
+						<a href="https://support.microsoft.com/en-us/windows/apps/turn-on-automatic-app-updates" rel="noopener">update settings</a> explain those checks.
 					</p>
 					<p class="download-why">
-						Microsoft re-signs every package it distributes, so Windows never warns,
-						updates arrive on their own, and there is nothing for you to check by
-						hand. On Windows this is the right answer for almost everybody.
-					</p>
-					<p class="download-why">
-						<strong>The current Store ${s.publication.store.latestVersion} package is
-						x64.</strong> Windows 11 on Arm can run it through Windows' x64 emulation.
+						<strong>The Store ${s.publication.store.latestVersion} package recorded in our
+						<a href="${s.repo}/blob/main/site/publication.mjs" rel="noopener">publication record</a> is
+						x64.</strong> Windows 11 on Arm supports
+						<a href="https://support.microsoft.com/en-us/surface/drivers-firmware/using-software-and-peripherals-on-surface-arm-based-devices" rel="noopener">x64 emulation</a>.
 						For a native ARM64 build, use the ARM64 installer on
 						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">the GitHub ${s.publication.github.latestVersion} release</a>;
 						the Store does not currently offer a native ARM64 ODA package.
@@ -48,30 +65,39 @@ export const download = {
 						<a class="button" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="the Linux build">Download ${s.publication.github.latestVersion} for Linux</a>
 					</p>
 					<p class="download-why">
-						An AppImage and a <code>.deb</code>, published on the releases page.
-						Nothing has checked these for you, so
-						<a href="/verify">verify them</a> — the checksums and the build
-						provenance attestation are both on that release.
+						An x64 AppImage and a Debian/Ubuntu <code>.deb</code>, published on the
+						releases page. There is no native Linux ARM64 package in this release.
+						<a href="/verify">Verify the downloaded file</a> using the checksums,
+						checksum-list signature and build provenance attestation.
 					</p>
 				</div>
 
 				<details class="download-alt">
-					<summary>Can't use the Store, or want to check the bytes yourself?</summary>
+					<summary>Portable builds and direct-download details</summary>
 					<p>
-						The same builds are on
+						Direct installation packages are on
 						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="a build from the release page">the GitHub ${s.publication.github.latestVersion} release page</a>,
 						including the portable build, which has no Store equivalent — its vault,
 						settings and recovery data stay beside the executable, so it can run from
 						a USB stick. The single-file launcher extracts Electron and Chromium runtime
-						files to Windows Temp while it runs and normally removes them on exit. Take this route
-						if the Store is missing from your Windows image, if the machine is locked
-						down, or if you would rather verify a download than be told it is fine.
+						files to Windows Temp while it runs and normally removes them on exit. Use this route
+						if the Store is unavailable or you need a portable build. An organisation's
+						device policy may still block an application; a portable build does
+						not bypass that policy.
 					</p>
 					<p>
-						<strong>These carry no code-signing certificate, and none is planned, so
-						Windows warns on first run.</strong> That warning is about a missing certificate, not about
-						the file being wrong — <a href="/verify">the verification steps</a> are
-						how you tell those two apart instead of guessing.
+						${
+							s.release.codeSigned
+								? `<strong>The direct Windows downloads are code-signed and timestamped as
+								MASTERPANEL LLC using Microsoft Azure Artifact Signing.</strong> Check for a
+								valid signature and that publisher name before running the file.`
+								: '<strong>This GitHub release has no publisher code signature on its Windows downloads.</strong>'
+						}
+						SmartScreen may still warn, and device policy may block a signed application.
+						An unrecognised-app warning and a malware detection are different findings;
+						a signature is not a reason to dismiss a security alert.
+						<a href="/verify">The verification steps</a> establish the published origin
+						of a file, not whether its code is harmless.
 					</p>
 				</details>
 			</div>
@@ -141,6 +167,14 @@ export const download = {
 				<li>The security posture described on the <a href="/security">security page</a>.</li>
 				<li>An automated test suite that runs on every change.</li>
 				${
+					s.release.codeSigned
+						? `<li>Windows installers and the portable executable signed and timestamped as
+					MASTERPANEL LLC using Microsoft Azure Artifact Signing. Linux packages use
+					the checksum-list signature and provenance checks below; they do not carry a
+					platform code signature. <a href="/code-signing-policy">Read the signing policy</a>.</li>`
+						: ''
+				}
+				${
 					/*
 					 * **The checksum-list signature is listed here, under the flag, rather
 					 * than as a fourth entry in "What is still missing" below.**
@@ -174,7 +208,7 @@ export const download = {
 					 */
 					s.release.signed
 						? `<li>
-					A signature over the checksum list: every release carries
+					A signature over the checksum list: the current GitHub release carries
 					<code>SHA256SUMS.txt.sig</code> and the certificate that goes with it, so
 					you can check that the list itself came from our workflow rather than only
 					that your download matches the list.
@@ -192,21 +226,15 @@ export const download = {
 			<h2>What is still missing</h2>
 			<p>Stated here rather than left for you to discover:</p>
 			<ul>
-				<li>
-					<strong>A code-signing certificate for the direct downloads.</strong> The
-					Store build is signed by Microsoft; the <code>.exe</code> and Linux builds on
-					GitHub are not, so Windows warns on first run. The checksums and the
-					provenance attestation are how you check them.
-					<br />
-					<strong>No certificate is planned.</strong> We applied to the SignPath
-					Foundation and were declined — their free-certificate programme asks for
-					public visibility a project this young does not have. Buying one would not
-					change what you see today either: since March 2024 no certificate, Extended
-					Validation included, clears the Windows warning on its own. So nothing you
-					download directly is signed by us, and we would rather say that than imply
-					it is coming. See
-					<a href="/code-signing-policy">our code signing policy</a>.
-				</li>
+				${
+					s.release.codeSigned
+						? ''
+						: `<li>
+					<strong>A code-signing certificate for this release's direct Windows downloads.</strong>
+					Use its published checksums and provenance. The Store AppX package has a separate
+					Microsoft signature. <a href="/code-signing-policy">Read the signing policy</a>.
+				</li>`
+				}
 				${
 					/*
 					 * Absent from this list entirely once the flag is true, because what it
@@ -768,7 +796,7 @@ export const docs = {
 export const faq = {
 	slug: 'faq',
 	parent: 'docs',
-	updated: '2026-08-25',
+	updated: '2026-09-26',
 	navTitle: 'FAQ',
 	title: 'FAQ: Steam Guard codes, maFiles and security',
 	description:
@@ -857,7 +885,7 @@ const FAQ_ITEMS = [
 		 */
 		a: (s) => {
 			const open = releaseGaps(s, 'sentence');
-			const enforcement = `<a href="/download">The download page tracks each of those</a>, and the site refuses to build if any page here claims one of them before it is true, or goes on saying it is missing after it is not.`;
+			const enforcement = `<a href="/download">The download page tracks those limits</a>. Automated site checks catch specified contradictory claims, but do not establish that every sentence is correct.`;
 			return `<p>Do not take our word for it — that is the entire design. Here is what you can check <strong>today</strong>: the source is public and you can build and run it yourself; the publisher is a named, registered company you can look up; and the site tells you <a href="/verify">how to check any download</a>, ours or anyone else's.</p>
 			<p>${
 				open.length

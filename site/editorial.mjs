@@ -62,8 +62,8 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'It links each official property directly, states which two can offer binaries, and tells readers to treat every unlisted address as unaffiliated and report it.'
 	),
 	'code-signing-policy': record(
-		'A precise distinction between Store signing, checksum-list signing, build provenance and unsigned direct executables.',
-		'It points to the public releases and repository, explains accountable release roles and MFA, and says plainly which assurances do not exist.'
+		'A precise distinction between Windows publisher signatures through Azure Artifact Signing, Store package signing, checksum-list signing and build provenance.',
+		'It points to the published v1.5.1 release, names MASTERPANEL LLC as signer, separates unsigned historical Windows releases and Linux packages, and explains accountable release roles and remaining limits.'
 	),
 	'what-is-a-mafile': record(
 		'A field-level explanation of why a maFile is the authenticator itself rather than an ordinary settings file.',
@@ -193,7 +193,7 @@ const PROOFS_BY_SLUG = {
 		'https://github.com/opendesktopauthenticator'
 	],
 	'code-signing-policy': [
-		'https://signpath.org/terms.html',
+		'https://learn.microsoft.com/en-us/azure/artifact-signing/overview',
 		'smartscreen-reputation',
 		'SHA256SUMS.txt'
 	],

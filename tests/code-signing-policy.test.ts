@@ -1,27 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 /**
- * **The page no longer claims a sponsor, and must not start again.**
- *
- * This file used to pin the strings the SignPath Foundation requires — chiefly
- * the attribution "Free code signing provided by SignPath.io, certificate by
- * SignPath Foundation", which their terms quote verbatim and which a paraphrase
- * would fail. The application was declined, so that sentence now names a sponsor
- * who is not sponsoring this project, and every claim that a certificate was
- * coming names a plan that does not exist.
- *
- * So the assertions are inverted. What is pinned now is that no page claims a
- * certificate, a sponsor or an application in progress, and that the pages still
- * say plainly that the direct downloads are unsigned. The page itself stays: who
- * approves a release, and how a stranger verifies one, never depended on the
- * certificate.
- *
- * The absence checks are deliberately about the *claim*, not the word. The
- * policy page still names SignPath once, in the paragraph explaining that the
- * application was declined — recording what happened is the opposite of
- * claiming it.
+ * Windows signing began with 1.5.1 through Microsoft Azure Artifact Signing.
+ * Public pages must preserve the separate meanings of Windows Authenticode,
+ * Store package signing and Sigstore release evidence, including older releases.
  */
 
 const root = join(__dirname, '..');
@@ -35,6 +19,43 @@ const BUILD = read('site', 'build.mjs');
 
 /** The sentence their terms require of a sponsored project. */
 const ATTRIBUTION = 'Free code signing provided by SignPath.io, certificate by SignPath Foundation';
+
+let pages: typeof import('../site/pages/index.mjs', { with: { 'resolution-mode': 'import' } });
+beforeAll(async () => {
+	pages = await import('../site/pages/index.mjs');
+});
+
+const rendered = (slug: string, codeSigned: boolean) => {
+	const page = pages.PAGES.find((candidate) => candidate.slug === slug);
+	if (!page) throw new Error(`Missing signing surface: ${slug}`);
+	const version = codeSigned ? '1.5.1' : '1.5.0';
+	return page
+		.body({
+			name: 'Open Desktop Authenticator',
+			version,
+			repo: 'https://github.com/opendesktopauthenticator/open-desktop-authenticator',
+			brand: { legal: 'MASTERPANEL LLC' },
+			store: { url: 'https://apps.microsoft.com/detail/9NMM2XJ6HZ1D' },
+			sda: {
+				notice: 'no longer supported',
+				authorsAdvice: 'use the official mobile app',
+				author: 'Jessecar96',
+				repo: 'https://github.com/Jessecar96/SteamDesktopAuthenticator'
+			},
+			reviews: {
+				profile: 'https://example.test/reviews',
+				write: 'https://example.test/review',
+				widget: { locale: 'en-US', templateId: 'template', businessUnitId: 'unit', token: 'token' }
+			},
+			publication: {
+				github: { current: true, latestVersion: version },
+				store: { current: !codeSigned, latestVersion: '1.5.0' }
+			},
+			release: { version, codeSigned, checksums: true, signed: true, published: true }
+		})
+		.replace(/<[^>]+>/g, ' ')
+		.replace(/\s+/g, ' ');
+};
 
 describe('the code signing policy page', () => {
 	it('no longer carries a sponsor attribution', () => {
@@ -88,19 +109,8 @@ describe('the code signing policy page', () => {
 });
 
 /**
- * **Nothing anywhere may say a certificate is coming.**
- *
- * The download page said "We are applying to the SignPath Foundation… once that
- * is granted" for as long as that was true, and it stopped being true the moment
- * the application was declined. The same sentence promised it would change when
- * the situation did; this is what holds it to that.
- *
- * **Every page, not a hand-picked few.** The first version of this listed four
- * constants and passed while five other surfaces still said "yet" — the download
- * page contradicted itself a hundred lines apart, `/verify` named a future
- * signer, and the release-notes template published on every GitHub release said
- * the same. A guard that only looks where you remembered to look is how that
- * happened, so this reads the whole directory.
+ * The old SignPath application must not reappear as a current pending service
+ * or a sponsor. Historical release notes remain descriptions of their release.
  */
 describe('what the project says about signing', () => {
 	const SURFACES: [string, string][] = [
@@ -132,9 +142,8 @@ describe('what the project says about signing', () => {
 	});
 
 	/*
-	 * "not signed yet" about the **checksum list** is deliberately not matched:
-	 * that gap is real and still pending. What must not survive is a claim about
-	 * a *code-signing certificate* arriving.
+	 * Checksum-list and historical signing gaps are independent of the obsolete
+	 * promise that the SignPath application will provide a future certificate.
 	 */
 	const PENDING =
 		/code[- ]signing certificate yet|certificate yet|are applying to|application is in progress|has not been granted|once (that|the certificate) is granted|until the SignPath|when signing exists|blocked on SignPath/i;
@@ -143,26 +152,41 @@ describe('what the project says about signing', () => {
 		const hit = PENDING.exec(source);
 		expect(
 			hit?.[0],
-			'this surface still tells the reader a code-signing certificate is on its way, which it ' +
-				'is not — the SignPath Foundation application was declined and none is planned'
+			'this surface still describes an obsolete pending code-signing application'
 		).toBeUndefined();
 	});
 
-	/*
-	 * And the honest statement is still there. Removing a false claim by deleting
-	 * the whole subject would leave a reader with no idea whether the file they
-	 * downloaded is signed, which is worse than the claim was.
-	 */
-	it('still tells the reader the direct downloads are unsigned', () => {
-		expect(POLICY).toMatch(/not code-signed|carry a code-signing certificate/i);
-		expect(DOWNLOAD).toMatch(/no code-signing certificate, and none is planned/i);
+	it.each(['code-signing-policy', 'download', 'verify'])(
+		'%s describes the signed Windows release without reviving the old no-signing stance',
+		(slug) => {
+			const body = rendered(slug, true);
+			expect(body).toContain('MASTERPANEL LLC');
+			expect(body).toContain('Microsoft Azure Artifact Signing');
+			expect(body).toContain('Linux packages');
+			expect(body).not.toMatch(/no certificate is|none is (?:currently )?planned|SignPath/i);
+		}
+	);
+
+	it('requires a valid signature and expected publisher for the signed Windows release', () => {
+		const signed = rendered('verify', true);
+		expect(signed).toMatch(/Status should read Valid/);
+		expect(signed).toMatch(/SignerCertificate should name MASTERPANEL LLC/);
+		expect(signed).toContain('TimeStamperCertificate');
+		expect(signed).toMatch(
+			/NotSigned\s*, or any result other than Valid means this check has not succeeded/
+		);
+		expect(signed).not.toMatch(/Status reads NotSigned for this release/);
+		expect(rendered('verify', false)).toMatch(/Status reads NotSigned for this release/);
 	});
 
-	it('says so on the verification page too, where the check comes back NotSigned', () => {
-		expect(read('site', 'pages', 'safety.mjs')).toMatch(/none is planned/i);
-	});
-
-	it('still derives that from the flag rather than prose alone', () => {
-		expect(BUILD).toMatch(/codeSigned:\s*false/);
+	it('moves Windows signing from missing to finished only for the signed release', () => {
+		const signed = rendered('download', true);
+		const unsigned = rendered('download', false);
+		expect(signed.split('What is finished')[1]?.split('What is still missing')[0]).toMatch(
+			/Windows installers and the portable executable signed and timestamped/
+		);
+		expect(signed.split('What is still missing')[1]).not.toContain('code-signing certificate');
+		expect(unsigned.split('What is still missing')[1]).toContain('code-signing certificate');
+		expect(unsigned).not.toContain('Microsoft Azure Artifact Signing');
 	});
 });

@@ -19,7 +19,7 @@
 
 export default {
 	slug: 'steam-inventory-stolen',
-	updated: '2026-09-08',
+	updated: '2026-09-26',
 	navTitle: 'Our story',
 	title: 'A fake SDA download emptied my Steam inventory',
 	description:
@@ -35,7 +35,7 @@ export default {
 		dateModified: s.updated,
 		mainEntityOfPage: `${s.origin}/steam-inventory-stolen`
 	}),
-	body: () => `
+	body: (s) => `
 		<article>
 			<h1>A fake SDA download emptied my Steam inventory</h1>
 
@@ -160,9 +160,15 @@ export default {
 				builds produced in public CI, and
 				<a href="/security">a security page that says what it cannot protect you from</a>.
 				Published checksums and build provenance ship with
-				each release. Reproducible builds do not yet, and the binaries themselves are
-				not code-signed —
-				<a href="/download">the download page says where each one stands</a>. It cannot update itself, because that is the same door left open.
+				each release. Reproducible builds do not yet.
+				${
+					s.release.codeSigned
+						? 'The direct Windows downloads are signed and timestamped as MASTERPANEL LLC using Microsoft Azure Artifact Signing.'
+						: 'This release has no publisher code signature on its direct Windows downloads.'
+				}
+				Linux packages use the checksum-list signature and provenance checks;
+				<a href="/download">the download page says where each one stands</a>. ODA has
+				no built-in updater; updates to the Store edition are managed by Microsoft Store.
 			</p>
 			<p>
 				If you use something else, use something else. Just

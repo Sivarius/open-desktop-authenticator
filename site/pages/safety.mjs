@@ -234,7 +234,7 @@ export const verify = {
 	slug: 'verify',
 	parent: 'download',
 	guide: true,
-	updated: '2026-09-08',
+	updated: '2026-09-26',
 	sourced: (s) =>
 		`Version covered: GitHub release ${s.publication.github.latestVersion}. Provenance command checked against <a href="https://cli.github.com/manual/gh_attestation_verify" rel="noopener">GitHub CLI's attestation verification reference</a>; checksum-list verification against <a href="https://docs.sigstore.dev/cosign/verifying/verify/" rel="noopener">Sigstore's Cosign documentation</a>`,
 	navTitle: 'Verify',
@@ -288,16 +288,16 @@ export const verify = {
 			<dl class="pairs">
 				<dt>From the Microsoft Store</dt>
 				<dd>
-					Windows verified the package before it installed anything, and it will keep
-					doing so on every update. <strong>There is nothing for you to check by
-					hand.</strong> The signature on a Store package is Microsoft's, not ours —
-					so if you inspect it you will see Microsoft named as the signer, and that is
-					correct rather than suspicious.
+					Use the ODA listing linked from <a href="/download">our download page</a>
+					and check its product and publisher. Windows verifies the Store package on
+					installation and update; no manual checksum step is needed. Microsoft
+					<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">re-signs the MSIX/AppX package it distributes</a>.
+					That package signature does not mean each executable inside is individually signed.
 				</dd>
 				<dt>From the GitHub release page</dt>
 				<dd>
-					Nothing has checked this file for you. The steps below are the whole of the
-					verification, and they are worth the minute they take.
+					Use the following checks before running it. Browser or antivirus scans,
+					if present, do not establish that it came from the intended release workflow.
 				</dd>
 			</dl>
 			<p>
@@ -430,31 +430,43 @@ export const verify = {
 			}
 
 			<h2>6. On Windows, check the publisher</h2>
-			<pre><code>Get-AuthenticodeSignature .\\&lt;file&gt;.exe | Format-List Status, SignerCertificate</code></pre>
+			<pre><code>Get-AuthenticodeSignature .\\&lt;file&gt;.exe | Format-List Status, SignerCertificate, TimeStamperCertificate</code></pre>
 			<p>
-				What you should see depends on where the file came from, and right now the
-				honest answer for direct downloads is uncomfortable:
+				Replace <code>&lt;file&gt;.exe</code> with the downloaded installer's or portable
+				file's name. What you should see depends on the release and distribution channel:
 			</p>
 			<dl class="pairs">
 				<dt>A Store install</dt>
 				<dd>
-					Signed, and the signer is Microsoft. Windows checked it before installing.
+				The Store package is signed and Windows checks it when installing. The
+				command above checks a standalone <code>.exe</code>, not its enclosing
+				MSIX/AppX package; an executable inside a signed package can report
+				<code>NotSigned</code> without contradicting the package signature.
 				</dd>
-				<dt>A download from the release page, today</dt>
+				<dt>A Windows download from GitHub ${s.publication.github.latestVersion}</dt>
 				<dd>
-					<strong><code>Status</code> will read <code>NotSigned</code>.</strong> These
-					builds carry no code-signing certificate, and none is planned, so Windows
-					will also warn on first run. That is expected and it is stated here rather
-					than left for you to discover — but it does mean this step cannot tell you
-					anything about our direct downloads, and steps 3 and 4 are doing all the
-					work. The Store build is the one that carries a signature, and there the
-					signer is Microsoft.
+					${
+						s.release.codeSigned
+							? `<strong><code>Status</code> should read <code>Valid</code>, and
+							<code>SignerCertificate</code> should name <code>MASTERPANEL LLC</code>.</strong>
+							The Windows installers and portable executable are Authenticode signed and
+							timestamped through Microsoft Azure Artifact Signing. Check that a
+							<code>TimeStamperCertificate</code> is present too. An unexpected publisher,
+							<code>NotSigned</code>, or any result other than <code>Valid</code> means this
+							check has not succeeded; stop and investigate before running the file.`
+							: `<strong><code>Status</code> reads <code>NotSigned</code> for this release's
+							Windows files.</strong> It predates Windows publisher signing. This step
+							cannot establish their origin; use the checksums and provenance for that release.`
+					}
 				</dd>
 			</dl>
 			<p>
-				A build signed by a name you do not recognise is the one result that should stop
-				you outright. "Unsigned" is what our direct downloads are and will stay;
-				"signed by someone else" means the file is not from us at all.
+				Windows signing began with 1.5.1; the older 1.5.0 direct Windows downloads remain
+				unsigned. Linux packages have no Windows Authenticode signature and use the
+				checksum-list signature and provenance checks above. Signing does not guarantee
+				that SmartScreen will stop warning or that a program is harmless. Use the release's
+				stated signing status and the preceding checks together. Any checksum or provenance
+				failure is a reason to stop and investigate.
 			</p>
 
 			<h2>Going further: build it yourself</h2>
@@ -485,7 +497,7 @@ ${reviewAsk(s, { got: 'Did these steps help you check a download?' })}
 
 export const security = {
 	slug: 'security',
-	updated: '2026-09-08',
+	updated: '2026-09-26',
 	navTitle: 'Security',
 	title: 'Security model: how your Steam secrets are stored',
 	description: (s) =>

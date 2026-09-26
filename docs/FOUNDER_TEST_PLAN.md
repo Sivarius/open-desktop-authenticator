@@ -768,7 +768,11 @@ that closed are the ones a reader would otherwise assume are still open.
 - Sign-off on the IPC channel table (§24.3).
 - The scrypt work factor benchmarked on your slowest target machine (Q6).
 
-**Accepted distribution limit, not pending work:** the direct Windows downloads
-are not conventionally code-signed, and no certificate is planned. The Store
-package is signed by Microsoft; GitHub downloads instead carry hashes, a
-sigstore signature over the checksum list and build-provenance attestations.
+**Distribution update — 2026-09-26:** GitHub v1.5.1 Windows downloads are
+Authenticode-signed and timestamped as MASTERPANEL LLC through Microsoft Azure
+Artifact Signing. The earlier v1.5.0 Windows files remain unsigned. The Store
+package is signed separately by Microsoft; the GitHub release does not update
+that channel. Linux packages do not carry a platform code signature. GitHub
+downloads also carry hashes, a Sigstore signature over the checksum list and
+build-provenance attestations. Signing does not guarantee that SmartScreen will
+stop warning, and it does not complete the manual runtime checks listed above.

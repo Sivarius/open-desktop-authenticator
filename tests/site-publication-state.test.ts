@@ -54,7 +54,8 @@ type Publications = {
 };
 
 function siteFor(records: Publications, sourceVersion = VERSION) {
-	const publication = publicationApi.publicationState(sourceVersion, records);
+	const version = publicationApi.websiteVersion(sourceVersion, records);
+	const publication = publicationApi.publicationState(version, records);
 	const features = {
 		browser: publicationApi.featureAvailability(
 			publication,
@@ -76,7 +77,7 @@ function siteFor(records: Publications, sourceVersion = VERSION) {
 		audited: false
 	};
 	return {
-		version: sourceVersion,
+		version,
 		name: 'Open Desktop Authenticator',
 		short: 'ODA',
 		tagline: 'Authenticator',
@@ -88,7 +89,7 @@ function siteFor(records: Publications, sourceVersion = VERSION) {
 		publication,
 		features,
 		release,
-		released: records.github[sourceVersion]?.publishedOn,
+		released: records.github[version]?.publishedOn,
 		releasedOn: 'August 25, 2026',
 		organizationId: 'https://example.test/#organization',
 		websiteId: 'https://example.test/#website',
@@ -152,7 +153,7 @@ const CASES = [
 			github: { ...oldGitHub, [VERSION]: { publishedOn: DATE } },
 			store: oldStore
 		},
-		heading: '1.5.0 is on GitHub; the Store update is pending',
+		heading: '1.5.0 is on GitHub; the Store offers 1.0.0',
 		github: VERSION,
 		date: DATE,
 		downloadChannel: 'github',
@@ -277,62 +278,70 @@ describe('per-channel publication output', () => {
 		expect(storeOnly).not.toContain('1.5.0 is published on GitHub');
 	});
 
-	/*
-	 * **This pinned the state before 1.5.0 was published, and that state is over.**
-	 *
-	 * It asserted that neither channel carried the checked-in version, that the
-	 * summary called it an "upcoming source version", and that the structured data
-	 * offered no `datePublished` and no `downloadUrl`. All of that was right while
-	 * `RELEASE_PUBLICATIONS` held only 1.0.0 — and updating it was the whole point
-	 * of the marker, so the test had to move with it rather than be deleted.
-	 *
-	 * What it protects is unchanged and is the reason the markers exist at all: the
-	 * site describes what a channel *serves*, never what the repository happens to
-	 * have built. GitHub and the Store now both carry 1.5.0 and say so, but the two
-	 * markers are still asserted separately — because building an AppX does not
-	 * prove that Partner Center has made it public.
-	 */
-	it('keeps the verified 1.5.0 publication evidence separate from a newer source version', () => {
-		const site = siteFor(publicationApi.RELEASE_PUBLICATIONS);
+	// Website publication records can advance before this checkout's app source.
+	// A GitHub release must not also advance the independently checked Store marker.
+	it('describes GitHub 1.5.1 and Store 1.5.0 independently of the app source version', () => {
+		const { version: sourceVersion } = JSON.parse(
+			readFileSync(join(__dirname, '..', 'package.json'), 'utf8')
+		) as { version: string };
+		const site = siteFor(publicationApi.RELEASE_PUBLICATIONS, sourceVersion);
+		expect(site.version).toBe('1.5.1');
 
 		expect(
 			site.publication.github.current,
-			'the GitHub release of the checked-in version is recorded, so the site should say so'
+			'the website must describe the verified published GitHub release'
 		).toBe(true);
 		expect(
 			site.publication.store.current,
 			'the Store marker moves only after the public Microsoft catalog serves the version'
-		).toBe(true);
+		).toBe(false);
+		expect(site.publication.github.latestVersion).toBe('1.5.1');
+		expect(site.publication.github.latest).toMatchObject({
+			publishedOn: '2026-09-26',
+			architectures: ['x64', 'arm64']
+		});
 		expect(site.publication.store.latestVersion).toBe(VERSION);
 		expect(site.publication.store.latest).toMatchObject({
 			verifiedOn: '2026-09-06',
 			architectures: ['x64']
 		});
-		expect(text(download.body(site))).toContain('The current Store 1.5.0 package is x64.');
+		expect(text(download.body(site))).toMatch(
+			/Store 1\.5\.0 package recorded in our publication record is x64/
+		);
 		expect(text(download.body(site))).toContain(
 			'the Store does not currently offer a native ARM64 ODA package'
 		);
 
 		const software = softwareFor(site);
-		expect(software.softwareVersion).toBe(VERSION);
-		expect(
-			software,
-			'a published release should carry its date in the structured data search engines read'
-		).toHaveProperty('datePublished');
-		expect(software.datePublished).toBe('2026-09-06');
-		expect(software).toHaveProperty('downloadUrl');
+		expect(software.softwareVersion).toBe('1.5.1');
+		expect(software.datePublished).toBe('2026-09-26');
+		expect(software.downloadUrl).toBe(`${site.repo}/releases/tag/v1.5.1`);
+		expect(text(home.body(site))).toContain('1.5.1 is on GitHub; the Store offers 1.5.0');
+		expect(text(home.body(site))).not.toContain('the Store update is pending');
+		expect(verify.body(site)).toContain('open-desktop-authenticator-1.5.1-x64-setup.exe');
+		expect(verify.body(site)).not.toContain('open-desktop-authenticator-1.5.0-');
 	});
 
-	it('does not turn the 1.5.1 source bump into a publication claim', () => {
-		const { version } = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8')) as {
-			version: string;
-		};
-		expect(version).toBe('1.5.1');
-		const actual = publicationApi.publicationState(version);
-		expect(actual.github.current).toBe(false);
-		expect(actual.store.current).toBe(false);
-		expect(actual.github.latestVersion).toBe('1.5.0');
-		expect(actual.store.latestVersion).toBe('1.5.0');
+	it('advances an older website checkout to a verified release from either channel', () => {
+		const github = siteFor(
+			{ github: { '1.5.1': { publishedOn: '2026-09-26' } }, store: { [VERSION]: {} } },
+			VERSION
+		);
+		expect(github.version).toBe('1.5.1');
+		expect(softwareFor(github).downloadUrl).toBe(`${github.repo}/releases/tag/v1.5.1`);
+
+		const store = siteFor({ github: oldGitHub, store: { '1.5.1': {} } }, VERSION);
+		expect(store.version).toBe('1.5.1');
+		expect(store.publication.github.current).toBe(false);
+		expect(softwareFor(store).downloadUrl).toBe(store.store.url);
+		expect(softwareFor(store).datePublished).toBeUndefined();
+	});
+
+	it('compares published versions numerically and preserves a newer upcoming source version', () => {
+		const records = { github: { '1.9.0': {}, '1.10.0': {} }, store: oldStore };
+		expect(publicationApi.websiteVersion('1.5.0', records)).toBe('1.10.0');
+		expect(publicationApi.websiteVersion('2.0.0', records)).toBe('2.0.0');
+		expect(publicationApi.websiteVersion(VERSION, { github: {}, store: {} })).toBe(VERSION);
 	});
 
 	it('wires the same browser availability into generated llms.txt facts and security copy', () => {
