@@ -12,12 +12,15 @@ $version = (Get-Content -LiteralPath package.json -Raw | ConvertFrom-Json).versi
 $expected = @(
     "open-desktop-authenticator-$version-x64-setup.exe",
     "open-desktop-authenticator-$version-arm64-setup.exe",
-    "open-desktop-authenticator-$version-universal-setup.exe",
+    # NSIS passes a null architecture for the combined installer; builder
+    # removes the -${arch} macro rather than spelling it as -universal.
+    "open-desktop-authenticator-$version-setup.exe",
     "open-desktop-authenticator-$version-portable.exe"
 )
 $artifacts = @(Get-ChildItem -LiteralPath $ReleaseDirectory -File -Filter '*.exe')
-if (@(Compare-Object ($artifacts.Name | Sort-Object) ($expected | Sort-Object)).Count -ne 0) {
-    throw 'Windows release artifacts do not match the expected x64, arm64, universal, and portable builds.'
+$actual = @($artifacts | ForEach-Object { $_.Name } | Sort-Object)
+if ($actual.Count -ne $expected.Count -or @(Compare-Object $actual ($expected | Sort-Object)).Count -ne 0) {
+    throw "Windows release artifacts do not match the expected x64, arm64, universal, and portable builds. Expected: $($expected -join ', '). Actual: $($actual -join ', ')."
 }
 $inner = @(
     (Join-Path $ReleaseDirectory 'win-unpacked/Open Desktop Authenticator.exe'),
