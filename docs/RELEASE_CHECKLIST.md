@@ -177,7 +177,13 @@ The trust story is only real if it works for someone who does not trust us.
 
 - [ ] Release notes include: changes, hashes, verification links, and any
       dependency-advisory justifications.
-- [ ] Draft reviewed by a human, then published.
+- [ ] Every intended asset is attached to the draft and verified before
+      publication, including binaries, SBOM, checksums, and checksum signatures.
+- [ ] Draft reviewed by a human, then published. New releases become immutable
+      on publication: assets cannot be replaced or removed, and the associated
+      tag cannot be moved. Corrected binaries require a new version and tag;
+      the release title and notes remain editable. See
+      [GitHub's immutable release guidance](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases).
 - [ ] **GitHub marker, independently:** open the public release page in a logged-out
       browser, confirm the exact version, date, checksums, signature and artifacts
       that are actually listed, then add that version under `github` in
@@ -284,6 +290,8 @@ which currently say macOS is not supported — and are correct until this is don
 ## After publishing
 
 - [ ] Install the published artifact on a clean machine and unlock a vault. If
-      this fails, pull the release.
+      this fails, withdraw the affected release and explain the problem publicly.
+      Deleting an immutable release does not make its tag name reusable; publish
+      any corrected build under a new version and tag.
 - [ ] Canaries green against the new version.
 - [ ] Watch issues for 24 hours before moving on.
