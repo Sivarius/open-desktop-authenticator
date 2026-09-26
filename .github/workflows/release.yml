@@ -112,6 +112,8 @@ jobs:
   version:
     name: tag matches package.json
     runs-on: ubuntu-latest
+    outputs:
+      windows-signing-ready: ${{ steps.windows-signing.outputs.ready }}
     steps:
       - name: Validate the release ref
         env:
@@ -172,6 +174,12 @@ jobs:
             exit 1
           fi
 
+      - name: Snapshot Windows signing readiness
+        id: windows-signing
+        env:
+          WINDOWS_SIGNING_READY: ${{ vars.WINDOWS_SIGNING_READY }}
+        run: node .github/scripts/windows-signing.mjs --readiness >> "$GITHUB_OUTPUT"
+
       # The checklist's other gate — `hasUnresolvedBranding()` returning false —
       # is not repeated here. `tests/branding.test.ts` already asserts it, and
       # the verify job runs the suite against this same tag, so a placeholder
@@ -196,6 +204,18 @@ jobs:
   # directory the release publishes from. See `pattern: package-*` below, which
   # is what enforces the second half.
   # ---------------------------------------------------------------------------
+  # Only the Windows reusable workflow can enter the signing environment.
+  # Its unsigned job explicitly drops OIDC permission; Linux/macOS never get it.
+  package-windows:
+    needs: [verify, version]
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/package-windows.yml
+    with:
+      ref: ${{ inputs.tag || github.ref }}
+      signing: ${{ needs.version.outputs.windows-signing-ready == 'true' }}
+
   package:
     name: package (${{ matrix.os }})
     needs: [verify, version]
@@ -216,15 +236,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # **Architectures are named here, not left to the config.** Passing
-          # targets on the command line overrides `win.target` in
-          # electron-builder.config.mjs entirely, including its `arch` array —
-          # so the config declared `['x64', 'arm64']` while every release built
-          # x64 only, and no arm64 installer has ever existed. The config was
-          # not wrong and the workflow was not wrong; they simply disagreed, and
-          # nothing compared them. `tests/release-assets.test.ts` now does.
-          - os: windows-latest
-            targets: --win nsis:x64 nsis:arm64 portable:x64
+          # CLI target lists override configured architectures. The Windows
+          # action and this matrix explicitly name their intended architectures;
+          # tests/release-assets.test.ts compares both with the builder config.
           - os: ubuntu-latest
             targets: --linux AppImage deb
           # macOS builds on every release, signed or not. Unsigned it is not
@@ -375,16 +389,6 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: ${{ (runner.os == 'macOS' && vars.MACOS_SIGNING_READY == 'true') && 'true' || 'false' }}
         run: npm run build && npx electron-builder --config electron-builder.config.mjs ${{ matrix.targets }} --publish never
 
-      - name: Verify the packaged portable runtime contract
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $portable = @(Get-ChildItem -LiteralPath release -File -Filter '*-portable.exe')
-          if ($portable.Count -ne 1) {
-            throw "Expected exactly one packaged portable executable, found $($portable.Count)."
-          }
-          ./.github/scripts/verify-portable-runtime.ps1 -PortablePath $portable[0].FullName
-
       - name: Verify the first-party licence in every packaged application archive
         run: node .github/scripts/verify-packaged-license.mjs --tree release
 
@@ -396,65 +400,6 @@ jobs:
         if: always() && runner.os == 'macOS'
         shell: bash
         run: rm -f "$RUNNER_TEMP/apple-api-key.p8"
-
-      # The Store package, built separately and **not published as a release
-      # asset**.
-      #
-      # It is not a file anyone downloads: an appx built for the Store is
-      # deliberately unsigned, because Microsoft re-signs it on ingestion, so a
-      # visitor who downloaded it could not install it. It goes to Partner
-      # Center by hand. Building it here anyway is what proves the Store
-      # identity still matches — a mismatch is rejected at upload, which is a
-      # slow and confusing place to learn about it.
-      #
-      # `continue-on-error`, because the direct-download channel must not stop
-      # shipping over a Store tool. The step's own conclusion still shows.
-      - name: Package for the Store
-        id: store_package
-        if: runner.os == 'Windows'
-        continue-on-error: true
-        # Partner Center accepts one package per architecture in the same
-        # submission. Naming both here is deliberate: a bare `appx` follows the
-        # x64 runner and silently leaves Windows 10 on Arm without a compatible
-        # Store package. electron-builder gives the non-default package an
-        # `arm64` suffix, so the two artifacts cannot overwrite each other.
-        run: npx electron-builder --config electron-builder.config.mjs --win appx:x64 appx:arm64 --publish never
-
-      # A toast can be displayed without either activation declaration, so a
-      # successful AppX build alone does not prove that clicking its Action
-      # Center history can launch the application. Inspect the manifest that is
-      # actually inside the package, including the executable and fixed CLSID.
-      - name: Verify Store notification activation
-        id: store_manifest
-        if: runner.os == 'Windows' && steps.store_package.outcome == 'success'
-        continue-on-error: true
-        shell: pwsh
-        run: ./.github/scripts/verify-appx-toast-manifest.ps1
-
-      - name: Verify the first-party licence in the Store package
-        id: store_license
-        if: runner.os == 'Windows' && steps.store_manifest.outcome == 'success'
-        continue-on-error: true
-        shell: pwsh
-        run: ./.github/scripts/verify-appx-license.ps1
-
-      - name: Collect the Store package
-        if: runner.os == 'Windows' && steps.store_license.outcome == 'success'
-        continue-on-error: true
-        shell: bash
-        run: |
-          mkdir -p dist-store
-          find release -maxdepth 1 -type f -name '*.appx' -exec cp {} dist-store/ \;
-          ls -l dist-store || true
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: runner.os == 'Windows' && steps.store_license.outcome == 'success'
-        continue-on-error: true
-        with:
-          name: store-package
-          path: dist-store/
-          if-no-files-found: warn
-          retention-days: 7
 
       # Installers and archives only. `release/` also holds the unpacked tree,
       # the block maps and builder metadata, none of which anybody should
@@ -506,7 +451,7 @@ jobs:
   # ---------------------------------------------------------------------------
   publish:
     name: publish draft release
-    needs: package
+    needs: [package, package-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write # create the release
@@ -813,11 +758,8 @@ jobs:
             --certificate-identity "$identity" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
 
-      # Proof of *where* the bytes came from: which workflow, which commit,
-      # which runner. This is the closest thing to a signature the direct
-      # download channel has, there being no code-signing certificate, and unlike a
-      # certificate it says something a certificate cannot — that these bytes
-      # were produced by this public workflow from this tag.
+      # Provenance complements platform signatures: which workflow, commit, and
+      # runner produced the final bytes (after any platform code signing).
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -827,13 +769,12 @@ jobs:
             staging/*.deb
             staging/*.dmg
 
-      # The direct Windows/Linux channel is deliberately unsigned. A macOS DMG
-      # is published only when the readiness gate made it signed and notarised,
-      # so one blanket sentence about "the files" becomes false at that point.
-      # Generate the copy from the same switch that names the macOS artifact.
+      # Describe only this run's verified Windows outputs, not a later change
+      # to a repository variable or a claim about older published downloads.
       - name: Generate draft release notes
         env:
           MACOS_SIGNING_READY: ${{ vars.MACOS_SIGNING_READY }}
+          WINDOWS_SIGNED: ${{ needs.package-windows.outputs.signed }}
           TAG: ${{ inputs.tag || github.ref_name }}
         shell: bash
         run: |
@@ -841,14 +782,18 @@ jobs:
           const mac = process.env.MACOS_SIGNING_READY === 'true'
             ? '**The published macOS DMGs are Developer ID-signed and notarized by Apple.** Gatekeeper can verify their Developer ID and notarization ticket.'
             : '**No macOS DMG is included in this release.** The continuously tested unsigned macOS build stays inside CI until signing and notarization are ready.';
+          const windows = process.env.WINDOWS_SIGNED === 'true'
+            ? '**Windows direct downloads in this release are Authenticode-signed by MASTERPANEL LLC and timestamped.** Signing identifies the publisher; SmartScreen may still warn while a download builds reputation.'
+            : '**Windows direct downloads in this release are unsigned.** Windows may warn on first run. Check the hashes and provenance before installing.';
           const identity = 'https://github.com/' + process.env.GITHUB_REPOSITORY + '/.github/workflows/release.yml@refs/tags/' + process.env.TAG;
           const fence = String.fromCharCode(96).repeat(3);
           const slash = String.fromCharCode(92);
           const code = (language, command) => '\n\n' + fence + language + '\n' + command + '\n' + fence;
           process.stdout.write([
             'Draft. Release notes are written by hand before publishing — see docs/RELEASE_CHECKLIST.md.',
-            '**On Windows, most people want the Microsoft Store instead.** Microsoft re-signs that package, so it never trips SmartScreen and there is nothing to check by hand.',
-            '**Windows and Linux direct downloads are unsigned.** They carry no code-signing certificate and none is planned, so Windows warns on first run. Check them against SHA256SUMS.txt and the provenance attestation on this release.',
+            '**On Windows, the Microsoft Store is also available.** Microsoft signs the Store-distributed package separately from these direct downloads.',
+            windows,
+            '**Linux direct downloads are not code-signed.** Check all direct downloads against SHA256SUMS.txt and the provenance attestation on this release.',
             mac,
             'Verify on Linux:' + code('shell', 'sha256sum --check --ignore-missing SHA256SUMS.txt'),
             'Verify on macOS:' + code('shell', 'shasum -a 256 --check --ignore-missing SHA256SUMS.txt'),

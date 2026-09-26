@@ -103,7 +103,10 @@ describe('portable-mode claims', () => {
 	});
 
 	it('runs the real packaged executable and refuses an absent portable artifact', () => {
-		const workflow = readFileSync(join(ROOT, '.github', 'workflows', 'release.yml'), 'utf8');
+		const workflow = readFileSync(
+			join(ROOT, '.github', 'actions', 'package-windows', 'action.yml'),
+			'utf8'
+		);
 		const fixture = readFileSync(PORTABLE_VERIFIER, 'utf8');
 		expect(workflow).toContain('verify-portable-runtime.ps1');
 		expect(workflow).toContain('$portable.Count -ne 1');

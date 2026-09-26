@@ -43,7 +43,7 @@ function preflight(ready: boolean, credentials: Partial<typeof COMPLETE> = COMPL
 	);
 }
 
-function draftNotes(ready: boolean): string {
+function draftNotes(ready: boolean, windowsSigned = false): string {
 	const result = spawnSync(
 		process.execPath,
 		['-e', inlineNodeProgram('Generate draft release notes')],
@@ -53,6 +53,7 @@ function draftNotes(ready: boolean): string {
 				...process.env,
 				MACOS_SIGNING_READY: String(ready),
 				TAG: 'v1.5.0',
+				WINDOWS_SIGNED: String(windowsSigned),
 				GITHUB_REPOSITORY: 'owner/project'
 			}
 		}
@@ -233,16 +234,27 @@ describe('the cosign the release actually runs', () => {
 });
 
 describe('draft release signing copy', () => {
+	it.each([false, true])(
+		'describes verified Windows signatures independently of macOS (mac=%s)',
+		(mac) => {
+			const notes = draftNotes(mac, true);
+			expect(notes).toContain('Authenticode-signed by MASTERPANEL LLC and timestamped');
+			expect(notes).toContain('SmartScreen may still warn');
+			expect(notes).toContain('Linux direct downloads are not code-signed');
+			expect(notes).not.toContain('Windows direct downloads in this release are unsigned');
+		}
+	);
 	it('calls only the Windows and Linux direct downloads unsigned before macOS publication', () => {
 		const notes = draftNotes(false);
-		expect(notes).toMatch(/Windows and Linux direct downloads are unsigned/i);
+		expect(notes).toMatch(/Windows direct downloads in this release are unsigned/i);
+		expect(notes).toMatch(/Linux direct downloads are not code-signed/i);
 		expect(notes).toMatch(/No macOS DMG is included/i);
 		expect(notes).not.toMatch(/macOS DMGs? (?:is|are) signed and notarized/i);
 	});
 
 	it('calls a published macOS DMG signed and notarized', () => {
 		const notes = draftNotes(true);
-		expect(notes).toMatch(/Windows and Linux direct downloads are unsigned/i);
+		expect(notes).toMatch(/Windows direct downloads in this release are unsigned/i);
 		expect(notes).toMatch(/macOS DMGs? (?:is|are) Developer ID-signed and notarized by Apple/i);
 		expect(notes).not.toMatch(/macOS DMGs? (?:is|are) signed and notarized by Apple/i);
 		expect(notes).not.toMatch(/No macOS DMG is included/i);

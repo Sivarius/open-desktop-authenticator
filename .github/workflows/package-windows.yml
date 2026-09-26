@@ -1,0 +1,84 @@
+name: Package Windows
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      signing:
+        type: boolean
+        default: false
+      mode:
+        type: string
+        default: release
+      artifact-name:
+        type: string
+        default: package-windows-latest
+      build-store:
+        type: boolean
+        default: true
+    outputs:
+      signed:
+        description: Whether the completed Windows artifacts passed signature verification
+        value: ${{ jobs.signed.outputs.signed || jobs.unsigned.outputs.signed }}
+
+permissions:
+  contents: read
+
+jobs:
+  unsigned:
+    if: ${{ !inputs.signing }}
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    env:
+      WINDOWS_SIGNING_READY: 'false'
+    outputs:
+      signed: ${{ steps.package.outputs.signed }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - uses: ./.github/actions/package-windows
+        id: package
+        with:
+          signing: 'false'
+          artifact-name: ${{ inputs.artifact-name }}
+          build-store: ${{ inputs.build-store }}
+
+  signed:
+    if: ${{ inputs.signing }}
+    runs-on: windows-latest
+    environment: windows-signing
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      WINDOWS_SIGNING_READY: 'true'
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_SIGNING_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+      AZURE_SIGNING_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+      AZURE_SIGNING_CERTIFICATE_PROFILE: ${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }}
+    outputs:
+      signed: ${{ steps.package.outputs.signed }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require a reviewed source before Azure login
+        shell: pwsh
+        env:
+          SIGNING_MODE: ${{ inputs.mode }}
+        run: ./.github/scripts/check-windows-signing-source.ps1
+      - uses: ./.github/actions/package-windows
+        id: package
+        with:
+          signing: 'true'
+          artifact-name: ${{ inputs.artifact-name }}
+          build-store: ${{ inputs.build-store }}
