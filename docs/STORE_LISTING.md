@@ -15,14 +15,13 @@ too.
 **Live package**: `1.5.0.0` · **Architecture**: `x64`
 
 > [!NOTE]
-> **Version 1.5.0 is live in the Microsoft Store.** Submission 2 is the current
-> public listing. Submission 3 was submitted on 2026-09-07, marks the 1.5.0
-> package update as mandatory, uses the approved four-sentence no-backend
-> wording shown verbatim below, and is in certification. The
-> proxy-qualified route sentence below was clarified in this repository after
-> submission and is not part of Submission 3; apply it only when the listing is
-> next editable. Changes unique to Submission 3 are not public until Microsoft
-> publishes it.
+> **The public Store publication record remains 1.5.0/x64.** On September 26,
+> the warning paragraph and What's New below were saved in Partner Center's
+> version 1.5.1 submission draft. They are not public merely because the draft
+> is saved or its AppX exists. Keep the website Store marker unchanged until
+> the public catalog confirms publication. The remaining description and
+> feature fields were left unchanged in Partner Center; this note verifies
+> only the two updated text fields, not a new comparison of every historic field.
 
 ---
 
@@ -82,13 +81,7 @@ too.
 >
 > BEFORE YOU INSTALL ANYTHING ELSE
 >
-> Never download an authenticator from a website, including ours. This listing in
-> the Microsoft Store and our GitHub releases page are the only two places a
-> genuine build comes from. The official product website,
-> https://opendesktopauthenticator.com, hosts no installer — its download buttons
-> lead to one of those two channels. MASTERPANEL LLC's main site,
-> https://masterspanel.com, identifies the same publisher and links to the
-> product. Anything else claiming to be this application is not ours.
+> Use this Microsoft Store listing or our official GitHub Releases page as the primary sources for genuine builds. The official product website, https://opendesktopauthenticator.com, hosts no installer — its download buttons lead to those release channels. MASTERPANEL LLC's main site, https://masterspanel.com, identifies the same publisher and links to the product. If you obtain a Windows installer from a third-party software directory, verify its digital signature identifies MASTERPANEL LLC and compare its SHA-256 hash with the matching official GitHub release. Official direct-download Windows executables are signed and timestamped from version 1.5.1; signing does not guarantee that SmartScreen will never warn.
 >
 > Source, documented threat model and build instructions:
 > https://github.com/opendesktopauthenticator/open-desktop-authenticator
@@ -114,38 +107,13 @@ description.
 
 ## What's new in this version
 
-1,486 characters in Partner Center, leaving 14 characters below the Store's
-1,500-character limit.
+Saved in the 1.5.1 draft; below the Store's 1,500-character limit.
 
-> Version 1.5 brings an isolated browser, notifications and safer recovery.
+> Version 1.5.1
 >
-> BROWSER
-> Open trade offers, market listings, account settings and supported trading
-> sites inside the app. Each account has separate cookies and a signed-in
-> session, so one account's sign-in is never reused by another. Locking the vault
-> closes all browser windows and ends every Steam session.
+> Clearer publisher information identifying MASTERPANEL LLC, with About text explaining that Master Panel is a separate product with no shared accounts or data. Includes development-tool security updates and release-check improvements.
 >
-> ROUTING
-> For each window, choose: use the account proxy for everything; use it for Steam
-> while supported trade sites go Direct; or use Direct throughout. Require
-> proxies removes the Direct choices. Direct is offered honestly: a shared proxy
-> collects rate limits and challenges a home connection never sees, so the
-> routed window is sometimes the one that will not load.
->
-> NOTIFICATIONS
-> Confirmation notifications are off until you turn them on. Clicking one opens
-> that account's confirmations, even if the vault locked in between. Choose
-> Everything, Type only or Count only. Notifications may appear on your lock
-> screen and remain in Windows notification history, so choose less detail on a
-> shared computer.
->
-> SAFER STEAM CHANGES
-> Adding, activating, removing or transferring an authenticator can reach Steam
-> before its reply is lost. If the outcome is unknown, the app stops and asks
-> you to check the account instead of offering the action again. Retrying
-> something Steam may already have done can leave you without access. The app
-> remembers the uncertain state across closing the screen, locking the vault and
-> restarting.
+> Your accounts, vault format and authenticator behavior are unchanged. All version 1.5 features remain, including the isolated account browser, optional confirmation notifications and safer handling of uncertain Steam changes.
 
 ## Short description
 

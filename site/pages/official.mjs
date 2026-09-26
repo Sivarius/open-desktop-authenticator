@@ -54,12 +54,12 @@ const OURS = [
 
 export const official = {
 	slug: 'official',
-	updated: '2026-09-12',
-	reviewed: '2026-09-12',
+	updated: '2026-09-26',
+	reviewed: '2026-09-26',
 	navTitle: 'Official domains',
 	title: 'Official domains for Open Desktop Authenticator',
 	description:
-		'Every address Open Desktop Authenticator is published from, and the two that may offer a download. Anything else using this name is not ours.',
+		'Open Desktop Authenticator’s official properties and primary release channels, plus how to verify a copy from a third-party directory.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'WebPage',
@@ -73,11 +73,11 @@ export const official = {
 
 			<div class="callout">
 				<p>
-					This is the complete list. <strong>If an address is not on it, it is not
-					an official publishing address</strong> — however similar the name,
-					however convincing the page, and however high it ranks. We do not designate
-					third-party mirrors or forks as official. The MIT licence allows others to
-					redistribute or modify the source; that does not make their builds ours.
+					These are our official properties and primary release channels. A third-party
+					directory may list or redistribute ODA, but its page is not operated by us.
+					The MIT licence also allows others to redistribute or modify the source;
+					that does not make a modified build an ODA release. Verify the downloaded
+					file, not the site's name, appearance or search ranking.
 				</p>
 			</div>
 
@@ -99,9 +99,13 @@ export const official = {
 			</table>
 
 			<p>
-				The two official application-download channels are the Microsoft Store listing
+				Our primary application-download channels are the Microsoft Store listing
 				and the repository's GitHub releases page. <a href="/download">The download page</a> explains
 				which to take, and <a href="/verify">how to check what you got</a>.
+				For a Windows file from a third-party directory, compare its SHA-256 hash
+				against the matching GitHub release. Starting with v1.5.1, also require a valid
+				MASTERPANEL LLC publisher signature and a timestamp. Do not assume that a
+				wrapper, modified installer or differently named publisher is our release.
 			</p>
 
 			<h2>What this page is for</h2>

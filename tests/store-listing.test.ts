@@ -28,9 +28,9 @@ const GUIDES = readFileSync(join(__dirname, '..', 'site', 'pages', 'guides.mjs')
 
 /** The listing's anti-counterfeit paragraph, without its blockquote markers. */
 const warning = (() => {
-	const start = LISTING.indexOf('Never download an authenticator');
+	const start = LISTING.indexOf('Use this Microsoft Store listing');
 	expect(start, 'the anti-counterfeit paragraph is gone from the listing').toBeGreaterThan(-1);
-	return LISTING.slice(start, LISTING.indexOf('Anything else claiming', start) + 200).replace(
+	return LISTING.slice(start, LISTING.indexOf('Source, documented threat model', start)).replace(
 		/^>\s?/gm,
 		''
 	);
@@ -39,7 +39,7 @@ const warning = (() => {
 describe('the Store listing copy', () => {
 	it('names both channels a genuine build comes from', () => {
 		expect(warning).toMatch(/Microsoft Store|This listing/i);
-		expect(warning).toMatch(/GitHub releases page/);
+		expect(warning).toMatch(/GitHub releases page/i);
 	});
 
 	/**
@@ -66,10 +66,13 @@ describe('the Store listing copy', () => {
 	});
 
 	it('agrees with the site, which tells the same people the same thing', () => {
-		// Not a string comparison — the two are written for different places and
-		// read differently. What has to match is the count.
-		expect(GUIDES).toMatch(/only two places a genuine build\s+comes from/);
-		expect(warning).toMatch(/only two places/i);
+		// Directories can redistribute an identical signed file. The primary
+		// channels remain authoritative for its signature and matching hash.
+		expect(GUIDES).toMatch(/primary release\s+channels/);
+		expect(warning).toMatch(/primary sources for genuine builds/i);
+		expect(warning).toContain('digital signature identifies MASTERPANEL LLC');
+		expect(warning).toContain('SHA-256 hash');
+		expect(warning).not.toContain('Anything else claiming to be this application is not ours');
 	});
 
 	/*

@@ -59,11 +59,11 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 	),
 	official: record(
 		'A complete allowlist of the domains and storefronts ODA actually publishes from, with the role of each address.',
-		'It links each official property directly, states which two can offer binaries, and tells readers to treat every unlisted address as unaffiliated and report it.'
+		'It links the primary Store and GitHub release channels and official properties, distinguishes independently operated directories, and requires release-hash and applicable publisher-signature checks for redistributed files.'
 	),
 	'code-signing-policy': record(
-		'A precise distinction between Store signing, checksum-list signing, build provenance and unsigned direct executables.',
-		'It points to the public releases and repository, explains accountable release roles and MFA, and says plainly which assurances do not exist.'
+		'A precise distinction between Windows publisher signing, Store package signing, checksum-list signing, build provenance and unsigned historical downloads.',
+		'Published v1.5.1 Windows files were checked on September 26 for valid MASTERPANEL LLC signatures, timestamps, hashes and tag-bound provenance. The page preserves Linux, SmartScreen and independent-audit limitations.'
 	),
 	'what-is-a-mafile': record(
 		'A field-level explanation of why a maFile is the authenticator itself rather than an ordinary settings file.',
@@ -193,7 +193,7 @@ const PROOFS_BY_SLUG = {
 		'https://github.com/opendesktopauthenticator'
 	],
 	'code-signing-policy': [
-		'https://signpath.org/terms.html',
+		'https://learn.microsoft.com/en-us/azure/artifact-signing/overview',
 		'smartscreen-reputation',
 		'SHA256SUMS.txt'
 	],
@@ -257,7 +257,7 @@ const PROOFS_BY_SLUG = {
 	download: [
 		'https://apps.microsoft.com/detail/9NMM2XJ6HZ1D',
 		'SHA256SUMS.txt.sig',
-		'Two places, and nowhere else'
+		'Our primary release channels'
 	],
 	'import-from-sda': ['manifest.json', 'identity_secret', 'Confirm the codes match'],
 	uninstall: ['%APPDATA%\\open-desktop-authenticator', 'vault.json.bak', 'recovery/'],

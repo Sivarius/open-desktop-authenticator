@@ -76,19 +76,35 @@ const GRIDINSOFT_KEY = 'nxu0pl5j85cxvlp60subwgz6bicyp3qv4zd1j7mr0b2jm3f9d1cunqqw
 /*
  * Naver issues a fresh token per verification attempt, and both are published.
  *
- * The first was live and verified; on 2026-09-08 their console handed out a
- * second for the same domain. Which one it will actually fetch is not
- * something this side can know, and removing the old file to "tidy up" would
- * un-verify the domain if it is still the one on record. Two inert files cost
- * nothing — the same reasoning as publishing Gridinsoft's meta and file
+ * The note that stood here said the first "was live and verified". It was not,
+ * and neither was the second. On 2026-09-08 all three paths were measured from
+ * the public internet and every one answered 301 -> 404: the files had never
+ * reached the origin at all. Naver fetched nothing, so its console issued a
+ * second token, then a third. The token was never the problem, and a fourth
+ * would not have helped either.
+ *
+ * TWO THINGS HAD TO CHANGE. The files have to actually be deployed - build.mjs
+ * writes them into site/dist, but nothing is published until the deploy recipe
+ * in infra/README.md runs, and it had not. And nginx had to stop rewriting
+ * /naver<token>.html: the generic .html location turned it into a 301 to an
+ * extensionless URL, which then 404s. See the `location ~ ^/naver` block in
+ * infra/nginx/sites-available/oda, which serves these at the exact address
+ * Naver asks for, with a 200. A verifier that does not follow redirects sees a
+ * 301 instead of its token, and there is no reason to make it guess.
+ *
+ * All three stay until the console reports the domain verified - deleting the
+ * one actually on record would un-verify it. Three inert files cost nothing — the same reasoning as publishing Gridinsoft's meta and file
  * together above.
  *
  * The token INCLUDES its `naver` prefix, because the filename Naver issues
  * does: `${NAVER_KEY}.html` must come out as naver<hex>.html, not
  * navernaver<hex>.html.
  */
-const NAVER_KEY = 'naver015043b353457e37f101398183fc0f66';
-const NAVER_KEY_2026_09 = 'naver3a262f5d49c869bcadbeb2a27813c638';
+const NAVER_KEYS = [
+	'naver015043b353457e37f101398183fc0f66', // 1st
+	'naver3a262f5d49c869bcadbeb2a27813c638', // 2nd
+	'naverffe4bef1c48dea0d9e91f4f71d934965' // 3rd, issued 2026-09-08
+];
 const out = join(here, 'dist');
 
 export const SITE = {
@@ -213,29 +229,18 @@ export const SITE = {
 		 * mistake — the file is called `<token>.html` and contains
 		 * `naver-site-verification: <token>.html`, so the two must be edited
 		 * together or the check fails while both halves look plausible. Written
-		 * from one constant below for that reason.
+		 * from one list of tokens below for that reason.
 		 *
 		 * It is `.html` and it is not a page: `verify.mjs` walks the declared page
 		 * list rather than the directory, so nothing tries to parse it, and
 		 * `sitemap.xml` does not list it.
 		 */
-		{
+		...NAVER_KEYS.map((token) => ({
 			service: 'Naver',
-			token: NAVER_KEY,
-			file: `${NAVER_KEY}.html`,
-			body: `naver-site-verification: ${NAVER_KEY}.html`
-		},
-		/*
-		 * The second Naver token, issued 2026-09-08 for the same domain. See the
-		 * note on NAVER_KEY_2026_09: both stay until their console confirms which
-		 * one it reads, because deleting the wrong one un-verifies the site.
-		 */
-		{
-			service: 'Naver',
-			token: NAVER_KEY_2026_09,
-			file: `${NAVER_KEY_2026_09}.html`,
-			body: `naver-site-verification: ${NAVER_KEY_2026_09}.html`
-		}
+			token,
+			file: `${token}.html`,
+			body: `naver-site-verification: ${token}.html`
+		}))
 	],
 
 	/*
@@ -417,7 +422,7 @@ export const SITE = {
 	 */
 	releaseByVersion: {
 		'1.0.0': {
-			/** A signed public build exists and can be downloaded. */
+			/** A public build exists and can be downloaded. */
 			published: true,
 			/** Artifacts are listed with SHA-256 checksums on the release page. */
 			checksums: true,
@@ -447,15 +452,11 @@ export const SITE = {
 			 */
 			signed: false,
 			/*
-			 * **The binaries are not code-signed**, and this is the flag that says
-			 * so. The Microsoft Store package carries Microsoft's signature because
-			 * Microsoft re-signs what it distributes; the `.exe`, `.AppImage` and
-			 * `.deb` on the release page carry none, so Windows warns on first run.
-			 * No certificate is planned: the SignPath Foundation declined, and a paid
-			 * one would not clear the Windows warning on its own anyway. See
-			 * /code-signing-policy, which exists and says the same thing.
+			 * Historical Windows evidence, not the current signing policy. The
+			 * direct v1.0.0 executables have no Authenticode publisher signature.
+			 * Store package signing and Linux packages are separate facts.
 			 */
-			codeSigned: false,
+			windowsCodeSigned: false,
 			/*
 			 * **No `.asc`, and there never was one.** The signature is sigstore, not
 			 * GPG, so `gpg --verify` and `SHA256SUMS.txt.asc` remain instructions to
@@ -500,9 +501,22 @@ export const SITE = {
 			checksums: true,
 			/** `.sig` and `.pem` are on the release page, not merely produced by CI. */
 			signed: true,
-			/** Unchanged, and not for want of trying: the SignPath application was declined. */
-			codeSigned: false,
+			/** Historical direct Windows executables remain unsigned. */
+			windowsCodeSigned: false,
 			/** Still sigstore rather than GPG. No `.asc` exists. */
+			gpgSignature: false,
+			reproducible: false,
+			audited: false
+		},
+		// Published September 26, 2026. All four downloaded Windows assets were
+		// independently checked: Authenticode Valid, MASTERPANEL LLC, timestamp,
+		// matching hashes and tag-bound GitHub provenance. The checksum-list
+		// Sigstore signature was also verified. This is NOT Linux code signing.
+		'1.5.1': {
+			published: true,
+			checksums: true,
+			signed: true,
+			windowsCodeSigned: true,
 			gpgSignature: false,
 			reproducible: false,
 			audited: false
@@ -518,7 +532,7 @@ export const SITE = {
 			published: evidence !== undefined,
 			checksums: evidence?.checksums ?? false,
 			signed: evidence?.signed ?? false,
-			codeSigned: evidence?.codeSigned ?? false,
+			windowsCodeSigned: evidence?.windowsCodeSigned ?? false,
 			gpgSignature: evidence?.gpgSignature ?? false,
 			reproducible: evidence?.reproducible ?? false,
 			audited: evidence?.audited ?? false

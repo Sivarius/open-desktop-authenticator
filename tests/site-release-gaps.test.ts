@@ -51,7 +51,7 @@ const NOTHING: Release = {
 	published: true,
 	checksums: true,
 	signed: false,
-	codeSigned: false,
+	windowsCodeSigned: false,
 	reproducible: false,
 	audited: false
 };
@@ -154,7 +154,7 @@ describe('which gaps are still open', () => {
 			published: true,
 			checksums: true,
 			signed: true,
-			codeSigned: true,
+			windowsCodeSigned: true,
 			reproducible: true,
 			audited: true
 		};
@@ -259,7 +259,9 @@ describe('the pages that carry the sentence', () => {
 				signed,
 				'the page goes on telling the reader nothing signs the checksum list after the flag says something does'
 			).not.toMatch(stale);
-			expect(signed, 'the sentence disappeared entirely').toMatch(/code-signing certificate/i);
+			expect(signed, 'the sentence disappeared entirely').toMatch(
+				/code-signing certificate|publisher code signing/i
+			);
 		}
 	);
 
@@ -314,7 +316,7 @@ describe('the pages that carry the sentence', () => {
 				published: true,
 				checksums: true,
 				signed: true,
-				codeSigned: true,
+				windowsCodeSigned: true,
 				reproducible: true,
 				audited: true
 			});
@@ -376,7 +378,9 @@ describe('the pages that carry the sentence', () => {
 	 */
 	it('gives the FAQ a sentence that stands on its own', () => {
 		const only = words(
-			pageBySlug('faq').body(site({ ...NOTHING, signed: true, codeSigned: true, audited: true }))
+			pageBySlug('faq').body(
+				site({ ...NOTHING, signed: true, windowsCodeSigned: true, audited: true })
+			)
 		);
 		expect(only).toMatch(/Builds are not yet reproducible/);
 		expect(only, 'a dangling comparative with nothing before it').not.toMatch(/further out still/);
@@ -500,6 +504,10 @@ describe('the verify page and the signature that may not exist yet', () => {
 			'v1.5.0 stops claiming a signed checksum list. Its release carries SHA256SUMS.txt.sig ' +
 				'and SHA256SUMS.txt.pem, so saying otherwise hides a check a reader could make'
 		).toContain('signed: true,');
+		expect(entry('1.0.0')).toContain('windowsCodeSigned: false,');
+		expect(entry('1.5.0')).toContain('windowsCodeSigned: false,');
+		expect(entry('1.5.1')).toContain('windowsCodeSigned: true,');
+		expect(entry('1.5.1')).toContain('signed: true,');
 	});
 
 	it('prints the command once a signed release exists', () => {

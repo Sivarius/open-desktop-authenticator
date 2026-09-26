@@ -120,6 +120,30 @@ server {
 	# every 404 on the site.
 	location = /index.html { return 301 /; }
 	location = /404.html   { internal; }
+	# Naver's ownership files are served at the exact path it asks for.
+	#
+	# They are `.html` and would otherwise be swallowed by the canonical rule
+	# below: /naver<token>.html 301s to /naver<token>, which has no file behind
+	# it and 404s. Naver's console fetches the issued path and reads the body,
+	# so it followed a redirect into a 404 and the domain could not verify --
+	# silently, because the file and the rule each looked correct alone. The
+	# first token sat on disk unreachable from the day it was deployed.
+	#
+	# A pattern rather than one exact location per token, because Naver issues a
+	# fresh one on every attempt and a config edit per attempt is a step someone
+	# will forget. Regex locations are tried in order, so this must stay ABOVE
+	# the canonical rule to win.
+	#
+	# The include is load-bearing for the same reason it is everywhere else in
+	# this file: an add_header in a location discards the server block's.
+	# Quoted, because nginx reads an unquoted { as the start of a block and
+	# rejects the quantifier outright: unknown directive "32}\.html$". `nginx -t`
+	# caught it before the reload, which is the only reason that was a typo and
+	# not an outage.
+	location ~ "^/naver[0-9a-f]{32}\.html$" {
+		include snippets/security-headers.conf;
+		default_type text/html;
+	}
 	location ~ ^(/.+)\.html$ { return 301 $1; }
 	location ~ ^(/.+)/$      { return 301 $1; }
 

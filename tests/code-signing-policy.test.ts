@@ -12,11 +12,9 @@ import { describe, expect, it } from 'vitest';
  * who is not sponsoring this project, and every claim that a certificate was
  * coming names a plan that does not exist.
  *
- * So the assertions are inverted. What is pinned now is that no page claims a
- * certificate, a sponsor or an application in progress, and that the pages still
- * say plainly that the direct downloads are unsigned. The page itself stays: who
- * approves a release, and how a stranger verifies one, never depended on the
- * certificate.
+ * Published Windows v1.5.1 files now have verified MASTERPANEL LLC signatures
+ * through Azure Artifact Signing. Pin that evidence without implying a
+ * SignPath sponsorship, Linux signing, independent approval or an audit.
  *
  * The absence checks are deliberately about the *claim*, not the word. The
  * policy page still names SignPath once, in the paragraph explaining that the
@@ -144,7 +142,7 @@ describe('what the project says about signing', () => {
 		expect(
 			hit?.[0],
 			'this surface still tells the reader a code-signing certificate is on its way, which it ' +
-				'is not — the SignPath Foundation application was declined and none is planned'
+				'is not — the SignPath Foundation application was declined'
 		).toBeUndefined();
 	});
 
@@ -153,17 +151,29 @@ describe('what the project says about signing', () => {
 	 * the whole subject would leave a reader with no idea whether the file they
 	 * downloaded is signed, which is worse than the claim was.
 	 */
-	it('still tells the reader the direct downloads are unsigned', () => {
-		expect(POLICY).toMatch(/not code-signed|carry a code-signing certificate/i);
-		expect(DOWNLOAD).toMatch(/direct Windows downloads have no publisher code signature/i);
-		expect(DOWNLOAD).toMatch(/none is currently planned/i);
+	it('names the actual Windows signing service, publisher and limitations', () => {
+		expect(POLICY).toContain('Microsoft Azure Artifact Signing');
+		expect(POLICY).toContain('code-signed and timestamped as MASTERPANEL LLC');
+		expect(POLICY).toMatch(/does not guarantee that SmartScreen stops warning/);
+		expect(POLICY).toContain('not a claim of independent two-person approval');
+		expect(POLICY).toContain(
+			'Linux AppImage and Debian packages do not carry Authenticode signatures'
+		);
+		expect(DOWNLOAD).toContain('s.release.windowsCodeSigned');
 	});
 
-	it('says so on the verification page too, where the check comes back NotSigned', () => {
-		expect(read('site', 'pages', 'safety.mjs')).toMatch(/none is planned/i);
+	it('requires valid Windows signatures and timestamps while preserving historical context', () => {
+		const verify = read('site', 'pages', 'safety.mjs');
+		expect(verify).toContain('Status: Valid');
+		expect(verify).toContain('MASTERPANEL LLC');
+		expect(verify).toContain('TimeStamperCertificate');
+		expect(verify).toContain('unchanged v1.0.0 and v1.5.0 Windows files lack publisher signatures');
+		expect(verify).not.toContain('none is planned');
 	});
 
-	it('still derives that from the flag rather than prose alone', () => {
-		expect(BUILD).toMatch(/codeSigned:\s*false/);
+	it('records signing per Windows release rather than implying all platforms are signed', () => {
+		expect(BUILD).toMatch(/windowsCodeSigned:\s*true/);
+		expect(BUILD).toMatch(/windowsCodeSigned:\s*false/);
+		expect(BUILD).not.toMatch(/\bcodeSigned:/);
 	});
 });

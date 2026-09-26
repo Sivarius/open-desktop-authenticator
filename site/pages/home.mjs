@@ -11,8 +11,8 @@ const downloadForSourceVersion = (site) => {
 
 export default {
 	slug: 'index',
-	updated: '2026-09-12',
-	reviewed: '2026-09-12',
+	updated: '2026-09-26',
+	reviewed: '2026-09-26',
 	title: 'Open Desktop Authenticator — Steam Guard on your PC',
 	navTitle: 'Home',
 	description:
@@ -144,8 +144,8 @@ export default {
 					}
 				</p>
 				<p>
-					<strong>Code signing policy:</strong> Store package signing, unsigned direct
-					downloads and checksum-list signatures — <a href="/code-signing-policy">read it here</a>.
+					<strong>Code signing policy:</strong> Windows publisher signatures, separate
+					Store package signing and checksum-list signatures — <a href="/code-signing-policy">read it here</a>.
 				</p>
 			</div>
 

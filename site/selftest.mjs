@@ -66,7 +66,7 @@ const ANCHOR_FILE = 'pages/home.mjs';
  * whether the verifier's exit code is what the table says it should be.
  *
  * **When `reproducible` becomes true this file must move again**, to whichever
- * claim is false then — `codeSigned`, `gpgSignature` and `audited` are all still
+ * claim is false then — `windowsCodeSigned`, `gpgSignature` and `audited` are all still
  * available. A tripwire that covers nothing passes silently, so the day no false
  * claim is left is the day this file needs a different design, not deletion.
  */
@@ -74,6 +74,13 @@ const ANCHOR =
 	"'Published checksums, a signature over that list, and provenance naming the workflow and commit that built it.'";
 
 const CASES = [
+	['rejects all-platform binary signing', 'All binaries are code-signed.', true],
+	['rejects Linux binary signing', 'Linux binaries are code-signed.', true],
+	['rejects signed Linux noun phrase', 'We publish signed binaries for Linux.', true],
+	['rejects signed Linux packages', 'We publish signed Linux packages.', true],
+	['rejects signed Linux downloads', 'Linux downloads are code-signed.', true],
+	['allows explicit Windows signing', 'Windows binaries are code-signed.', false],
+	['allows honest Linux absence', 'Linux binaries are not code-signed.', false],
 	// [name, sentence, must the build FAIL?]
 	//
 	// The four `reproducible` patterns in verify.mjs's CLAIMS table, one case
@@ -107,7 +114,7 @@ const CASES = [
 
 	[
 		'honest: not yet',
-		'Builds are not yet reproducible, and the binaries are not code-signed.',
+		'Builds are not yet reproducible, and Linux packages use separate integrity checks.',
 		false
 	],
 	/*

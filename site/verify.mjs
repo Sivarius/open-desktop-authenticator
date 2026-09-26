@@ -805,8 +805,8 @@ const CLAIMS = [
 		 * and one flag covering both would have permitted "signed builds" the
 		 * moment `cosign` landed.
 		 */
-		flag: 'codeSigned',
-		says: 'the published binaries are code-signed',
+		flag: 'windowsCodeSigned',
+		says: 'the published Windows binaries are code-signed',
 		/*
 		 * The last two are here because the first two were not enough.
 		 *
@@ -864,7 +864,7 @@ const CLAIMS = [
 const UNBUILT_CAPABILITY = [
 	{ flag: 'reproducible', phrase: /reproducible builds?/gi },
 	{ flag: 'checksums', phrase: /published checksums|checksums (?:are|is) published/gi },
-	{ flag: 'codeSigned', phrase: /signed (?:builds?|binaries|installers?)/gi }
+	{ flag: 'windowsCodeSigned', phrase: /signed (?:builds?|binaries|installers?)/gi }
 ];
 
 /**
@@ -1053,11 +1053,13 @@ const STALE_ABSENCE = [
 		]
 	},
 	{
-		flag: 'codeSigned',
+		flag: 'windowsCodeSigned',
 		patterns: [
 			/carry no code[- ]signing certificate/gi,
 			/(?:are|is) not (?:yet )?code[- ]signed/gi,
-			/(?:not yet done|still missing)[^.]{0,200}code[- ]signing certificate for the direct/gi
+			/(?:not yet done|still missing)[^.]{0,200}(?:code[- ]signing certificate|publisher code signing) for the direct Windows/gi,
+			/direct Windows downloads have no publisher code signature/gi,
+			/no certificate is (?:currently )?planned/gi
 		]
 	},
 	{
@@ -1075,6 +1077,26 @@ const STALE_ABSENCE = [
 
 for (const [slug, html] of built) {
 	const words = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+	// Windows evidence never licenses Linux or all-platform binary signing.
+	// Check affirmative statements even when windowsCodeSigned is true.
+	const binarySigning =
+		/\b(?:binaries|builds?|installers?|executables?|packages?|downloads?)\s+(?:are|is)\s+(?:all\s+)?(?:code[- ]signed|publisher[- ]signed|signed)\b|\b(?:code[- ]signed|publisher[- ]signed|signed)\s+(?:(?:Windows|Linux|AppImage|Debian|all-platform)\s+)?(?:binaries|builds?|installers?|executables?|packages?|downloads?)\b/gi;
+	for (const hit of everyMatch(binarySigning, words)) {
+		const sentence = sentenceAround(words, hit.index, hit[0].length);
+		const at = hit.index - words.indexOf(sentence);
+		const before = sentence.slice(Math.max(0, at - DENIAL_REACH), at);
+		const after = sentence.slice(at + hit[0].length);
+		if (CLAIM_DENIAL_BEFORE.test(before) || CLAIM_DENIAL_AFTER.test(after)) continue;
+		if (
+			/\b(?:Linux|AppImage|Debian|all platforms|all binaries)\b/i.test(sentence) ||
+			!/\b(?:Windows|Microsoft Store|Store package|MSIX|AppX)\b/i.test(sentence)
+		) {
+			fail(
+				slug,
+				'binary code-signing claim lacks the supported Windows/Store scope — "' + hit[0] + '"'
+			);
+		}
+	}
 	for (const claim of CLAIMS) {
 		if (SITE.release[claim.flag]) {
 			continue;
@@ -1113,8 +1135,15 @@ for (const [slug, html] of built) {
 		}
 		for (const pattern of patterns) {
 			pattern.lastIndex = 0;
-			const hit = pattern.exec(words);
-			if (hit) {
+			for (const hit of everyMatch(pattern, words)) {
+				// Explicit Linux absence is true; this evidence flag covers Windows only.
+				const sentence = sentenceAround(words, hit.index, hit[0].length);
+				if (
+					flag === 'windowsCodeSigned' &&
+					/\b(?:Linux|AppImage|Debian)\b/i.test(sentence) &&
+					!/\bWindows\b/i.test(sentence)
+				)
+					continue;
 				fail(
 					slug,
 					`says "${hit[0]}" while SITE.release.${flag} is true — ` +

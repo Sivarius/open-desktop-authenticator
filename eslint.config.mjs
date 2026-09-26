@@ -197,6 +197,17 @@ export default tseslint.config(
 		}
 	},
 
+	// The generator runs in Node but serializes its browser bootstrap function.
+	// Lint both halves without pretending this plain CommonJS file is a TS project.
+	{
+		files: ['site/metrica/**/*.cjs'],
+		...tseslint.configs.disableTypeChecked,
+		languageOptions: {
+			...tseslint.configs.disableTypeChecked.languageOptions,
+			globals: { ...globals.node, ...globals.browser }
+		}
+	},
+
 	// Must stay last: turns off everything Prettier owns.
 	prettier
 );

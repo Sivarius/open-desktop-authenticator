@@ -70,7 +70,7 @@ function siteFor(records: Publications, sourceVersion = VERSION) {
 		published: publication.github.latestVersion !== undefined,
 		checksums: true,
 		signed: false,
-		codeSigned: false,
+		windowsCodeSigned: false,
 		gpgSignature: false,
 		reproducible: false,
 		audited: false
@@ -325,15 +325,19 @@ describe('per-channel publication output', () => {
 		expect(software).toHaveProperty('downloadUrl');
 	});
 
-	it('does not turn the 1.5.1 source bump into a publication claim', () => {
+	it('records published GitHub 1.5.1 without inventing a Store publication', () => {
 		const { version } = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8')) as {
 			version: string;
 		};
 		expect(version).toBe('1.5.1');
 		const actual = publicationApi.publicationState(version);
-		expect(actual.github.current).toBe(false);
+		expect(actual.github.current).toBe(true);
 		expect(actual.store.current).toBe(false);
-		expect(actual.github.latestVersion).toBe('1.5.0');
+		expect(actual.github.latestVersion).toBe('1.5.1');
+		expect(actual.github.latest).toEqual({
+			publishedOn: '2026-09-26',
+			architectures: ['x64', 'arm64']
+		});
 		expect(actual.store.latestVersion).toBe('1.5.0');
 	});
 

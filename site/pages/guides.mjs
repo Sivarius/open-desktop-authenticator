@@ -5,8 +5,8 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-12',
-	reviewed: '2026-09-12',
+	updated: '2026-09-26',
+	reviewed: '2026-09-26',
 	navTitle: 'Download',
 	script: 'download.js',
 	title: 'Open Desktop Authenticator download and release status',
@@ -16,14 +16,16 @@ export const download = {
 		<article>
 			<h1>Download</h1>
 			<div class="callout" data-download>
-				<h2>Two places, and nowhere else</h2>
+				<h2>Our primary release channels</h2>
 				<p>
-					${publicationSummary(s)} <strong>Those are our two official download
-					channels.</strong> Follow those exact listings rather than a mirror or a
-					lookalike domain. This site links to the downloads; it does not serve an
+					${publicationSummary(s)} <strong>Those are our primary release
+					channels.</strong> Start with those exact listings rather than a lookalike
+					domain. This site links to the downloads; it does not serve an
 					installer itself.
 					<a href="/official">The full list of addresses we publish from</a> is
-					short, and anything outside it is not ours.
+					short. For a copy supplied by a third-party directory, compare its SHA-256 hash
+					with our GitHub release and check the Windows publisher signature when the
+					release carries one. A directory listing alone does not establish authenticity.
 				</p>
 
 				<div class="download-primary download-windows">
@@ -72,14 +74,20 @@ export const download = {
 						a USB stick. The single-file launcher extracts Electron and Chromium runtime
 						files to Windows Temp while it runs and normally removes them on exit. Use this route
 						if the Store is unavailable or you need a portable build. An organisation's
-						device policy may still block unsigned applications; a portable build does
+						device policy may still block applications; a portable build does
 						not bypass that policy.
 					</p>
 					<p>
-						<strong>The direct Windows downloads have no publisher code signature,
-						and none is currently planned.</strong> Windows may warn or block them.
+						${
+							s.release.windowsCodeSigned
+								? `<strong>The direct Windows ${s.release.version} installers and portable executable
+							are code-signed and timestamped as MASTERPANEL LLC.</strong>`
+								: '<strong>The recorded direct Windows downloads have no publisher code signature.</strong>'
+						}
+						Windows may still warn or block a download, depending on reputation and policy.
 						An unrecognised-app warning and a malware detection are different findings;
-						do not dismiss a security alert because this page mentions unsigned builds.
+						do not dismiss either because a page says a file is legitimate.
+						Linux packages use the separate checksum-list signature and provenance checks.
 						<a href="/verify">The verification steps</a> establish the published origin
 						of a file, not whether its code is harmless.
 					</p>
@@ -153,6 +161,13 @@ export const download = {
 				<li>The security posture described on the <a href="/security">security page</a>.</li>
 				<li>An automated test suite configured to run on pushes to main and pull requests.</li>
 				${
+					s.release.windowsCodeSigned
+						? `<li>Publisher code signing and timestamps for the
+				Windows ${s.release.version} installers and portable executable, under MASTERPANEL LLC.
+				<a href="/code-signing-policy">Signing policy and limitations</a>.</li>`
+						: ''
+				}
+				${
 					/*
 					 * **The checksum-list signature is listed here, under the flag, rather
 					 * than as a fourth entry in "What is still missing" below.**
@@ -207,22 +222,15 @@ export const download = {
 			<h2>What is still missing</h2>
 			<p>Stated here rather than left for you to discover:</p>
 			<ul>
-				<li>
-					<strong>A code-signing certificate for the direct downloads.</strong> The
-					Store AppX package is signed by Microsoft; the direct Windows executables
-					are not publisher-signed and may trigger Windows warnings. The checksums and the
-					provenance attestation are how you check them.
-					<br />
-					<strong>No certificate is currently planned.</strong> The maintainer reports
-					that an application to the SignPath Foundation was declined; this is
-					documented in the project's release notes. Buying a certificate would not
-					guarantee an immediate SmartScreen reputation either: Microsoft says Extended
-					Validation certificates no longer receive an automatic reputation bypass.
-					Signing still provides publisher identity and integrity checks; the separate
-					checksum-list signature does not make these executables code-signed. See
-					<a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation" rel="noopener">Microsoft's explanation</a> and
-					<a href="/code-signing-policy">our code signing policy</a>.
-				</li>
+				${
+					s.release.windowsCodeSigned
+						? ''
+						: `<li>
+					<strong>Publisher code signing for the direct Windows downloads.</strong>
+					The Store AppX package has separate Microsoft signing. Verify the direct files
+					using checksums and provenance; see <a href="/code-signing-policy">our signing policy</a>.
+				</li>`
+				}
 				${
 					/*
 					 * Absent from this list entirely once the flag is true, because what it

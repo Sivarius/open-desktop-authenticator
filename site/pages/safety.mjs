@@ -258,7 +258,7 @@ export const verify = {
 	slug: 'verify',
 	parent: 'download',
 	guide: true,
-	updated: '2026-09-12',
+	updated: '2026-09-26',
 	sourced: (s) =>
 		`Version covered: GitHub release ${s.publication.github.latestVersion}. Provenance command checked against <a href="https://cli.github.com/manual/gh_attestation_verify" rel="noopener">GitHub CLI's attestation verification reference</a>; checksum-list verification against <a href="https://docs.sigstore.dev/cosign/verifying/verify/" rel="noopener">Sigstore's Cosign documentation</a>`,
 	navTitle: 'Verify',
@@ -462,10 +462,9 @@ export const verify = {
 			}
 
 			<h2>6. On Windows, check the publisher</h2>
-			<pre><code>Get-AuthenticodeSignature .\\&lt;file&gt;.exe | Format-List Status, SignerCertificate</code></pre>
+			<pre><code>Get-AuthenticodeSignature .\\&lt;file&gt;.exe | Format-List Status, SignerCertificate, TimeStamperCertificate</code></pre>
 			<p>
-				What you should see depends on where the file came from, and right now the
-				honest answer for direct downloads is uncomfortable:
+				What you should see depends on the release version and distribution channel:
 			</p>
 			<dl class="pairs">
 				<dt>A Store install</dt>
@@ -475,22 +474,34 @@ export const verify = {
 				MSIX/AppX package; an executable inside a signed package can report
 				<code>NotSigned</code> without contradicting the package signature.
 				</dd>
-				<dt>A download from the release page, today</dt>
+				<dt>A Windows download from the recorded GitHub release</dt>
 				<dd>
-					<strong><code>Status</code> will read <code>NotSigned</code>.</strong> These
-					builds carry no code-signing certificate, and none is planned, so Windows
-					may also warn on first run, depending on Windows policy. That is stated here rather
-					than left for you to discover — but it does mean this step cannot tell you
-					anything about our direct downloads, and steps 3 and 4 are doing all the
-					work. The Store build is the one that carries a signature, and there the
-					signer is Microsoft.
+					${
+						s.release.windowsCodeSigned
+							? `For Windows ${s.release.version}, require <strong><code>Status: Valid</code></strong>,
+						a signer certificate naming <strong>MASTERPANEL LLC</strong>, and a timestamp
+						certificate. In File Properties → Digital Signatures, Windows should report
+						that the signature is OK. A missing or invalid signature, missing timestamp,
+						or different publisher is a reason to stop and investigate.`
+							: `The recorded older Windows files have no publisher signature and report
+						<code>NotSigned</code>. Check their published hashes and provenance; do not
+						treat the absence of a signature as evidence that a file is genuine.`
+					}
+				</dd>
+				<dt>Historical Windows releases and Linux</dt>
+				<dd>
+					The unchanged v1.0.0 and v1.5.0 Windows files lack publisher signatures.
+					Linux AppImage and Debian packages use the checksum-list signature and
+					provenance checks above, not this Windows Authenticode command.
 				</dd>
 			</dl>
 			<p>
 				An unexpected signature or any checksum/provenance failure is a reason to stop
 				and investigate. <code>NotSigned</code> alone is not a successful verification:
 				counterfeits can be unsigned too. Use the release's stated signing status and
-				the preceding checks together.
+				the preceding checks together. A valid signature identifies the publisher and
+				protects signed bytes; it is not an independent audit or a guarantee of no
+				SmartScreen warning. <a href="/code-signing-policy">Read the signing policy</a>.
 			</p>
 
 			<h2>Going further: build it yourself</h2>

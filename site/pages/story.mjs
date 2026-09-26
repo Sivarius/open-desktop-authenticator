@@ -10,7 +10,7 @@
 
 export default {
 	slug: 'steam-inventory-stolen',
-	updated: '2026-09-12',
+	updated: '2026-09-26',
 	navTitle: 'Our story',
 	title: 'A fake SDA download emptied my Steam inventory',
 	description:
@@ -155,8 +155,9 @@ export default {
 				builds produced in public CI, and
 				<a href="/security">a security page that says what it cannot protect you from</a>.
 				Published checksums and build provenance ship with
-				each release. Reproducible builds do not yet, and the binaries themselves are
-				not code-signed —
+				each recorded release. Builds are not yet reproducible. Windows v1.5.1
+				installers and the portable executable carry MASTERPANEL LLC publisher
+				signatures and timestamps; Linux packages use the separate integrity checks —
 				<a href="/download">the download page says where each one stands</a>. ODA has
 				no built-in updater; updates to the Store edition are managed by Microsoft Store.
 			</p>

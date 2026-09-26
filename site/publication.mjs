@@ -6,7 +6,8 @@
 export const RELEASE_PUBLICATIONS = {
 	github: {
 		'1.0.0': { publishedOn: '2026-08-25' },
-		'1.5.0': { publishedOn: '2026-09-06', architectures: ['x64', 'arm64'] }
+		'1.5.0': { publishedOn: '2026-09-06', architectures: ['x64', 'arm64'] },
+		'1.5.1': { publishedOn: '2026-09-26', architectures: ['x64', 'arm64'] }
 	},
 	// Store publication is recorded only after the public Microsoft catalog has
 	// been checked. `verifiedOn` is the date that check succeeded, not a guessed

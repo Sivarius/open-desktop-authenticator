@@ -109,11 +109,11 @@ const RELEASE_GAPS = [
 			'rather than from wherever you got the installer.'
 	},
 	{
-		open: (r) => !r.codeSigned,
-		clause: 'the direct downloads carry no code-signing certificate, and none is planned',
-		noun: 'a code-signing certificate for the direct downloads (not planned)',
+		open: (r) => !r.windowsCodeSigned,
+		clause: 'the direct Windows downloads carry no code-signing certificate',
+		noun: 'publisher code signing for the direct Windows downloads',
 		sentence:
-			'The direct downloads carry no code-signing certificate and none is planned. Windows may warn or block them; verify the release before deciding whether to run it.'
+			'The direct Windows downloads carry no code-signing certificate. Windows may warn or block them; verify the release before deciding whether to run it.'
 	},
 	{
 		open: (r) => !r.reproducible,
