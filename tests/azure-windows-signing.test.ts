@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -277,9 +277,19 @@ describe.skipIf(process.platform !== 'win32')('Windows signing PowerShell guards
 		expect(checkSource(root, { ...env, GITHUB_REF: 'refs/heads/topic' }).status).not.toBe(0);
 		expect(checkSource(root, { ...env, GITHUB_SHA: '0'.repeat(40) }).status).not.toBe(0);
 	});
-	it('requires matching final-file hashes and all three embedded-uninstaller receipts', () => {
-		const root = mkdtempSync(join(tmpdir(), 'oda-signature-receipts-'));
-		roots.push(root);
+	it.each(['native', 'short'])('validates complete receipts (%s path)', (pathForm) => {
+		const createdRoot = mkdtempSync(join(tmpdir(), 'oda-signature-receipts-'));
+		roots.push(createdRoot);
+		const shortPath = powershell(
+			'(New-Object -ComObject Scripting.FileSystemObject).GetFolder($env:SIGNATURE_FIXTURE_ROOT).ShortPath',
+			ROOT,
+			{ SIGNATURE_FIXTURE_ROOT: createdRoot }
+		);
+		expect(shortPath.status, shortPath.stderr).toBe(0);
+		// Windows runner TEMP can contain an 8.3 alias such as RUNNER~1, while
+		// PowerShell discovers full file paths. Build fixture receipts from the
+		// same canonical root; the production exact path/hash checks stay intact.
+		const root = realpathSync.native(pathForm === 'short' ? shortPath.stdout.trim() : createdRoot);
 		writeFileSync(join(root, 'package.json'), '{"version":"1.5.0"}');
 		const installers = ['x64', 'arm64', 'universal'].map(
 			(arch) => `open-desktop-authenticator-1.5.0-${arch}-setup.exe`
