@@ -20,10 +20,13 @@ products with no shared accounts, data, or integration.
 > claiming to be a build of this is not ours.
 >
 > The Store package is signed, because Microsoft re-signs what it distributes.
-> The direct Windows downloads are not conventionally code-signed, and no
-> certificate is planned, so Windows warns on first run. Verify direct downloads
-> against `SHA256SUMS.txt`, its sigstore signature and the build-provenance
-> attestation.
+> The existing v1.5.0 direct Windows downloads are unsigned. The v1.5.1 release
+> candidate adds Azure Artifact Signing with **MASTERPANEL LLC** as publisher;
+> preparing that candidate does not replace any published file. Check the exact
+> release's notes and Windows Digital Signatures details. Signing identifies the
+> publisher but does not guarantee that SmartScreen will stop warning. Verify
+> direct downloads against `SHA256SUMS.txt`, its sigstore signature and the
+> build-provenance attestation.
 >
 > The core authenticator flows have been **exercised end to end against live
 > Steam accounts** by the maintainer — import from SDA, enrollment, codes,

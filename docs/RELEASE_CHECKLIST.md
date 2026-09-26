@@ -69,6 +69,11 @@ Platforms: **Windows and Linux** (D11 — macOS built but not published; see
       not tags.
 - [ ] Windows: NSIS installer and portable `.exe`. Portable is labelled as
       manual-update.
+- [ ] For v1.5.1 and later, `WINDOWS_SIGNING_READY=true`; the signed Windows job
+      passes without an unsigned fallback. The final installers, portable app,
+      packaged app executables and embedded uninstallers have verified
+      Authenticode signatures, publisher `MASTERPANEL LLC`, and timestamps. See
+      [the signing rollout guide](AZURE_WINDOWS_SIGNING.md).
 - [ ] Linux: AppImage and `.deb`.
 - [ ] `SHA256SUMS.txt` generated over **every** published asset.
 - [ ] Provenance attestations generated over every published binary. **Nothing
@@ -87,12 +92,11 @@ Written down so the distinction is deliberate rather than forgotten. None blocks
 a release today, and no page may claim that the current release provides one.
 
 - Signed Git tags. The current release tag is unsigned.
-- Conventional code-signing for the Windows direct downloads is not planned: the
-  SignPath Foundation declined, and a bought certificate would not clear the
-  SmartScreen warning on its own. The Store package is signed by Microsoft on
-  ingestion, which is a different channel with a different guarantee. GitHub
-  downloads instead carry hashes, a sigstore signature over the checksum list
-  and build-provenance attestations.
+- Older Windows direct downloads, including v1.5.0, are unsigned and are not
+  replaced. New signed Windows releases identify MASTERPANEL LLC but do not
+  guarantee the absence of SmartScreen warnings. The Store package is signed by
+  Microsoft separately. Linux downloads are not platform code-signed; use the
+  hashes, signed checksum list and build-provenance attestations.
 - Reproducible builds are not provided.
 
 ## Manual verification — per platform
@@ -163,8 +167,10 @@ The trust story is only real if it works for someone who does not trust us.
       existed.
 - [ ] Provenance verification succeeds on both platforms:
       `gh attestation verify <file> --owner opendesktopauthenticator`.
-      There is no conventional code signature on these files to check — see
-      _Non-blocking release limits_.
+- [ ] On Windows, downloaded v1.5.1+ files report a valid Authenticode signature
+      from `MASTERPANEL LLC` with a timestamp. Confirm the installer description
+      is `Open Desktop Authenticator`. Do not mistake a valid signature for a
+      guarantee about SmartScreen reputation or application behaviour.
 - [ ] `cosign verify-blob` on the checksum list succeeds, run from the downloaded
       copies rather than from the build directory.
 - [ ] The website's Windows button deep-links the Store listing, and its other
