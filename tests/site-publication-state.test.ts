@@ -280,7 +280,7 @@ describe('per-channel publication output', () => {
 
 	// Website publication records can advance before this checkout's app source.
 	// A GitHub release must not also advance the independently checked Store marker.
-	it('describes GitHub 1.5.1 and Store 1.5.0 independently of the app source version', () => {
+	it('describes GitHub 1.5.1 and Store 1.5.1 independently of the app source version', () => {
 		const { version: sourceVersion } = JSON.parse(
 			readFileSync(join(__dirname, '..', 'package.json'), 'utf8')
 		) as { version: string };
@@ -294,19 +294,19 @@ describe('per-channel publication output', () => {
 		expect(
 			site.publication.store.current,
 			'the Store marker moves only after the public Microsoft catalog serves the version'
-		).toBe(false);
+		).toBe(true);
 		expect(site.publication.github.latestVersion).toBe('1.5.1');
 		expect(site.publication.github.latest).toMatchObject({
 			publishedOn: '2026-09-26',
 			architectures: ['x64', 'arm64']
 		});
-		expect(site.publication.store.latestVersion).toBe(VERSION);
+		expect(site.publication.store.latestVersion).toBe('1.5.1');
 		expect(site.publication.store.latest).toMatchObject({
-			verifiedOn: '2026-09-06',
+			verifiedOn: '2026-09-27',
 			architectures: ['x64']
 		});
 		expect(text(download.body(site))).toMatch(
-			/Store 1\.5\.0 package recorded in our publication record is x64/
+			/Store 1\.5\.1 package recorded in our publication record is x64/
 		);
 		expect(text(download.body(site))).toContain(
 			'the Store does not currently offer a native ARM64 ODA package'
@@ -315,8 +315,11 @@ describe('per-channel publication output', () => {
 		const software = softwareFor(site);
 		expect(software.softwareVersion).toBe('1.5.1');
 		expect(software.datePublished).toBe('2026-09-26');
-		expect(software.downloadUrl).toBe(`${site.repo}/releases/tag/v1.5.1`);
-		expect(text(home.body(site))).toContain('1.5.1 is on GitHub; the Store offers 1.5.0');
+		expect(software.downloadUrl).toBe(site.store.url);
+		expect(text(home.body(site))).toContain('1.5.1, in the Microsoft Store and on GitHub');
+		expect(text(download.body(site))).toContain(
+			"1.5.1 is published in the Microsoft Store and on this project's GitHub releases page."
+		);
 		expect(text(home.body(site))).not.toContain('the Store update is pending');
 		expect(verify.body(site)).toContain('open-desktop-authenticator-1.5.1-x64-setup.exe');
 		expect(verify.body(site)).not.toContain('open-desktop-authenticator-1.5.0-');

@@ -5,8 +5,8 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-26',
-	reviewed: '2026-09-26',
+	updated: '2026-09-27',
+	reviewed: '2026-09-27',
 	navTitle: 'Download',
 	script: 'download.js',
 	title: 'Open Desktop Authenticator download and release status',
