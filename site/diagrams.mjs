@@ -49,7 +49,7 @@ ${svg}
  */
 export const timeWindowDiagram = () =>
 	figure(
-		'At one instant, Steam’s clock reads 10:00:30 and computes the code for the window beginning 10:00:30. A device ninety seconds slow reads 09:59:00 and computes the code for the window beginning 09:59:00. Two different windows, two different codes, so Steam refuses the one it is given.',
+		'At one instant, Steam’s clock reads 10:00:30. A device ninety seconds slow reads 09:59:00. It uses a different thirty-second window, so its code can be rejected. The codes are illustrative; this does not specify Steam’s acceptance tolerance.',
 		`					<text x="0" y="22" class="dg-label">The same instant, two clocks</text>
 
 					<!-- Steam -->
@@ -70,10 +70,10 @@ export const timeWindowDiagram = () =>
 					<line x1="270" y1="90" x2="370" y2="90" class="dg-line" stroke-width="2" />
 					<text x="286" y="82" class="dg-label">90 seconds</text>
 
-					<text x="0" y="176" class="dg-text">Different window, different code — so the one you type is refused.</text>`,
-		`Both devices hold the identical secret. Only the window differs, and the window is
-				half the calculation — so a clock ninety seconds out produces a code that is
-				perfectly valid for a moment Steam is no longer checking.`
+					<text x="0" y="176" class="dg-text">A different time window can produce a code Steam rejects.</text>`,
+		`The secret is the same; the time used in the calculation differs. Codes and times
+				are illustrative. Steam's public guidance does not specify exactly how much
+				clock error it accepts, so synchronise your clock rather than relying on a margin.`
 	);
 
 /**
@@ -84,7 +84,7 @@ export const timeWindowDiagram = () =>
  */
 export const tradeHoldDiagram = () =>
 	figure(
-		'Two bars. Transferring an authenticator with Move Authenticator produces a two-day restriction. Removing one and enrolling again produces a fifteen-day restriction.',
+		'Two documented triggers: an authenticator transfer has a two-day restriction; removing the authenticator has a fifteen-day restriction. Other account restrictions can also apply. Check Steam for the actual expiry.',
 		`					<text x="0" y="24" class="dg-label">Transfer — Move Authenticator</text>
 					<rect x="0" y="36" width="62" height="30" rx="6" class="dg-fill-key" />
 					<text x="76" y="56" class="dg-strong">2 days</text>
@@ -93,10 +93,10 @@ export const tradeHoldDiagram = () =>
 					<text x="0" y="112" class="dg-label">Remove, then enrol again</text>
 					<rect x="0" y="124" width="465" height="30" rx="6" class="dg-fill-warn" />
 					<text x="479" y="144" class="dg-strong">15 days</text>
-					<text x="0" y="184" class="dg-text">Same scale. The bar is the wait.</text>`,
-		`Both paths end with a working authenticator on the new device. One of them costs
-				you thirteen extra days of not being able to trade or use the Market, which is why
-				it is worth knowing which one you are about to start.`
+					<text x="0" y="184" class="dg-text">These triggers differ. Other restrictions can also apply.</text>`,
+		`Transfer and removal are different operations. These durations describe their
+				documented restrictions, not a guarantee of your account's next trading date.
+				Existing holds and other restrictions may overlap; use the expiry Steam shows.`
 	);
 
 /**
@@ -107,11 +107,11 @@ export const tradeHoldDiagram = () =>
  */
 export const manifestDiagram = () =>
 	figure(
-		'An encrypted maFile holds the ciphertext. manifest.json holds the salt and initialisation vector. Decryption needs the passphrase plus both files; copying the maFile alone leaves a file that cannot be opened.',
+		'An encrypted SDA maFile holds ciphertext. Its matching manifest entry normally holds the salt and initialisation vector. Decryption needs the passphrase and those parameters; back up the entire maFiles folder.',
 		`					<rect x="0" y="30" width="200" height="86" rx="10" class="dg-fill-panel" />
 					<text x="16" y="56" class="dg-strong">76561…maFile</text>
 					<text x="16" y="80" class="dg-text">ciphertext</text>
-					<text x="16" y="100" class="dg-label">the account</text>
+					<text x="16" y="100" class="dg-label">authenticator data</text>
 
 					<rect x="230" y="30" width="200" height="86" rx="10" class="dg-fill-panel" />
 					<text x="246" y="56" class="dg-strong">manifest.json</text>
@@ -128,7 +128,7 @@ export const manifestDiagram = () =>
 
 					<text x="0" y="156" class="dg-text">Copy only the .maFile and you keep the locked box without</text>
 					<text x="0" y="176" class="dg-text">the parameters needed to unlock it.</text>`,
-		`SDA splits the two halves deliberately, which is why an encrypted maFile copied on
-				its own cannot be opened even with the right passphrase. Copy the whole
-				<code>maFiles</code> folder, never the single file.`
+		`An encrypted SDA maFile needs the correct passphrase and matching salt and IV,
+				normally stored in <code>manifest.json</code>. Copies of those parameters can also
+				work, but the reliable backup is the whole <code>maFiles</code> folder.`
 	);

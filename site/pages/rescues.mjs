@@ -39,25 +39,12 @@ export const codeNotWorking = {
 	sourced: `Clock and account checks from <a href="${VALVE.guard}" rel="noopener">Valve's Steam Guard troubleshooting</a>; email delivery from <a href="${VALVE.emailCode}" rel="noopener">Valve's code-help page</a>; durations from <a href="${VALVE.restrictions}" rel="noopener">Valve's restriction guidance</a>`,
 	navTitle: 'Codes not working',
 	title: 'Steam Guard code not working? Check the clock',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
-		'Steam Guard codes come from the clock, so a device set wrong makes every code wrong. How to fix time sync on Windows and phone, and what to check next.',
-	/*
-	 * TechArticle *and* FAQPage, in one graph.
-	 *
-	 * **This earns no Google rich result, and the comment that used to sit here
-	 * claimed it did.** Google restricted FAQ rich results to health and
-	 * government sites in 2023 and deprecated them outright in May 2026, so the
-	 * "people also ask eligibility" this was added for does not exist. Written
-	 * down rather than quietly corrected, because the mistake is instructive: the
-	 * markup was added on a recalled fact that was two years stale.
-	 *
-	 * It stays because FAQPage remains valid Schema.org, unused structured data
-	 * is harmless, and non-Google consumers — other engines, assistants, anything
-	 * reading the graph — can still use it. Every answer declared here is visible
-	 * on the page, which was the right discipline regardless of who reads it.
-	 */
+		'Steam Guard codes depend on time and the current authenticator secret. Check clock sync, the account, expired codes and replaced authenticators.',
+	// Structured answers must match the visible article. Markup does not promise
+	// a search-engine result treatment.
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@graph': [
@@ -66,7 +53,7 @@ export const codeNotWorking = {
 				headline: 'Steam Guard code not working? Check the clock',
 				author: { '@type': 'Organization', name: s.publisher },
 				publisher: { '@type': 'Organization', name: s.publisher },
-				dateModified: '2026-09-08',
+				dateModified: '2026-09-12',
 				mainEntityOfPage: `${s.origin}/steam-guard-code-not-working`
 			},
 			{
@@ -77,7 +64,7 @@ export const codeNotWorking = {
 						name: 'Why is Steam saying my Steam Guard code is wrong?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Codes are computed from the current time in thirty-second windows. If the clock on the device generating them is off, you are computing codes for a different window than the one Steam is checking, so every code is refused. Valve lists incorrect device time as the first thing to check.'
+							text: 'Steam Guard codes change every thirty seconds. An inaccurate clock can generate codes outside the time range Steam accepts. Valve recommends checking device time and making sure you selected the correct account.'
 						}
 					},
 					{
@@ -85,7 +72,7 @@ export const codeNotWorking = {
 						name: 'How do I fix the time so Steam Guard codes work?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'On Windows, open Settings, Time and language, Date and time, then turn on Set time automatically and Set time zone automatically and press Sync now. On Android or iPhone, enable automatic date, time and time zone, then reopen the Steam app.'
+							text: 'On Windows, open Settings, Time and language, Date and time, enable Set time automatically and press Sync now. Check the displayed time zone; automatic time zone is optional. On a phone, enable automatic date and time, then try a fresh Steam Guard code.'
 						}
 					},
 					{
@@ -93,7 +80,7 @@ export const codeNotWorking = {
 						name: 'My clock is correct and codes are still refused. What else?',
 						acceptedAnswer: {
 							'@type': 'Answer',
-							text: 'Check you are entering the code for the correct account, that the code did not roll over while you were typing, and whether the authenticator was moved or re-added since the copy you are using was made. An account can only be on one authenticator at a time, so an older copy of the secret produces codes that are permanently dead.'
+							text: 'Check the account, use a fresh code that has not already been accepted, and pause if Steam reports too many attempts. If Steam replaced the authenticator, an old copy of its secret cannot authenticate the account; importing an unchanged backup alone does not replace it.'
 						}
 					}
 				]
@@ -104,20 +91,19 @@ export const codeNotWorking = {
 		<article class="guide numbered">
 			<h1>Steam Guard code not working? Check the clock</h1>
 			<p class="lede">
-				When Steam refuses code after code, the first thing to check is not the code.
-				It is the clock on the device generating it — the cause Valve itself lists
-				first. This page explains why, fixes it in about a minute, then covers the
-				other causes in the order worth working through.
+				Valve recommends checking the device's time and the selected account when
+				authenticator codes fail. Start with those checks, then distinguish an expired
+				code, a replaced authenticator and a sign-in problem. Removing the authenticator
+				is not a routine troubleshooting step.
 			</p>
 
 			<div class="answer">
 				<span class="eyebrow">Short answer</span>
 				<p>
-					A Steam Guard code is computed from the current time, so a device whose
-					clock is wrong produces codes for the wrong thirty-second window and Steam
-					refuses every one. <strong>Turn on automatic date, time and time zone on
-					the device generating the codes, then sync.</strong> Synchronising the clock
-					often fixes time-related code failures in under a minute.
+					A Steam Guard code depends on the current time. A clock far enough out of
+					sync can make it fail. <strong>Enable automatic date and time on the device
+					generating codes, then synchronise it.</strong> Try a fresh code after the
+					clock updates. This applies to authenticator codes, not emailed login codes.
 				</p>
 				<p>
 					If the clock is already correct, check that the code belongs to the account
@@ -128,11 +114,11 @@ export const codeNotWorking = {
 			<ul class="stat-strip">
 				<li>
 					<b>30<small> sec</small></b>
-					<span>How long one code is valid. Miss the window and it is simply the wrong answer.</span>
+					<span>How often the generated code changes. Steam's exact acceptance tolerance is not documented here.</span>
 				</li>
 				<li>
-					<b>~1<small> min</small></b>
-					<span>What the clock fix takes, start to finish, on Windows or a phone.</span>
+					<b>1<small> use</small></b>
+					<span>Valve says an accepted authenticator code can be used only once. Wait for the next code for another sign-in.</span>
 				</li>
 				<li class="cost">
 					<b>5<small> days</small></b>
@@ -145,16 +131,15 @@ export const codeNotWorking = {
 				A Steam Guard code is not random. It is computed from two ingredients: a
 				secret your authenticator holds, and the current time, rounded to a
 				thirty-second window. Steam runs the same computation on its side and checks
-				that the answers match. If your device's clock is out, you are computing codes
-				for a different window than the one Steam is checking — so every code you type
-				is valid, just not <em>now</em>.
+				that the answers match. Enough clock skew can put your code outside the
+				range Steam accepts. Thirty seconds describes the generation interval;
+				it is not a guarantee that Steam rejects a code at the exact instant the
+				countdown reaches zero.
 			</p>
 			<p>
-				Valve's own troubleshooting says exactly this:
-				<a href="${VALVE.guard}" rel="noopener">"check the time on your phone and make
-				sure it is accurate. The authenticator codes are generated using the phone's
-				time, and if the time is off, the codes will be incorrect."</a> The same
-				arithmetic applies to any device generating codes, including a PC.
+				<a href="${VALVE.guard}" rel="noopener">Valve's troubleshooting starts with
+				checking the phone's time</a>. Desktop implementations, including ours,
+				also generate codes from a shared secret and a Unix timestamp.
 			</p>
 
 ${timeWindowDiagram()}
@@ -166,10 +151,11 @@ ${timeWindowDiagram()}
 					<p>Settings → Time &amp; language → Date &amp; time.</p>
 				</li>
 				<li>
-					<strong>Turn both switches on</strong>
+					<strong>Enable automatic time</strong>
 					<p>
-						<em>Set time automatically</em> and <em>Set time zone automatically</em>.
-						The second one matters as much as the first.
+						Turn on <em>Set time automatically</em>. Check that the displayed time
+						zone matches your location; you may choose it manually if automatic
+						time zone is unavailable.
 					</p>
 				</li>
 				<li>
@@ -180,33 +166,41 @@ ${timeWindowDiagram()}
 					</p>
 				</li>
 			</ol>
+			<p class="hint">
+				<a href="https://support.microsoft.com/en-us/windows/experience/personalization/set-time-date-and-time-zone-settings-in-windows"
+				rel="noopener">Microsoft's time-settings guide</a> covers automatic and
+				manual time zones. If sync is unavailable on a managed PC, contact its administrator.
+			</p>
 			<p class="pull">
-				The version that fools people is a wrong time <em>zone</em> with a
-				right-looking clock: the wall time reads correctly while the underlying UTC
-				time — the one codes are actually computed from — is hours out.
+				Codes use elapsed time from a fixed UTC reference, not the displayed time
+				zone. Changing only the zone does not change that timestamp. Manually
+				setting the clock to a local time while the wrong zone is selected can,
+				however, leave the underlying timestamp wrong.
 			</p>
 
 			<h2>How do I fix the time on a phone?</h2>
 			<p>
-				<strong>Android:</strong> Settings → System → Date &amp; time → automatic
-				date, time and zone on. <strong>iPhone:</strong> Settings → General → Date
-				&amp; Time → Set Automatically. Then close and reopen the Steam app so it
-				notices the change.
+				<strong>Android:</strong> search Settings for <em>Date &amp; time</em> and
+				enable automatic or network-provided time; menu names vary by manufacturer.
+				<strong>iPhone:</strong> Settings → General → Date &amp; Time → Set Automatically
+				(or Set Time Automatically, depending on the version). See
+				<a href="https://support.apple.com/101619" rel="noopener">Apple's time-settings help</a>.
+				Reopen Steam and try the next code. Managed-device settings may require an
+				administrator to enable time synchronisation.
 			</p>
 
 			<h2>My clock is right and codes are still refused. What else?</h2>
 			<dl class="defs">
 				<dt>The wrong account</dt>
 				<dd>
-					Valve's second listed cause, and it catches everyone running more than one
-					account: <a href="${VALVE.guard}" rel="noopener">"make sure you are entering
-					codes for the correct account."</a> Check the account name shown above the
-					code.
+					Check the account name shown above the code against the Steam login name.
+					A profile's display name can differ. Valve specifically recommends this
+					check for people with multiple accounts.
 				</dd>
-				<dt>The code expired mid-typing</dt>
+				<dt>The code is old or has already been used</dt>
 				<dd>
-					Codes roll every thirty seconds. If one rolled while you typed it, the code
-					you entered had just died. Wait for a fresh one and enter it promptly.
+					Wait for a fresh code and enter it promptly. Do not reuse a code that
+					already completed another sign-in: Valve describes the codes as single-use.
 				</dd>
 				<dt>Too many attempts</dt>
 				<dd>
@@ -216,13 +210,11 @@ ${timeWindowDiagram()}
 				</dd>
 				<dt>The authenticator was moved or re-added since</dt>
 				<dd>
-					Adding an authenticator on a new device replaces the old secret, and
-					<a href="${VALVE.guard}" rel="noopener">an account can only be on one
-					authenticator at a time</a>. Any copy of the previous secret — an old
-					maFile, an old phone — keeps generating codes confidently, and every one of
-					them is dead. <a href="/what-is-a-mafile">The secret in the file is the
-					authenticator</a>: if Steam has been handed a new one since that copy was
-					made, the copy is a relic.
+					If Steam replaced the authenticator, an old phone or maFile can still
+					display codes made from the previous secret, but those codes no longer
+					authenticate this account. Use the current authenticator. Simply importing
+					an unchanged backup into another desktop tool does not itself replace
+					anything on Steam. See <a href="/what-is-a-mafile">what a maFile contains</a>.
 				</dd>
 			</dl>
 
@@ -234,31 +226,35 @@ ${timeWindowDiagram()}
 
 			<h3>Steam says "invalid credentials" rather than a bad code</h3>
 			<p>
-				It does not prove the code was wrong. Steam checks the password first, so a
-				mistyped password never gets as far as the code. Re-enter the account name and
-				password carefully — and before reaching for account recovery, know what it
+				A general sign-in error does not isolate the authenticator as the cause.
+				Check the login name, keyboard layout and password — and before using a
+				password reset purely as a troubleshooting experiment, know what it
 				costs: <a href="${VALVE.restrictions}" rel="noopener">resetting a forgotten
 				password restricts trading and the Market for 5 days</a>, or 30 if the account
 				has been inactive for more than two months. <em>Changing</em> a password you
-				still know, from Steam's settings, carries no such restriction. Those are two
-				different operations and only one of them is expensive.
+				still know, from Steam's settings, carries no such restriction. If you
+				suspect someone else has access, secure the account promptly regardless of
+				the trading restriction.
 			</p>
 
 			<h3>The code screen never appears, or no code arrives by email</h3>
 			<p>
-				That is a different problem from a code being refused: nothing was generated
-				to reject. Check the address on the account and the spam folder first. For an
+				In Steam Mobile, open Steam Guard and choose <strong>Show Steam Guard code</strong>.
+				If Steam is asking for an email code instead, check the address on the account
+				and its spam folder. For an
 				<strong>emailed</strong> code,
 				<a href="${VALVE.emailCode}" rel="noopener">Valve's guidance is to allow up
 				to thirty minutes and then sign in again to request another</a>. For an
-				<strong>SMS</strong> code the advice is the opposite — Steam stops sending
-				after too many requests in a row, so asking repeatedly delays it further.
+				<strong>SMS</strong> code, avoid repeated requests: <a href="${VALVE.guard}"
+				rel="noopener">Valve says delivery can stop after too many messages and
+				recommends waiting a few minutes to an hour</a>. Login-attempt rate limits
+				and message-delivery limits are different problems.
 			</p>
 
 			<h3>Codes work for one account but not another</h3>
 			<p>
-				First check the correct account is selected — the clock is shared, so it
-				cannot be right for one account and wrong for another. If the account is
+				If both codes come from the same app and clock, a general clock problem is
+				less likely. First check the correct account is selected. If the account is
 				right, the authenticator for that one may have been moved, replaced or
 				enrolled again with a different secret, which leaves your copy generating
 				codes for a secret Steam has replaced.
@@ -266,21 +262,22 @@ ${timeWindowDiagram()}
 
 			<h3>Codes worked yesterday and stopped today with no changes</h3>
 			<p>
-				Something changed even if you did not change it: a clock that drifted past
-				the tolerance, a time-zone update, or an authenticator added elsewhere. Work
-				down this page in order — the first two cost a minute to rule out.
+				Possible causes include clock drift, a clock correction after sleep, a
+				temporary Steam error or an authenticator replaced elsewhere. Follow the
+				checks above and read any Steam security emails. Unexpected account changes
+				are a reason to use <a href="https://help.steampowered.com/" rel="noopener">Steam
+				Support's account-recovery flow</a> from a trusted device.
 			</p>
 
 			<h2>Can a desktop authenticator avoid this entirely?</h2>
 			<p>
-				A desktop authenticator cannot assume the PC's clock is right — a desktop
-				clock can drift or simply be misconfigured, and unlike a phone nothing
-				necessarily corrects it. So ${s.name} asks
-				Steam's own servers what time it is and computes codes against
-				<em>Steam's</em> clock, not the machine's. A drifted PC clock then stops
-				mattering, because the code is computed in the window Steam is actually
-				checking. That is not cleverness — it is doing the arithmetic with the right
-				inputs, and it is worth asking of any authenticator you use.
+				${s.name} queries Steam's time service and applies the measured difference
+				to the local clock. It refreshes that measurement and detects clock jumps.
+				This helps with drift, but requires a successful network request; an offline
+				PC or unavailable proxy can prevent it. If the app says the clock has not
+				been checked against Steam, correct Windows time, check the connection or
+				configured proxy, and allow the app to retry. Time correction cannot fix
+				a wrong account or a replaced authenticator secret.
 			</p>
 
 			<h2>Related</h2>
@@ -308,10 +305,10 @@ export const moveAuthenticator = {
 	sourced: `Steps checked against <a href="${VALVE.transfer}" rel="noopener">Valve's transfer walkthrough</a>; durations against its <a href="${VALVE.guard}" rel="noopener">Guard</a> and <a href="${VALVE.restrictions}" rel="noopener">restriction</a> guidance`,
 	navTitle: 'New phone',
 	title: 'Move your Steam authenticator to a new phone: 2 days, not 15',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
-		"How to move Steam Guard to a new phone using Steam's own transfer route — a 2-day trade hold, instead of the 15 days that removing and re-adding costs.",
+		"Move Steam Guard to a new phone: Valve's 2-day restriction, SMS requirements, saving the recovery code, and options when the old phone is gone.",
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'HowTo',
@@ -320,18 +317,18 @@ export const moveAuthenticator = {
 		step: [
 			{ '@type': 'HowToStep', name: 'Install Steam Mobile on the new phone and sign in' },
 			{ '@type': 'HowToStep', name: 'Choose Move Authenticator on the Steam Guard page' },
-			{ '@type': 'HowToStep', name: 'Or confirm by SMS if the old authenticator is gone' },
-			{ '@type': 'HowToStep', name: 'Use the recovery code or Steam Support as a last resort' }
+			{ '@type': 'HowToStep', name: 'Enter the code sent to the linked phone number' },
+			{ '@type': 'HowToStep', name: 'Save the new recovery code and check the new authenticator' }
 		]
 	}),
 	body: (s) => `
 		<article class="guide">
 			<h1>Move your Steam authenticator to a new phone</h1>
 			<p class="lede">
-				There is a right way and an expensive way to do this, and the difference is
-				thirteen days of not being able to trade. Transferring costs a two-day
-				restriction. Removing the authenticator and adding a new one costs fifteen.
-				It is easy to remove and re-enrol without realising that Steam provides a shorter transfer route.
+				Use Steam's transfer option when changing phones. Valve documents a two-day
+				trade and Market restriction after transfer; removing the authenticator
+				instead triggers fifteen days. Keep the old authenticator and linked phone
+				number accessible until the new setup is checked.
 			</p>
 
 			<div class="callout callout-warn">
@@ -347,14 +344,14 @@ export const moveAuthenticator = {
 			<div class="answer">
 				<span class="eyebrow">Short answer</span>
 				<p>
-					If the old authenticator still works, use <strong>Move Authenticator</strong>
-					inside the Steam Mobile app. That is the supported transfer and it costs a
-					two-day trade restriction.
+					Install Steam Mobile on the new phone, sign in, and choose
+					<strong>Move Authenticator</strong>. Valve's walkthrough asks for a code
+					sent to the linked phone number, then shows a new recovery code to save.
 				</p>
 				<p>
 					Removing the authenticator and enrolling again instead costs
-					<strong>fifteen days</strong> — the same end state, thirteen extra days of
-					not trading. Which path you are on is decided before you start.
+					<strong>fifteen days</strong>, compared with the transfer's two-day
+					restriction. Other existing restrictions may still apply after either timer ends.
 				</p>
 			</div>
 
@@ -362,11 +359,11 @@ export const moveAuthenticator = {
 			<ul class="stat-strip">
 				<li>
 					<b>2<small> days</small></b>
-					<span>Transferring with Move Authenticator, if the old one still works.</span>
+					<span>Valve's transfer flow, including its SMS route when the old authenticator is unavailable.</span>
 				</li>
 				<li class="cost">
 					<b>15<small> days</small></b>
-					<span>Removing it and enrolling again. Same end state, thirteen days more.</span>
+					<span>Removing the authenticator triggers this restriction even if you re-enrol immediately.</span>
 				</li>
 			</ul>
 
@@ -385,7 +382,7 @@ export const moveAuthenticator = {
 							<td><span class="num warn">15 days</span><br>unable to trade or use the Market</td>
 						</tr>
 						<tr>
-							<th scope="row">Trades created in the first <strong>7 days</strong> after adding one</th>
+							<th scope="row">Standard trades in the first <strong>7 days</strong> after adding one; CS2 trades excluded</th>
 							<td><span class="num warn">up to 15 days</span><br>held on those trades specifically</td>
 						</tr>
 					</tbody>
@@ -403,12 +400,19 @@ ${tradeHoldDiagram()}
 
 			<h2>1. You still have the old authenticator — transfer it</h2>
 			<p>
-				This is the two-day path, and the one to use if you possibly can. Install the
+				This is Valve's documented two-day path. Install the
 				Steam Mobile app on the new phone and sign in; confirm that sign-in using the
 				authenticator you still have. Then on the new device open the
 				<strong>Steam Guard</strong> page, choose <strong>Move Authenticator</strong>,
 				and enter the code Steam texts you.
 				<a href="${VALVE.transfer}" rel="noopener">Valve's walkthrough is here.</a>
+			</p>
+			<p>
+				This walkthrough also requires access to the linked phone number. After
+				entering the code, <strong>write down the new recovery code</strong>. Check
+				that the new app generates a working code before wiping or giving away the
+				old phone. Uninstalling an app is different from choosing Remove Authenticator;
+				do not remove the account's authenticator after completing the transfer.
 			</p>
 
 			<h2>2. Old phone gone, number still yours</h2>
@@ -432,7 +436,7 @@ ${tradeHoldDiagram()}
 			<h2>4. None of the above — Steam Support</h2>
 			<p>
 				A help request to remove the authenticator, with proof the account is yours:
-				purchase history, the original email, payment details. Expect it to take
+				the evidence requested by the official recovery wizard. Expect it to take
 				time: Steam has to satisfy itself that the account is yours before detaching
 				its second factor — the same check that stops somebody else asking on your
 				behalf.
@@ -442,9 +446,12 @@ ${tradeHoldDiagram()}
 			<h2>I am getting a new phone soon. What should I do now?</h2>
 			<p>
 				If you know a new phone is coming and you are <em>keeping the number</em>,
-				there is nothing to do in advance — transfer it once the phone arrives. If you
-				are <em>losing the number too</em>, deal with it before the old phone stops
-				working, while the cheap path is still open to you.
+				you can transfer once the phone arrives. Confirm you can still receive Steam's
+				messages and keep your recovery code accessible. If you are <em>losing the
+				number too</em>, review Steam's <strong>Account Details → Manage your phone
+				number</strong> and recovery options while you still have access. Do not assume
+				a working old app alone bypasses the phone-code step. Valve's fallback removal
+				instructions carry the 15-day restriction.
 			</p>
 
 			<h2>Can I stop doing this every time I change phone?</h2>
@@ -455,7 +462,8 @@ ${tradeHoldDiagram()}
 				secret lives in a <a href="/what-is-a-mafile">maFile</a> you can back up
 				yourself. It is a real trade-off rather than a free win: a file can be stolen
 				in ways a phone cannot, which is why ours keeps it
-				<a href="/security">encrypted and offline</a>. Steam allows only one
+				<a href="/security">encrypted locally</a>. Confirmations and transfers still
+				need a Steam connection. Steam allows only one
 				authenticator on an account at a time, so this is a move rather than an
 				addition — <a href="/steam-mobile-vs-desktop-authenticator">the comparison is
 				here</a>.
@@ -472,8 +480,8 @@ ${tradeHoldDiagram()}
 					${s.short} uses the transfer, not remove-and-add, and we have run it against
 					a real account and watched the two-day restriction apply —
 					<a href="/move-steam-authenticator-to-pc">the details are here</a>. For any
-					other desktop tool, assume fifteen days unless you have tested that specific
-					route, and check which of the two operations it performs before you start.
+					other desktop tool, read its documented migration procedure and Steam's
+					warnings before starting; do not experiment with authenticator removal.
 				</p>
 			</div>
 
@@ -507,8 +515,8 @@ export const revocationCode = {
 	sourced: `Recovery steps checked against <a href="${VALVE.guard}" rel="noopener">Valve's guidance</a>; removal requirements against <a href="https://github.com/DoctorMcKay/node-steamcommunity/blob/master/components/twofactor.js" rel="noopener">node-steamcommunity's public implementation</a>`,
 	navTitle: 'Recovery code',
 	title: 'Steam revocation code: what it is, and how to get it back',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
 		'The R-code that detaches a Steam authenticator when the device is gone — what it does, and how to retrieve yours while the authenticator still works.',
 	structuredData: (s) => ({
@@ -517,7 +525,7 @@ export const revocationCode = {
 		headline: 'Steam revocation code: what it is, and how to get it back',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
-		dateModified: '2026-09-08',
+		dateModified: '2026-09-12',
 		mainEntityOfPage: `${s.origin}/steam-revocation-code`
 	}),
 	body: (s) => `
@@ -557,12 +565,12 @@ export const revocationCode = {
 			</p>
 			<p>
 				It is not a master key on its own, and it is worth being exact about that.
-				Removal happens <strong>inside an authenticated Steam session</strong> — you
-				go through Steam's recovery pages as the account owner and supply the code
-				there. Steam's own API works the same way: the removal call takes an access
-				token <em>and</em> the code. So the code is one of two things a removal needs,
-				not the whole of it. It also has no other power: it does not generate codes
-				and it cannot approve a trade.
+				Steam's recovery process also checks account access or ownership. You do
+				not necessarily need to be already signed in to begin that process. The
+				public implementation of the removal API requires an access token as well
+				as the recovery code; that API detail is not a complete specification of
+				Steam's web recovery wizard. The recovery code does not generate login
+				codes or confirmation signatures.
 			</p>
 
 			<h2>Where do I find my Steam recovery code?</h2>
@@ -574,15 +582,14 @@ export const revocationCode = {
 			</p>
 			<div class="callout">
 				<p>
-					<a href="${VALVE.guard}" rel="noopener">"In Steam Mobile App, go to the Steam
-					Guard page, tap the gear icon, then tap <strong>Recovery Code</strong>."</a>
+					In Steam Mobile, open <strong>Steam Guard → gear icon → Recovery Code</strong>.
+					<a href="${VALVE.guard}" rel="noopener">Valve documents this in its FAQ</a>.
 				</p>
 			</div>
 			<p>
-				So the honest framing is: it is displayed once <em>unprompted</em>, and
-				available on demand for as long as the authenticator still works. The moment
-				it becomes unrecoverable is the moment you lose access — which is precisely
-				when you need it. Look it up now rather than later.
+				Save it while you have access. Losing the device can remove the easiest
+				way to retrieve it, but a previously saved note or backup may still contain
+				the current code.
 			</p>
 			<p>Other places a copy may survive:</p>
 			<ul>
@@ -605,13 +612,16 @@ export const revocationCode = {
 				<li>
 					<strong>Go to Steam's own help site</strong>
 					<p>
-						Not a search result, not a link somebody sent you. Choose the option for
-						no longer having access to your authenticator.
+						Open <a href="https://help.steampowered.com/" rel="noopener">Steam Support</a>,
+						choose <strong>Help, I can't sign in</strong>, then the lost or deleted
+						mobile-authenticator option. Identify your account and follow the ownership
+						checks. The exact choices depend on the recovery methods still available.
 					</p>
 				</li>
 				<li>
-					<strong>Enter the recovery code</strong>
-					<p>The authenticator is detached from the account.</p>
+					<strong>Use the recovery-code option when Steam offers it</strong>
+					<p>Enter the code only in Steam's own recovery form and read the confirmation
+					before approving removal. The code alone does not skip the other checks.</p>
 				</li>
 				<li>
 					<strong>Set up a fresh authenticator</strong>
@@ -634,14 +644,11 @@ export const revocationCode = {
 
 			<div class="callout callout-warn">
 				<p>
-					<strong>Treat the code as sensitive.</strong> Anyone who has both your
-					recovery code <em>and</em> authenticated access to your account may be able
-					to remove the authenticator — it is one half of a pair, not a standalone
-					master key, which is exactly why it should never travel alongside the
-					other half. Enter it only where Steam's own site or app asks for it, in the
-					recovery and authenticator-removal flows it belongs to — never into another
-					website, never to a person who contacts you, and
-					<a href="/support">never into a support form</a>, including ours.
+					<strong>Treat the code as sensitive.</strong> Combined with other account
+					access, it can allow authenticator removal. Enter it only into Steam's
+					own recovery or authenticator-removal form. Do not send it to a person who
+					contacts you or include it in a third-party
+					<a href="/support">support request</a>, including ours.
 				</p>
 			</div>
 
@@ -665,17 +672,18 @@ export const revocationCode = {
 
 			<h3>Can someone steal my account with the recovery code alone?</h3>
 			<p>
-				Not on its own — removal happens inside an authenticated session, so they
-				would need account access as well. It is still one of the two halves, which
-				is exactly why it should not be stored beside the other.
+				It is not a normal sign-in credential. Steam also checks account access or
+				ownership during recovery. Still treat a leaked code as a compromised recovery
+				secret and review account security; do not assume it is harmless because your
+				password was not included.
 			</p>
 
 			<h3>What if I never wrote it down and the device is gone?</h3>
 			<p>
-				Then Steam Support is the remaining route, and
-				<a href="/lost-authenticator">the lost-access page</a> is the order to work
-				through. Steam will verify account ownership before removing the
-				authenticator.
+				First check for a working backup and whether you can receive messages at
+				Steam's linked phone number. Valve documents an SMS transfer route for a
+				lost authenticator. If neither works, use Steam Support. The
+				<a href="/lost-authenticator">lost-access page</a> explains the recovery order.
 			</p>
 
 			<h2>How should I store it so this does not happen again?</h2>
@@ -685,12 +693,11 @@ export const revocationCode = {
 				revokes is not a backup — losing the device loses both at once.
 			</p>
 			<p>
-				This is also somewhere software can refuse to let you fail. When ${s.name}
-				creates an authenticator it does not treat the account as active until the
-				code has been shown and you have confirmed it is written down — at the one
-				moment the code exists and nothing is yet at risk. That ceremony exists
-				because many preventable cases on <a href="/lost-authenticator">the lost-access
-				page</a> begin with "I never wrote it down".
+				${s.name} asks you to save the recovery code and acknowledge it during
+				setup. Finish that step and the encrypted recovery backup before treating
+				the setup as complete. During a transfer, Steam has already replaced the
+				authenticator by the time the new code is shown; this is a recovery step
+				for an account change that has already happened.
 			</p>
 
 			<h2>Related</h2>
@@ -719,8 +726,8 @@ export const encryptedMafile = {
 	sourced: `Encryption, salt and IV handling checked against <a href="${SDA_ENCRYPTOR}" rel="noopener">SDA's FileEncryptor source</a>; manifest entries and file mapping against <a href="${SDA_MANIFEST}" rel="noopener">SDA's Manifest source</a>`,
 	navTitle: 'Encrypted maFiles',
 	title: 'Encrypted maFiles: the password, and the manifest',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
 		'An encrypted SDA maFile needs the passphrase set in SDA plus the manifest.json beside it. Why copying the file alone fails, and what to try next.',
 	structuredData: (s) => ({
@@ -729,7 +736,7 @@ export const encryptedMafile = {
 		headline: 'Encrypted maFiles: the password, and the manifest',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
-		dateModified: '2026-09-08',
+		dateModified: '2026-09-12',
 		mainEntityOfPage: `${s.origin}/encrypted-mafile`
 	}),
 	body: (s) => `
@@ -737,8 +744,8 @@ export const encryptedMafile = {
 			<h1>Encrypted maFiles: the password, and the manifest</h1>
 			<p class="lede">
 				You have a <code>.maFile</code>, something is asking for a password, and
-				nothing you type works. Two facts untangle nearly every case: which password
-				it actually wants, and the second file it cannot work without.
+				nothing you type works. Start by checking which password it needs, and whether
+				you kept the matching encryption information with the file.
 			</p>
 
 			<div class="answer">
@@ -750,9 +757,9 @@ export const encryptedMafile = {
 					initialisation vector live in that file rather than in the maFile.
 				</p>
 				<p>
-					That is why copying a single <code>.maFile</code> to a new machine leaves
-					you with something that cannot be opened even when the passphrase is
-					correct. <strong>Copy the whole <code>maFiles</code> folder.</strong>
+					A lone encrypted <code>.maFile</code> is an incomplete backup unless you
+					also preserved its matching salt and IV elsewhere.
+					<strong>Copy the whole <code>maFiles</code> folder.</strong>
 				</p>
 			</div>
 
@@ -768,15 +775,15 @@ export const encryptedMafile = {
 			<h2>Why won't my encrypted maFile open on another machine?</h2>
 			<p>
 				SDA does not keep everything needed for decryption inside the maFile itself.
-				<code>manifest.json</code>, in the same folder and keyed by account, stores
+				<code>manifest.json</code>, in the same folder, maps each filename to
 				the salt used to derive the encryption key from your passphrase and the
 				initialisation vector used by AES-CBC. The practical rule:
 			</p>
 			<div class="callout">
 				<p>
-					<strong>An encrypted maFile copied without <code>manifest.json</code>
-					cannot be opened, even with the correct passphrase.</strong> Copy the
-					whole <code>maFiles</code> folder, never the one file.
+					<strong>Decryption needs the matching salt and IV as well as the
+					passphrase.</strong> SDA stores those values in <code>manifest.json</code>.
+					Copy the whole <code>maFiles</code> folder together, preserving filenames.
 				</p>
 			</div>
 ${manifestDiagram()}
@@ -805,11 +812,11 @@ ${manifestDiagram()}
 					</p>
 				</li>
 				<li>
-					<strong>If the manifest is genuinely gone, stop trying to open it</strong>
+					<strong>If the matching encryption data is gone, use account recovery</strong>
 					<p>
-						No tool can reconstruct a missing random salt and initialisation vector
-						from the ciphertext alone, so treat any website claiming guaranteed
-						recovery as unsafe. Move to
+						Ordinary importers cannot decrypt without the matching salt and IV.
+						They could survive in another backup even if the original manifest is
+						gone. Do not upload the files to a website promising recovery. Move to
 						<a href="/lost-authenticator">account recovery</a> instead — that path
 						still works without the file.
 					</p>
@@ -832,10 +839,10 @@ ${manifestDiagram()}
 			</ul>
 			<p>
 				<a href="/import-from-sda">${s.short}'s importer</a> checks whether the
-				decrypted result actually parses as a maFile, so it can say the passphrase
-				did not open the file rather than handing you garbage — but no tool can tell
-				you which of those three went wrong, or what the right passphrase is. The
-				mathematics genuinely does not know.
+				decrypted result parses as a maFile and checks manifest fields. That can
+				catch missing or malformed data, but a generic decryption error alone does
+				not prove which input is wrong. Valid JSON is also not cryptographic proof
+				that a file was never modified.
 			</p>
 
 			<h2>Other things that look like a passphrase problem</h2>
@@ -844,15 +851,18 @@ ${manifestDiagram()}
 			<p>
 				Open a copy in a text editor. Readable field names like
 				<code>shared_secret</code> mean it is not encrypted and nothing is being asked
-				of you. One long unbroken run of base64 usually means it is encrypted.
+				of you. Base64 text, possibly split across lines, is consistent with SDA
+				encryption but does not by itself prove the file is intact.
 				<a href="/how-to-open-mafile">The full walkthrough is here.</a>
 			</p>
 
 			<h3>I have the manifest but it still will not open</h3>
 			<p>
-				Check the manifest belongs to <em>these</em> files. It is keyed by SteamID, so
-				a manifest from a different SDA installation will be present, valid JSON, and
-				completely wrong for the file you are opening.
+				Match the entry's <code>filename</code> to the original maFile name, and
+				check that <code>encryption_salt</code> and <code>encryption_iv</code> came
+				from the same backup. The SteamID alone is insufficient: SDA can generate
+				new salt and IV values when it rewrites or re-encrypts an account. Restore
+				a complete matching snapshot rather than mixing files from different dates.
 			</p>
 
 			<h3>Can I decrypt it without SDA?</h3>
@@ -866,10 +876,11 @@ ${manifestDiagram()}
 
 			<h2>What if I have lost the passphrase completely?</h2>
 			<p>
-				Then the file's contents are unreachable. That is what encryption is for, and
-				anything claiming to crack it is either lying or describing a guessing attack
-				that only succeeds against weak or predictable passphrases. The account itself is not lost, though.
-				In order:
+				There is no password-reset service for SDA encryption. Recovery depends on
+				finding the passphrase, another usable copy, or guessing the correct passphrase;
+				a strong unknown passphrase makes guessing impractical. Check your password
+				manager, old records, keyboard layout and remembered variants locally. The
+				Steam account can still have other recovery routes:
 			</p>
 			<ol>
 				<li>
@@ -879,15 +890,16 @@ ${manifestDiagram()}
 					names mean unencrypted.
 				</li>
 				<li>
-					<strong>Any still-working authenticator</strong> — the Steam app on a
-					phone, SDA on another machine — can show the
-					<a href="/steam-revocation-code">recovery code</a>, which removes and
-					re-adds the authenticator cleanly.
+					<strong>A still-working copy of this authenticator.</strong> Preserve it
+					and make a fresh protected backup before changing anything. Steam Mobile
+					can show its recovery code; a desktop file may contain one. A recovery
+					code removes an authenticator when used in recovery; it does not add a
+					replacement automatically and removal carries a 15-day restriction.
 				</li>
 				<li>
 					<strong>Neither?</strong> <a href="/lost-authenticator">The lost-access
-					page</a> — from here it is the recovery code you hopefully wrote down,
-					or Steam Support.
+					page</a> covers an available SMS transfer, a saved recovery code, and
+					Steam Support when those options are unavailable.
 				</li>
 			</ol>
 

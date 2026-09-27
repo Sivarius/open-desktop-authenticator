@@ -17,6 +17,20 @@ import { afterEach, describe, expect, it } from 'vitest';
 const ROOT = join(__dirname, '..');
 const BASH = process.platform === 'win32' ? 'C:/Program Files/Git/bin/bash.exe' : 'bash';
 const roots: string[] = [];
+const NAVER_FILES = [
+	'naver015043b353457e37f101398183fc0f66.html',
+	'naver3a262f5d49c869bcadbeb2a27813c638.html',
+	'naverffe4bef1c48dea0d9e91f4f71d934965.html'
+];
+
+function expectNaverVerificationFiles(directory: string): void {
+	for (const file of NAVER_FILES) {
+		expect(readFileSync(join(directory, file), 'utf8').trim(), file).toBe(
+			`naver-site-verification: ${file}`
+		);
+	}
+	expect(readFileSync(join(directory, 'sitemap.xml'), 'utf8')).not.toMatch(/naver[0-9a-f]+/);
+}
 
 afterEach(() => {
 	for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
@@ -188,6 +202,7 @@ chown() {
 		const build = () => {
 			const result = run(process.execPath, ['site/build.mjs'], source);
 			expect(result.status, result.stderr).toBe(0);
+			expectNaverVerificationFiles(join(source, 'site', 'dist'));
 		};
 		const archive = (name: string) => {
 			const path = join(root, name);
@@ -395,6 +410,7 @@ chown() {
 		const firstArchive = archive('first.tgz');
 		const first = deploy(firstArchive);
 		expect(first.status, first.stderr).toBe(0);
+		expectNaverVerificationFiles(live);
 		const firstIndex = readFileSync(join(live, 'index.html'), 'utf8');
 		const firstAssets = assetsIn(firstIndex);
 		expect(firstAssets.length).toBeGreaterThan(0);
@@ -422,6 +438,7 @@ chown() {
 		writeFileSync(destinations, '');
 		const retry = deploy(secondArchive, '', `${posix(live)}/unused/..`);
 		expect(retry.status, retry.stderr).toBe(0);
+		expectNaverVerificationFiles(live);
 		expect(existsSync(secondArchive)).toBe(false);
 		const currentIndex = readFileSync(join(live, 'index.html'), 'utf8');
 		expect(currentIndex).not.toBe(firstIndex);

@@ -380,7 +380,7 @@ describe('per-channel publication output', () => {
 		const start = html.indexOf('<h2>What it pays for</h2>');
 		expect(start, 'the expenses section disappeared').toBeGreaterThanOrEqual(0);
 		const expenses = html.slice(start, html.indexOf('<div class="origin-note">', start));
-		expect(expenses).toContain('The server this runs on');
+		expect(expenses).toContain('Website hosting and the domain');
 		expect(expenses).toContain('Time');
 		expect(expenses).not.toMatch(/code-signing certificate/i);
 		expect(expenses).not.toContain('the largest single cost');

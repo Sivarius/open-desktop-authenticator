@@ -33,15 +33,15 @@ const OURS = [
 		downloads: false
 	},
 	{
-		address: 'github.com/opendesktopauthenticator',
-		href: 'https://github.com/opendesktopauthenticator',
-		what: 'The GitHub organisation. The source, the public build workflow, and the releases.',
+		address: 'github.com/opendesktopauthenticator/open-desktop-authenticator',
+		href: 'https://github.com/opendesktopauthenticator/open-desktop-authenticator',
+		what: 'The project repository: source, public build workflow and releases. Use its Releases page for direct downloads.',
 		downloads: true
 	},
 	{
 		address: 'apps.microsoft.com — Open Desktop Authenticator',
 		href: 'https://apps.microsoft.com/detail/9NMM2XJ6HZ1D',
-		what: 'The Microsoft Store listing, published by MASTERPANEL LLC. Microsoft re-signs what it distributes here.',
+		what: 'The Microsoft Store listing for product ID 9NMM2XJ6HZ1D, published by MASTERPANEL LLC. Microsoft signs the Store AppX package.',
 		downloads: true
 	},
 	{
@@ -54,8 +54,8 @@ const OURS = [
 
 export const official = {
 	slug: 'official',
-	updated: '2026-08-27',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Official domains',
 	title: 'Official domains for Open Desktop Authenticator',
 	description:
@@ -74,9 +74,10 @@ export const official = {
 			<div class="callout">
 				<p>
 					This is the complete list. <strong>If an address is not on it, it is not
-					ours</strong> — however similar the name, however convincing the page, and
-					however high it ranks. There is no mirror, no community edition, no
-					&ldquo;official&rdquo; download portal, and no third-party distributor.
+					an official publishing address</strong> — however similar the name,
+					however convincing the page, and however high it ranks. We do not designate
+					third-party mirrors or forks as official. The MIT licence allows others to
+					redistribute or modify the source; that does not make their builds ours.
 				</p>
 			</div>
 
@@ -98,25 +99,27 @@ export const official = {
 			</table>
 
 			<p>
-				Only two of those four ever hand you a file: the Microsoft Store listing and
-				the GitHub releases page. <a href="/download">The download page</a> explains
+				The two official application-download channels are the Microsoft Store listing
+				and the repository's GitHub releases page. <a href="/download">The download page</a> explains
 				which to take, and <a href="/verify">how to check what you got</a>.
 			</p>
 
 			<h2>What this page is for</h2>
 			<p>
 				The attack this project exists to answer is a search result that looks
-				official. Counterfeit builds of Steam Desktop Authenticator rank for its name,
-				ship a working authenticator that also steals the account, and reappear under a
-				new domain every time one is reported —
+				official. A counterfeit Steam Desktop Authenticator can display working codes
+				while copying account secrets. Similar names and search rankings are not proof
+				of origin —
 				<a href="/scam-clones">what a counterfeit build actually does</a> covers the
 				pattern.
 			</p>
 			<p>
 				A list like this only helps if it is the same list everywhere, which is why the
 				release process compares the GitHub organisation name against this page rather
-				than against somebody&rsquo;s memory. If this page and a download disagree,
-				<strong>believe this page</strong>.
+				than against somebody&rsquo;s memory. If this page, the repository and a download
+				disagree, <strong>stop and investigate</strong>. Do not choose whichever source
+				looks most reassuring. Follow <a href="/verify">the signature and provenance
+				checks</a>; a website can be compromised too.
 			</p>
 
 			<h2>If you find something claiming to be us</h2>
@@ -127,8 +130,11 @@ export const official = {
 				<a href="/security">the security page</a> has the private channels for that.
 			</p>
 			<p>
-				If you already installed something that was not from one of the two addresses
-				above, treat the account as compromised and
+				GitHub and Microsoft can serve the actual file through their own delivery
+				domains after you follow these official links. A delivery redirect alone is
+				not proof of a fake; a lookalike page offering its own build needs independent
+				verification. If you ran an untrusted authenticator and gave it Steam
+				credentials or maFiles, treat those secrets as potentially compromised and
 				<a href="/lost-authenticator">work through the recovery steps</a> rather than
 				hoping. ${s.name} cannot undo that, and neither can we.
 			</p>

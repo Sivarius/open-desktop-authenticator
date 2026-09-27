@@ -167,6 +167,17 @@ export default tseslint.config(
 		}
 	},
 
+	// This Node generator serializes a browser bootstrap into a public asset.
+	{
+		files: ['site/metrica/basic-metrica.cjs'],
+		...tseslint.configs.disableTypeChecked,
+		languageOptions: {
+			...tseslint.configs.disableTypeChecked.languageOptions,
+			globals: { ...globals.node, ...globals.browser },
+			sourceType: 'commonjs'
+		}
+	},
+
 	/*
 	 * The site's browser script.
 	 *
