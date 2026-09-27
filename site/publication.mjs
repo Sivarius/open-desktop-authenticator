@@ -15,7 +15,9 @@ export const RELEASE_PUBLICATIONS = {
 	// through this repository.
 	store: {
 		'1.0.0': {},
-		'1.5.0': { verifiedOn: '2026-09-06', architectures: ['x64'] }
+		'1.5.0': { verifiedOn: '2026-09-06', architectures: ['x64'] },
+		// Microsoft public catalog: 1.5.1.0 x64, product 9NMM2XJ6HZ1D, full SKU 0010.
+		'1.5.1': { verifiedOn: '2026-09-27', architectures: ['x64'] }
 	}
 };
 

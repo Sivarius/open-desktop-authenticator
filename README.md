@@ -9,8 +9,8 @@ Official ODA website: [opendesktopauthenticator.com](https://opendesktopauthenti
 MASTERPANEL LLC also operates Master Panel. ODA and Master Panel are separate
 products with no shared accounts, data, or integration.
 
-> **1.5.1 is available from GitHub Releases; the Microsoft Store remains on
-> 1.5.0.** On Windows, you can install the Store version from the
+> **1.5.1 is available from GitHub Releases and the Microsoft Store.**
+> On Windows, you can install the Store version from the
 > [Microsoft Store](https://apps.microsoft.com/detail/9NMM2XJ6HZ1D), which
 > currently distributes the x64 package. The
 > [releases page](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/latest)

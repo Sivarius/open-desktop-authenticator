@@ -497,7 +497,7 @@ ${reviewAsk(s, { got: 'Did these steps help you check a download?' })}
 
 export const security = {
 	slug: 'security',
-	updated: '2026-09-26',
+	updated: '2026-09-27',
 	navTitle: 'Security',
 	title: 'Security model: how your Steam secrets are stored',
 	description: (s) =>

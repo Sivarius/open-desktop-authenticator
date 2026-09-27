@@ -12,7 +12,10 @@ too.
 
 **Product**: Open Desktop Authenticator · **Store ID**: 9NMM2XJ6HZ1D
 **Package identity**: `TheMaster.OpenDesktopAuthenticator`
-**Last verified live package**: `1.5.0.0` · **Architecture**: `x64`
+**Last verified live package**: `1.5.1.0` · **Architecture**: `x64`
+**Verified on**: 2026-09-27 via the
+[public Microsoft catalog](https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=9NMM2XJ6HZ1D&market=US&languages=en-us),
+full SKU `0010`, package `TheMaster.OpenDesktopAuthenticator_1.5.1.0_x64__hrp1njkqjkfzp`.
 
 > [!NOTE]
 > **Submission status recorded on 2026-09-07:** version 1.5.0 was live in the
