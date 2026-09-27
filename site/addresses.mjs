@@ -77,7 +77,8 @@ const NETWORKS = {
 			const p = base58CheckPayload(a);
 			return !!p && p.length === 21 && p[0] === 0x41 && a.startsWith('T');
 		},
-		proof: 'base58check — a changed character fails the SHA-256 checksum'
+		proof:
+			'base58check — a checksum detects most transcription errors, but does not prove ownership'
 	},
 	litecoin: {
 		label: 'Litecoin',
@@ -86,7 +87,8 @@ const NETWORKS = {
 			const p = base58CheckPayload(a);
 			return !!p && p.length === 21 && p[0] === 0x30 && a.startsWith('L');
 		},
-		proof: 'base58check — a changed character fails the SHA-256 checksum'
+		proof:
+			'base58check — a checksum detects most transcription errors, but does not prove ownership'
 	},
 	solana: {
 		label: 'Solana',
@@ -96,7 +98,7 @@ const NETWORKS = {
 			return !!raw && raw.length === 32;
 		},
 		proof:
-			'base58 decodes to exactly 32 bytes — catches a dropped or added character, but Solana addresses carry no checksum, so a swap of two valid characters cannot be detected here'
+			'base58 decodes to exactly 32 bytes — confirms the format only; a mistyped address can still pass because Solana addresses have no checksum'
 	},
 	evm: {
 		label: 'Polygon and BNB Smart Chain',
@@ -119,7 +121,7 @@ export const ADDRESSES = [
 		asset: 'USDT',
 		network: 'tron',
 		chain: 'Tron (TRC-20)',
-		note: 'Lowest fees of the four. Send only TRC-20 USDT.',
+		note: 'Send only TRC-20 USDT on Tron. Check your wallet’s network fee before sending.',
 		address: 'TLXxDn2fqAobwDeALr68B3PnppRKJJxoqh'
 	},
 	{

@@ -3,9 +3,8 @@
  *
  * These two pages exist because this project implemented the transfer flow and
  * ran it against a real account, which is an unusual position to write from.
- * Almost everything published about "moving Steam Guard" is written by somebody
- * who has not done it, and it shows: the advice is generally "remove it and add
- * it again", which is the option Valve charges fifteen days for.
+ * Valve documents phone-to-phone transfers. Desktop transfer behaviour is
+ * separately supported by the implementation and the project's recorded test.
  *
  * **The discipline here is the same as everywhere else on this site.** Every
  * duration is quoted from Valve and linked. Where this project observed
@@ -20,7 +19,8 @@ import { reviewAsk } from '../markup.mjs';
 const VALVE = {
 	guard: 'https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31',
 	restrictions: 'https://help.steampowered.com/en/faqs/view/451E-96B3-D194-50FC',
-	holds: 'https://help.steampowered.com/en/faqs/view/34A1-EA3F-83ED-54AB'
+	holds: 'https://help.steampowered.com/en/faqs/view/34A1-EA3F-83ED-54AB',
+	protection: 'https://help.steampowered.com/en/faqs/view/365F-4BEE-2AE2-7BDD'
 };
 
 export const tradeHolds = {
@@ -29,18 +29,18 @@ export const tradeHolds = {
 	guide: true,
 	sourced: `Every duration checked against Valve's <a href="${VALVE.restrictions}" rel="noopener">restriction</a>, <a href="${VALVE.holds}" rel="noopener">hold</a> and <a href="${VALVE.guard}" rel="noopener">transfer</a> guidance`,
 	navTitle: 'Trade holds',
-	title: 'Steam trade holds: every restriction, and how long each lasts',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	title: 'Steam trade holds: timers, restrictions and CS2 exceptions',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
-		'What triggers a Steam trade hold or restriction, how long each one lasts, and which are avoidable. Every duration quoted from Valve and linked.',
+		'Steam trade hold and restriction timers, the CS2 Trade Protection exception, and why removal and enrolment waiting periods do not always add together.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'TechArticle',
 		headline: 'Steam trade holds and restrictions, by cause and duration',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
-		dateModified: '2026-09-08',
+		dateModified: '2026-09-12',
 		mainEntityOfPage: `${s.origin}/steam-guard-trade-holds`
 	}),
 	// No `s` parameter: this page quotes Valve throughout and never interpolates
@@ -48,12 +48,12 @@ export const tradeHolds = {
 	// which the release workflow runs as a gate.
 	body: () => `
 		<article class="guide numbered">
-			<h1>Steam trade holds: every restriction, and how long each lasts</h1>
+			<h1>Steam trade holds and restrictions: causes and timers</h1>
 			<p class="lede">
 				Steam has several different restrictions and they get confused with one another
 				constantly — partly because people call all of them &ldquo;the trade hold&rdquo;.
-				They have different causes, different lengths, and only some are avoidable. Every
-				number below is quoted from Valve.
+				They have different causes, different lengths, and only some are avoidable.
+				The policy durations below come from Valve's linked guidance.
 			</p>
 
 			<div class="answer">
@@ -61,12 +61,13 @@ export const tradeHolds = {
 				<p>
 					The two that catch people out are the authenticator ones.
 					<strong>Removing a mobile authenticator costs 15 days</strong> of no trading and
-					no Market. <strong>Transferring one costs 2 days.</strong> They reach the same
-					place, and most guides tell you to do the expensive one.
+					no Market. <strong>Valve's phone transfer carries 2 days.</strong> These are
+					account restrictions, separate from item holds and CS2 Trade Protection.
 				</p>
 				<p>
-					If your items are already held, nothing shortens it. Steam Support cannot lift
-					these and no service can.
+					Read the reason and expiry Steam shows when you try the blocked action.
+					Adding an authenticator does not shorten an existing hold. Steam Support says
+					it cannot modify these restrictions.
 				</p>
 			</div>
 
@@ -81,7 +82,7 @@ export const tradeHolds = {
 				</li>
 				<li class="cost">
 					<b>15<small> days</small></b>
-					<span>Item hold on trades, when the account has no authenticator.</span>
+					<span>Maximum standard item hold without an established authenticator. CS2 is different.</span>
 				</li>
 			</ul>
 
@@ -91,19 +92,35 @@ export const tradeHolds = {
 			</p>
 			<ul class="check">
 				<li class="no">
-					<strong>A restriction stops you trading.</strong> You cannot create trades or
-					Market listings at all until it ends.
+					<strong>A restriction blocks an action.</strong> Depending on its cause, it
+					can affect trading, the Market, or only a newly authorised device.
 				</li>
 				<li class="yes">
-					<strong>A hold delays delivery.</strong> The trade goes ahead, but the items sit
-					with Steam for a period before they arrive — and either side can cancel during
-					it. Valve's stated purpose is that
+					<strong>A hold delays delivery or listing.</strong> An accepted trade waits
+					before items arrive; a Market sell listing waits before appearing for sale.
+					Pending transactions can be cancelled. Valve explains that
 					<a href="${VALVE.holds}" rel="noopener">holds give you a way to recover items
 					before they are lost</a> if somebody else gets into your account.
 				</li>
 			</ul>
 
-			<h2>What causes each one?</h2>
+			<h2>CS2 items use Trade Protection instead of trade holds</h2>
+			<p>
+				<a href="${VALVE.protection}" rel="noopener">Valve's Trade Protected Items FAQ</a>
+				says Counter-Strike 2 items are delivered immediately when a trade completes,
+				regardless of authenticator age. They are then Trade Protected for 7 days:
+				you can equip them, but cannot transfer, consume or modify them during that time.
+				This does not remove account restrictions that prevent a trade from starting.
+			</p>
+			<p>
+				Reversing protected trades through Steam Trade History reverses all eligible
+				protected trades from the last 7 days and gives the initiating account a
+				30-day trade and Market cooldown. It is a recovery action, not a way to shorten
+				a wait. Valve currently lists CS2 as the only supported game; check its FAQ
+				and the item's protection indicator for changes.
+			</p>
+
+			<h2>What causes the common restrictions?</h2>
 			<div class="tbl">
 				<table>
 					<thead>
@@ -121,12 +138,12 @@ export const tradeHolds = {
 							<td><span class="num">2 days</span></td>
 						</tr>
 						<tr>
-							<th scope="row">Adding an authenticator</th>
+							<th scope="row">Adding an authenticator: standard holds, excluding CS2 trades</th>
 							<td>Trades made in the first 7 days still carry a hold</td>
 							<td><span class="num warn">up to 15 days</span></td>
 						</tr>
 						<tr>
-							<th scope="row">No authenticator on the account</th>
+							<th scope="row">No authenticator: standard holds, excluding CS2 trades</th>
 							<td>Items held before delivery</td>
 							<td><span class="num warn">up to 15 days</span></td>
 						</tr>
@@ -141,7 +158,7 @@ export const tradeHolds = {
 							<td><span class="num warn">30 days</span></td>
 						</tr>
 						<tr>
-							<th scope="row">Cancelling a trade that was already accepted</th>
+							<th scope="row">Cancelling an accepted trade while it is in a trade hold</th>
 							<td>Cannot trade</td>
 							<td><span class="num warn">7 days</span></td>
 						</tr>
@@ -149,6 +166,11 @@ export const tradeHolds = {
 							<th scope="row">Steam Guard enabled less than 15 days</th>
 							<td>Cannot trade or use the Market</td>
 							<td><span class="num warn">until 15 days have passed</span></td>
+						</tr>
+						<tr>
+							<th scope="row">New device authorised through email Steam Guard</th>
+							<td>Trade and Market access blocked on that device; exception if a mobile authenticator has been active at least 7 days</td>
+							<td><span class="num warn">7 days</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -163,29 +185,26 @@ export const tradeHolds = {
 
 			<h2>The 15 days people pay by accident</h2>
 			<p>
-				Valve is unambiguous about what removing an authenticator costs:
-				<a href="${VALVE.restrictions}" rel="noopener">&ldquo;Removing a Steam Guard Mobile
-				Authenticator reduces your account security. To help protect your items, you will
-				be unable to trade or use the Community Market for 15 days.&rdquo;</a>
+				<a href="${VALVE.restrictions}" rel="noopener">Removing an authenticator
+				triggers a 15-day trade and Community Market restriction</a>, even if you
+				then set up another one.
 			</p>
 			<p>
-				And about the alternative:
-				<a href="${VALVE.guard}" rel="noopener">&ldquo;After transferring the authenticator,
-				a 2-day trade and market restriction will be placed on your account to protect your
-				items.&rdquo;</a>
+				<a href="${VALVE.guard}" rel="noopener">Valve documents a 2-day trade and
+				Market restriction after its transfer flow</a>. Use the transfer option when
+				it is available and your intention is to change devices.
 			</p>
 			<p class="pull">
-				Both routes end with the authenticator on the device you wanted it on. One of them
-				costs <em>thirteen days more</em> than the other, and it is the one most guides
-				describe.
+				Transferring and removing are different account actions.
+				The documented restrictions differ by <em>thirteen days</em>.
 			</p>
 			<p>
-				It gets worse than the 15 days alone, because the two stack. After the removal
-				restriction ends and you add an authenticator again, Valve applies a further rule:
-				<a href="${VALVE.restrictions}" rel="noopener">&ldquo;Trades created within the
-				first 7 days of adding the authenticator will still have up to a 15 day trade
-				hold.&rdquo;</a> So the fortnight of not trading is followed by a week of trades
-				that do not deliver promptly.
+				The removal restriction and the new authenticator's 7-day waiting period run
+				from their respective actions; they do not automatically run one after the
+				other. If you re-enrol immediately, that first week can pass during the
+				15-day restriction. Waiting until day 15 to re-enrol starts the new week
+				then. Steam's displayed expiry and each item's eligibility still control
+				what you can do; adding security never cancels an already-applied hold.
 			</p>
 
 			<h2>Which of these can you avoid?</h2>
@@ -197,18 +216,29 @@ export const tradeHolds = {
 				</li>
 				<li class="yes">
 					<strong>The password-reset restriction.</strong> <em>Changing</em> a password you
-					still know, from Steam's settings, costs nothing. Only a
+					still know, from Steam's settings, does not trigger this restriction. A
 					<em>reset</em> of a forgotten one triggers it.
 				</li>
 				<li class="no">
-					<strong>The no-authenticator hold.</strong> Not avoidable except by having an
-					authenticator, which is the point of it.
+					<strong>Standard holds on future transactions.</strong> Keep an authenticator
+					active for at least 7 days. This does not remove existing holds, restrictions
+					or game-specific item cooldowns.
 				</li>
 				<li class="no">
 					<strong>Any of them, once applied.</strong> Steam Support cannot lift these, and
 					anybody offering to is selling something that does not exist.
 				</li>
 			</ul>
+
+			<h2>The timer ended, but Steam still blocks me</h2>
+			<p>
+				Check the new message instead of assuming the same restriction was extended.
+				Steam also applies purchase-history requirements for the Market, payment-method
+				checks, limited-account restrictions, bans and item-specific cooldowns. This
+				page covers the common authenticator-related causes; Valve's
+				<a href="${VALVE.restrictions}" rel="noopener">full restriction list</a>
+				covers the others. A working Guard code does not prove an item is tradable.
+			</p>
 
 			<div class="callout callout-warn">
 				<p>
@@ -231,7 +261,7 @@ export const tradeHolds = {
 				</li>
 				<li>
 					<a href="/steam-guard-code-not-working"><b>Codes being refused</b>
-					<span>Usually the clock, and a reset password can cost you five days.</span></a>
+					<span>Check time, the account and the current authenticator before resetting anything.</span></a>
 				</li>
 			</ul>
 		</article>`
@@ -243,8 +273,8 @@ export const moveToPc = {
 	guide: true,
 	navTitle: 'Move to a PC',
 	title: 'Move your Steam authenticator from your phone to a PC',
-	updated: '2026-09-08',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	description:
 		'Steam can move an authenticator to another device for a 2-day restriction. What the flow actually does, what it costs, and what it requires.',
 	sourced: `Transfer rules checked against <a href="${VALVE.guard}" rel="noopener">Valve's Steam Guard guidance</a>; device replacement was observed in one real-account transfer`,
@@ -254,17 +284,17 @@ export const moveToPc = {
 		headline: 'Moving a Steam authenticator from a phone to a desktop',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
-		dateModified: '2026-09-08',
+		dateModified: '2026-09-12',
 		mainEntityOfPage: `${s.origin}/move-steam-authenticator-to-pc`
 	}),
 	body: (s) => `
 		<article class="guide numbered">
 			<h1>Move your Steam authenticator from your phone to a PC</h1>
 			<p class="lede">
-				Steam supports moving an authenticator to a different device, and charges two days
-				of trade restriction for it. The advice you will usually find — remove it from the
-				phone, then add it somewhere else — is a different operation that costs fifteen.
-				This page explains what the supported route actually does.
+				Valve documents transfers between phones with a two-day trade and Market
+				restriction. ${s.name} implements Steam's replacement flow for moving to a PC.
+				That desktop use is unofficial: the explanation below separates Valve's
+				documented policy from what this project has implemented and tested.
 			</p>
 
 			<div class="answer">
@@ -277,7 +307,8 @@ export const moveToPc = {
 					copy inert.
 				</p>
 				<p>
-					<strong>The cost is a 2-day trade and Market restriction</strong>, against
+					<strong>Our recorded live transfer received the short restriction</strong>,
+					consistent with Valve's 2-day policy, compared with
 					<a href="/steam-guard-trade-holds">15 days for removing and re-adding</a>.
 				</p>
 			</div>
@@ -285,9 +316,8 @@ export const moveToPc = {
 			<div class="callout callout-warn">
 				<p>
 					<strong>Do not remove the authenticator from your phone first.</strong> That is
-					the fifteen-day path, and it also leaves the account with no second factor in
-					between. The transfer needs the phone's authenticator to still be working,
-					because proving you hold it is the first step.
+					the fifteen-day path, and removes its mobile second factor. ${s.short}'s
+					transfer flow needs a working current authenticator to complete sign-in.
 				</p>
 			</div>
 
@@ -304,10 +334,10 @@ export const moveToPc = {
 				<li>
 					<strong>Steam sends a code to the phone number on the account</strong>
 					<p>
-						Usually by SMS. It may arrive through a messaging app instead, from a sender
-						name you do not recognise — that is normal for the services Steam sends
-						through, and it is also exactly what a phishing message looks like, so
-						never enter a code you did not just ask for.
+						Valve documents SMS and, in some countries, Telegram delivery. A sender
+						name is not proof that a message is genuine. Use a code only for the
+						transfer you started, in the application where you started it; never
+						follow a message's link or send the code to someone else.
 					</p>
 				</li>
 				<li>
@@ -320,8 +350,9 @@ export const moveToPc = {
 				<li>
 					<strong>You write down the new recovery code</strong>
 					<p>
-						Steam issues a fresh one and the old one stops working. It is the only way to
-						detach the new authenticator yourself later.
+						Steam issues a fresh one. Keep it somewhere you can reach if the PC fails.
+						It is an important recovery route; Steam's SMS and Support options may
+						also be available. Do not rely on the previous authenticator's code.
 					</p>
 				</li>
 			</ol>
@@ -354,9 +385,7 @@ export const moveToPc = {
 
 			<h2>What we observed doing this</h2>
 			<p>
-				This project implemented the flow and ran it against a real account with an active
-				authenticator, which is worth reporting because most of what is written about it is
-				written by people who have not.
+				The project's recorded live test used one account with an active authenticator:
 			</p>
 			<ul class="check">
 				<li class="yes">
@@ -370,6 +399,11 @@ export const moveToPc = {
 				<li class="yes">
 					The restriction applied was the short one, consistent with Valve's documented
 					two days rather than the fifteen a removal carries.
+				</li>
+				<li class="no">
+					The test fetched an empty confirmation list. It did not approve a real
+					confirmation using the transferred secret, so that action was not verified
+					by this live test.
 				</li>
 			</ul>
 			<p class="hint">
@@ -400,6 +434,27 @@ export const moveToPc = {
 					days whether or not it says so.
 				</p>
 			</div>
+
+			<h2>Steps in ${s.short}, and what to do if the transfer stops</h2>
+			<ol class="steps">
+				<li><strong>Unlock your vault and choose Move from phone.</strong>
+					<p>Check the account name, complete sign-in with the current authenticator,
+					and read the replacement warning before requesting the phone code.</p></li>
+				<li><strong>Enter the phone code and finish the recovery steps.</strong>
+					<p>Save the new recovery code, confirm it is written down, and complete the
+					application's encrypted recovery-backup step.</p></li>
+				<li><strong>Check the result before relying on it.</strong>
+					<p>Use a new code to sign in to Steam, open Confirmations, and review Steam's
+					restriction notice. Keep your backup accessible without this PC.</p></li>
+			</ol>
+			<p>
+				If a timeout or storage error appears after submitting the phone code, Steam
+				may already have replaced the authenticator. Follow the recovery screen;
+				do not start a new transfer or remove the authenticator to clear the error.
+				A local failure does not mean Steam undid the change. If no working
+				authenticator can be recovered, use <a href="https://help.steampowered.com/"
+				rel="noopener">Steam Support</a>.
+			</p>
 
 			<h2>Related</h2>
 			<ul class="link-cards">

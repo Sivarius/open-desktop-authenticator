@@ -43,8 +43,7 @@ const LIBRARIES = [
 		role: 'Shipped in the application',
 		body: `The library that performs the sign-in to Steam. This is not inspiration or a
 		reference — it is a dependency listed in our <code>package.json</code>, running in the
-		application, doing the single most delicate thing it does. Every person who signs in
-		is running his code.`
+		application. ODA uses it for the Steam authentication exchange.`
 	},
 	{
 		name: 'steam-totp',
@@ -52,23 +51,27 @@ const LIBRARIES = [
 		role: 'What our own code is checked against',
 		body: `Generates the five-character Steam Guard code from a <code>shared_secret</code>,
 		and the confirmation key from an <code>identity_secret</code>. We implement both
-		ourselves, and a test compares our output against his on every push. When the two
-		disagree, we are the ones who are wrong.`
+		ourselves. CI compares code generation against <code>steam-totp</code> in the
+		spike tests; the confirmation-key tests use recorded vectors produced by that
+		library. A disagreement needs investigation, not an assumption that either
+		implementation is infallible.`
 	},
 	{
 		name: 'steamcommunity',
 		url: 'https://github.com/DoctorMcKay/node-steamcommunity',
-		role: 'How the protocol became public',
-		body: `The mobile confirmation flow — the request shape, the signing, the tags — is
-		documented nowhere by Valve. It is public because this library made it public, and
-		anything that approves a trade outside the official app is downstream of that.`
+		role: 'A public protocol reference',
+		body: `Its mobile confirmation implementation is a useful public reference for
+		request shapes and signing conventions. ODA's confirmation client is implemented
+		locally; <code>steamcommunity</code> is not a shipped dependency. This credits a
+		reference without claiming that one library is the origin of every independent
+		authenticator.`
 	}
 ];
 
 export const credits = {
 	slug: 'credits',
-	updated: '2026-08-27',
-	reviewed: '2026-09-08',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Credits',
 	title: 'The work this is built on, and how to pay for it',
 	description:
@@ -87,18 +90,18 @@ export const credits = {
 		<article>
 			<h1>The work this is built on</h1>
 			<p class="lede">
-				There is a reason an independent Steam authenticator can exist at all, and it is
-				not us. Valve publishes no specification for Steam Guard. The algorithm behind
-				the five-character code, the signing behind a mobile confirmation, the shape of
-				the login exchange — none of it is documented by the people who built it. It is
-				public because someone worked it out and gave it away.
+				ODA depends on public libraries and protocol research from other developers.
+				DoctorMcKay's Steam libraries provide a shipped sign-in dependency, test
+				references and inspectable examples of Steam's authentication and confirmation
+				flows. The specific relationships are listed below.
 			</p>
 
 			<div class="origin-note">
 				<p>
 					<strong>${escape(MCKAY.name)}</strong> has maintained the open-source Steam
-					libraries that most of this ecosystem runs on, for years, under the MIT
-					licence — which is to say he did the hard part and then asked for nothing.
+					libraries for years under the MIT licence. His
+					<a href="${MCKAY.donate}" rel="noopener">donation page</a> explains how
+					contributions support his open-source work.
 				</p>
 				<a class="button" href="${MCKAY.donate}" rel="noopener">Donate to him →</a>
 			</div>
@@ -128,26 +131,23 @@ ${LIBRARIES.map(
 				alternative that is open, inspectable and not the only game in town.
 			</p>
 			<p>
-				Without that reverse-engineering published openly, there is no ecosystem. There
-				is Valve's app, and there is whatever an anonymous download page hands you, and
-				nothing in between. <strong>The clone sites we spend this whole domain warning
-				people about exist precisely because the demand is real and the legitimate
-				options are few.</strong> Every open, checkable option makes that gap smaller,
-				and all of them rest on the same foundation.
+				Public implementations let developers compare results, identify mistakes and
+				build compatible tools. Credit should identify the code actually used and the
+				research consulted; it should not imply that the upstream maintainer reviewed
+				or endorses every downstream application.
 			</p>
 			<p>
-				He is not paid for this. There is no company behind those repositories. The
-				libraries are MIT-licensed, which means anyone — including us, including people
-				selling things — can take the work and owe nothing back. That is generous to the
-				point of being a bad deal for him, and it is the reason the deal exists for
-				everyone else.
+				The MIT licence permits reuse, including commercial reuse, subject to its
+				notice requirements. It does not require a donation. We do not know the
+				maintainer's total funding or employment arrangements; our reason to link his
+				donation page is the value of the work we use.
 			</p>
 
 			<h2>Donate to him directly</h2>
 			<p>
-				All three go to him. Nothing routes through us, and we take nothing — the moment
-				anyone sits between a donor and a maintainer this stops being credit and starts
-				being collection.
+				These destinations match the links on his donation page, checked on
+				12 September 2026. Payments do not pass through ODA. The payment platform or
+				network may charge fees; check its terms and the destination before sending.
 			</p>
 			<div class="give">
 				<a class="give-card" href="${MCKAY.sponsors}" rel="noopener">
@@ -164,8 +164,7 @@ ${LIBRARIES.map(
 				</a>
 			</div>
 			<p class="hint">
-				In his own words: &ldquo;If my work helped you or saved you time, please consider
-				donating. Donations of any size are greatly appreciated.&rdquo; His page is at
+				He explains that donations help him continue his open-source work. His page is at
 				<a href="${MCKAY.donate}" rel="noopener">dev.doctormckay.com/donate</a>, and his
 				repositories are at <a href="${MCKAY.github}" rel="noopener">github.com/DoctorMcKay</a>.
 			</p>
@@ -175,8 +174,8 @@ ${LIBRARIES.map(
 				<p>
 					${escape(s.name)} is an independent project. It is
 					<strong>not affiliated with, endorsed by, or connected to
-					${escape(MCKAY.name)}</strong>, who has no involvement in it and has not
-					reviewed it. We link to him because we depend on his work, not because he
+					${escape(MCKAY.name)}</strong>. We do not claim his review or approval.
+					We link to him because we depend on his work, not because he
 					vouches for ours. Verify the addresses on
 					<a href="${MCKAY.donate}" rel="noopener">his own donation page</a> before
 					sending anything — including the links above, and including because we said so.
@@ -195,26 +194,26 @@ ${LIBRARIES.map(
 
 const SPENDS = [
 	{
-		what: 'The server this runs on',
-		cost: 'a few pounds a month',
+		what: 'Website hosting and the domain',
+		cost: 'operating costs',
 		body: `A small virtual machine and a domain. It serves static files and one small
-		process for the report form. There is no advertising network and no paid third-party
-		service behind it — the third-party scripts are Google Analytics and Cloudflare's
-		Web Analytics, both free and both
-		<a href="/privacy">described on the privacy page</a>.`
+		process for the report form. The site does not sell advertising space.
+		See <a href="/privacy">the privacy page</a> for the website's analytics,
+		review widgets and report storage.`
 	},
 	{
 		what: 'Time',
-		cost: 'the honest answer',
-		body: `Written outside the hours that pay for anything. Donations do not fund a salary
-		and it would be a lie to imply otherwise — they make the unpaid hours easier to
-		justify against the paid ones.`
+		cost: 'maintenance work',
+		body: `Support helps the maintainer make time for fixes, documentation and release
+		work. This is a description of intended use, not a published budget or an
+		independently audited account of spending.`
 	}
 ];
 
 export const donate = {
 	slug: 'donate',
-	updated: '2026-09-07',
+	updated: '2026-09-12',
+	reviewed: '2026-09-12',
 	navTitle: 'Donate',
 	script: 'support.js',
 	title: 'Donate to Open Desktop Authenticator',
@@ -232,10 +231,9 @@ export const donate = {
 		<article>
 			<h1>Donate</h1>
 			<p class="lede">
-				Everything here is free and stays free. There is no paid tier to unlock, no
-				account to create, nothing withheld from people who do not pay, and no plan to
-				introduce any of those. Donating changes nothing about what you get, which is
-				the only honest basis on which to ask.
+				ODA and this documentation are free. There is no paid tier or ODA account,
+				and donating does not unlock features or buy priority support. The project's
+				stated plan is to keep it that way.
 			</p>
 
 			<h2>What you get either way</h2>
@@ -245,13 +243,14 @@ export const donate = {
 			</p>
 			<ul>
 				<li>
-					<strong>Every line stays public</strong>, under the MIT licence — including
-					the parts that handle your secrets, which is the only part that matters.
+					<strong>The source is public</strong> under the MIT licence, including
+					the code that handles secrets, networking, updates and the interface.
 				</li>
 				<li>
-					<strong>No ODA backend. No ODA account. No cloud sync. No telemetry.</strong>
+					<strong>The application has no ODA backend, ODA account, cloud sync or telemetry.</strong>
 					Requested Steam operations contact Valve, direct GitHub builds can optionally
-					check GitHub for updates, and the user-driven browser contacts sites you choose.
+					check GitHub for updates, and its browser loads the pages you open and their
+					embedded resources. The website has separate analytics and report storage.
 					<a href="/security">The security page documents those boundaries</a>.
 				</li>
 				<li>
@@ -262,8 +261,8 @@ export const donate = {
 					<a href="/steam-inventory-stolen">the account of how we learned this</a>.
 				</li>
 				<li>
-					<strong>Reports get answered</strong> whether or not the person filing one
-					has ever given us anything.
+					<strong>Reports follow the same triage policy</strong> whether or not the
+					person filing one has donated. General support has no guaranteed response time.
 				</li>
 			</ul>
 
@@ -279,7 +278,7 @@ ${SPENDS.map(
 				<p>
 					<strong>Before you consider us, consider
 					<a href="/credits">${escape(MCKAY.name)}</a>.</strong> This application
-					depends on his libraries, he has been maintaining them for free for years,
+					depends on his freely available libraries,
 					and the dependency runs one way. If you only intend to give once, give it to
 					him.
 				</p>
@@ -288,12 +287,14 @@ ${SPENDS.map(
 
 			<h2>Cryptocurrency only</h2>
 			<p>
-				There is no card payment here, and that is a deliberate limitation rather than
-				an oversight. Taking cards means a payment processor, a merchant account and a
-				billing relationship — a stack of third parties holding donor names and card
-				details, attached to a project whose entire argument is that it holds nothing
-				about you. Crypto keeps that promise intact. It is worse for donors in every
-				other way, and we would rather be inconvenient than contradict ourselves.
+				This page accepts the listed cryptocurrencies and networks only. It does not
+				collect card details or create a donor account. <strong>That does not make a
+				payment anonymous.</strong> These networks publish transaction records, and a
+				wallet or exchange may hold information connecting an address to you. Check
+				your provider's privacy terms; <a href="https://ethereum.org/zero-knowledge-proofs" rel="noopener">Ethereum's explanation of public transaction visibility</a>
+				describes why pseudonymous payments can be linked to people.
+				Donations are optional; do not buy cryptocurrency
+				solely because you feel obliged to support this project.
 			</p>
 
 			<div class="callout callout-warn">
@@ -306,10 +307,11 @@ ${SPENDS.map(
 					middle. Confirm the network as well as the address.
 				</p>
 				<p>
-					Better still, send a small amount first, or paste from an entry you saved
-					after checking it once. This is the same advice we give about downloads, and
-					it applies to us too — a payment address is unrecoverable in a way almost
-					nothing else is.
+					Check the asset, network and any withdrawal fee in your wallet. A small test
+					transfer can help check the route, but recheck the address for the final
+					transfer too. Transfers generally cannot be reversed, and sending on the
+					wrong network can make funds inaccessible. We cannot guarantee recovery of
+					a mistaken payment.
 				</p>
 			</div>
 
@@ -330,10 +332,11 @@ ${ADDRESSES.map(
 			</ul>
 
 			<p class="hint">
-				These four addresses are checked against their own checksums every time this
-				site is built, so a typo introduced by an edit cannot reach the page —
-				<a href="${s.repo}/blob/main/site/addresses.mjs" rel="noopener">the check is in
-				the repository</a> like everything else.
+				The build validates these address formats. Tron and Litecoin use checksum
+				checks; the listed lowercase EVM address is checked for its shape, and the
+				Solana address for a valid 32-byte encoding. <strong>Not every typo is caught,
+				and no format check proves ownership.</strong>
+				<a href="${s.repo}/blob/main/site/addresses.mjs" rel="noopener">Read the exact checks</a>.
 			</p>
 
 			<h2>Other ways, if money is not one</h2>
@@ -343,16 +346,16 @@ ${ADDRESSES.map(
 			<ul>
 				<li>
 					<strong><a href="/support">Report a clone site</a></strong> when you find one.
-					The list is only as good as what people send, and a fake ranking today is an
-					inventory gone next week.
+					Send the URL and where you found it, without downloading or running a
+					suspected malicious file.
 				</li>
 				<li>
 					<strong>Correct us.</strong> A wrong instruction on
 					<a href="/verify">the verification page</a> is worse than no instruction.
 				</li>
 				<li>
-					<strong>Tell somebody to check a checksum</strong> before they run an
-					installer. That single habit is the whole point of this site.
+					<strong>Share the verification guide</strong> before somebody runs an
+					installer: a checksum alone does not establish who published the file.
 				</li>
 			</ul>
 		</article>`

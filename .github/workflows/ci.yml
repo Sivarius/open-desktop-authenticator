@@ -142,9 +142,10 @@ jobs:
   # carries 2 critical and 6 high advisories, ALL of them traceable to
   # steamcommunity -> request (dead since 2020), and none with a non-breaking fix.
   #
-  # This becomes a gating problem at milestone 0.1, when steamcommunity enters
-  # the shipping dependency tree for confirmations (F5). See F-05 in
-  # docs/PHASE0_FINDINGS.md — it needs a decision BEFORE 0.1, not after.
+  # The application does not ship steamcommunity. Q19 and D14 in
+  # docs/PLAN_AMENDMENTS.md record the decision: confirmations use the project's
+  # own mobileconf client, and steam-session handles sign-in. The spike remains
+  # reference-only; the production dependency checks above gate what ships.
   spike-advisories:
     name: spike advisories (informational)
     runs-on: ubuntu-latest

@@ -18,8 +18,7 @@ const PROJECTS = [
 		alt: 'Master Panel',
 		w: 40,
 		h: 40,
-		blurb:
-			'A trading platform for CS2 and CS:GO skins. The largest of these projects, and where most of what we know about how Steam accounts actually get compromised was learned.'
+		blurb: 'A platform for trading Counter-Strike skins, operated by the same publisher as ODA.'
 	},
 	{
 		name: 'BuySteamAccounts',
@@ -32,7 +31,7 @@ const PROJECTS = [
 		w: 40,
 		h: 40,
 		blurb:
-			'A marketplace for Steam accounts aimed at CS2 traders. Handling accounts at volume is what makes authenticator hygiene a daily operational problem rather than an abstract one.'
+			'A separate marketplace for Steam accounts. This commercial relationship is disclosed here; it is not evidence that ODA is secure or endorsed by Valve.'
 	},
 	{
 		name: 'ExactPic',
@@ -42,7 +41,7 @@ const PROJECTS = [
 		w: 40,
 		h: 40,
 		blurb:
-			'Fixes photos rejected by online forms — compress, resize and convert, entirely in the browser. Unrelated to Steam, and built on the same principle: the work happens on your machine, not on a server of ours.'
+			'Browser tools for compressing, resizing and converting images to meet upload requirements. A separate product with its own privacy information.'
 	},
 	{
 		name: 'Open Desktop Authenticator',
@@ -52,13 +51,13 @@ const PROJECTS = [
 		w: 40,
 		h: 40,
 		blurb:
-			'This project. Free, open source, and the only one of the four that holds anything as sensitive as a Steam Guard shared secret — which is why it is the one built to be checked rather than trusted.'
+			'This project. A free, open-source desktop authenticator that stores Steam Guard secrets locally. Its source, release verification instructions and security limitations are public.'
 	}
 ];
 
 export default {
 	slug: 'owners',
-	updated: '2026-09-08',
+	updated: '2026-09-12',
 	navTitle: 'Who we are',
 	title: 'Who builds Open Desktop Authenticator',
 	description:
@@ -89,18 +88,17 @@ export default {
 			<h1>Who builds this</h1>
 
 			<p class="lede">
-				${s.name} is published by <strong>${s.publisher}</strong>. On most products this
-				page would be filler. On something that holds your Steam Guard secrets it is
-				evidence, so here it is plainly.
+				${s.name} is published by <strong>${s.publisher}</strong>. This page identifies
+				the publisher, its other products, the documentation's sources and where to
+				report a problem.
 			</p>
 
 			<h2>Why this page exists</h2>
 			<p>
-				The counterfeit authenticators described on
-				<a href="/scam-clones">the scam clones page</a> have one thing in common: nobody
-				is behind them. No company, no name, no other work to point at, nothing that
-				could be embarrassed by the software turning out to steal accounts. That
-				anonymity is not incidental — it is the business model.
+				An authenticator publisher should be identifiable, but a company name, a polished
+				website or a review score does not prove software is safe. An attacker can copy
+				those details. The <a href="/scam-clones">scam clones guide</a> explains how to
+				check a download's origin and what to do after exposure.
 			</p>
 			<p>
 				We are not asking you to trust us because we are named. We are pointing out that
@@ -127,11 +125,10 @@ ${PROJECTS.map(
 
 			<h2>Why a Steam trading company wrote an authenticator</h2>
 			<p>
-				Because we watch this go wrong. Running a skins platform and an account
-				marketplace means dealing, routinely, with people whose accounts have just been
-				emptied — and a large share of them were emptied the same way: they searched for
-				a desktop authenticator, downloaded the first plausible result, and handed a
-				modified build their <code>.maFile</code>.
+				The project grew out of the team's experience with Steam accounts and a suspected
+				counterfeit authenticator. We have not published incident statistics that establish
+				how often this happens. A <code>.maFile</code> contains authentication secrets, so
+				giving one to an untrusted program is a serious risk regardless of prevalence.
 			</p>
 			<p>
 				It also happened to one of us, before any of this existed.
@@ -139,11 +136,11 @@ ${PROJECTS.map(
 				it is the most honest answer to why we bothered.
 			</p>
 			<p>
-				That is a solvable problem. Not by telling people to be careful, which has never
-				worked, but by making a version of the tool where the dangerous parts are
-				visible, the source is public, and the site tells you how to check what you
-				downloaded. Whether they use ours or somebody else's matters less than whether
-				they verify it.
+				Publishing the source and explaining release verification gives users evidence
+				to inspect. It does not eliminate malicious-download risk, make a compromised PC
+				safe, or replace an independent security audit. Our
+				<a href="/alternatives">comparison of authenticators</a> explains when Valve's
+				official mobile app is the better fit.
 			</p>
 
 			<h2>How these guides are written</h2>
@@ -161,9 +158,9 @@ ${PROJECTS.map(
 				<a href="/support">documentation corrections</a> are accepted as product bugs.
 			</p>
 			<p>
-				<strong>Drafting and structural editing may use generative AI.</strong> AI is not
-				treated as a source, reviewer, or author. We use it to organise drafts, compare
-				related guides for contradictions, and surface gaps for a human to investigate.
+				<strong>Drafting, editing and fact-checking may use generative AI.</strong> AI output
+				is not evidence. It can help compare related guides, inspect implementation and
+				find source material, but it can also make mistakes.
 				A factual claim still has to trace to primary documentation, the application or
 				SDA source, a reproducible check, or a clearly labelled first-hand observation.
 				${s.publisher} remains responsible for what is published, and a review date moves
@@ -196,10 +193,12 @@ ${PROJECTS.map(
 				<strong>no ODA backend, no ODA account, no cloud sync, and no telemetry</strong>.
 				Requested Steam operations contact Valve, and direct GitHub builds can optionally
 				check GitHub for updates; neither service is operated by ${s.publisher}. The
-				user-driven browser contacts only the sites you choose.
-				It cannot update itself, so a future version cannot be pushed to you quietly. And every
-				line of it is public, so the claim in this paragraph is checkable rather than
-				merely stated. That is a better answer than a promise.
+				in-app browser contacts the sites you open and resources those sites load;
+				those services can collect their own data. The app has no built-in update installer.
+				<strong>Microsoft Store installations can update through the Store</strong>, subject
+				to your Store settings. Direct GitHub builds require a manual download and install.
+				The <a href="/security">security model</a> and <a href="/privacy">privacy page</a>
+				describe these boundaries and their limits.
 			</p>
 
 			<h2>Getting in touch</h2>

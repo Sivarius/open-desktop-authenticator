@@ -1,7 +1,5 @@
 # Confirmation notifications — implementation plan
 
-**Status: signed off on the decisions; implementation held pending further
-review.**
 **Status: implemented.** All seven phases are built, each gated on format,
 lint, typecheck, the full suite, a real build, and its own mutation inventory.
 Where implementation disagreed with this document, the document was corrected

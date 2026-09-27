@@ -1,8 +1,13 @@
 # Security hardening — findings and plan
 
-**Status: not implemented. Nothing here is done.**
-**Revision 1.** Every finding below was verified against the working tree by
-reading the named files; each one quotes the line that decides it. Two findings
+**Status: partially implemented.** H1, H2, M1, M2 and L1 are fixed. M3 remains
+open for additional proxy-change safeguards; native consent for new proxy
+destinations and credentials is already implemented, as recorded in §5.
+
+**Original findings, revision 1.** The analysis, quoted line numbers and proposed
+work order below preserve the original review; the status table and completion
+notes identify what has since changed. Every finding was verified against the
+working tree at the time by reading the named files. Two findings
 raised by the same audit were **refuted** and are recorded as refuted in §7,
 with the evidence, because a document that silently drops a claim invites the
 next reviewer to raise it again.
@@ -12,17 +17,17 @@ nothing to do with notifications. **These are independent of the notification
 feature and none of them blocks it** — the notification work touches none of
 the code below.
 
-Findings are ordered by what they cost if left alone, not by how hard they are
-to fix. H1 is the one to do first.
+The original findings were ordered by what they cost if left alone, not by how
+hard they were to fix. H1 is now fixed.
 
-| #   | Finding                                                             | Severity | Effort |
-| --- | ------------------------------------------------------------------- | -------- | ------ |
-| H1  | ~~Browser tabs run with DevTools and spellcheck enabled~~ **fixed** | High     | Small  |
-| H2  | ~~Published instructions check only the org~~ **fixed**             | High     | Small  |
-| M1  | ~~`osv-scanner` gates CI but not releases~~ **fixed**               | Medium   | Small  |
-| M2  | ~~A tag-mismatched dispatch signs the wrong tag~~ **fixed**         | Medium   | Medium |
-| M3  | `account:setProxy` is ungated relative to its blast radius          | Medium   | Medium |
-| L1  | ~~`inputs.tag` interpolated into shell~~ **fixed**                  | Low\*    | Small  |
+| #   | Finding                                                                   | Severity | Effort |
+| --- | ------------------------------------------------------------------------- | -------- | ------ |
+| H1  | ~~Browser tabs run with DevTools and spellcheck enabled~~ **fixed**       | High     | Small  |
+| H2  | ~~Published instructions check only the org~~ **fixed**                   | High     | Small  |
+| M1  | ~~`osv-scanner` gates CI but not releases~~ **fixed**                     | Medium   | Small  |
+| M2  | ~~A tag-mismatched dispatch signs the wrong tag~~ **fixed**               | Medium   | Medium |
+| M3  | Additional proxy-change safeguards — **open; native consent implemented** | Medium   | Medium |
+| L1  | ~~`inputs.tag` interpolated into shell~~ **fixed**                        | Low\*    | Small  |
 
 \* Low because it requires repository write access, which is already game over.
 Listed because it is one line to fix.
@@ -336,7 +341,21 @@ opposite of how Fulcio behaves and is the reason the regexp was reached for.
 
 ---
 
-## 5. M3 — `account:setProxy` is ungated relative to what it destroys
+## 5. M3 — additional proxy-change safeguards — **OPEN**
+
+**Current status, checked 2026-09-27.** `accountSetProxy` in
+`src/main/vault/ipc.ts` calls `ProxyConsent.require` before storing a changed,
+non-null proxy address. `src/main/net/proxy-consent.ts` requires a native dialog
+for an unapproved scheme, endpoint or credential fingerprint. Previously
+approved configurations can be reused without another dialog; removing a proxy
+does not introduce a destination and does not require this consent. An unchanged
+address does not trigger the session teardown either.
+
+The passphrase-versus-typed-acknowledgement decision and the proposed endpoint
+restrictions below remain open. The existing consent gate is a partial
+mitigation, not completion of every proposal in this section.
+
+### Original finding and proposals
 
 **Read this one carefully, because the audit that raised it overstated it and
 the overstatement is load-bearing.**

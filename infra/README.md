@@ -127,9 +127,10 @@ an account somebody has to create, so it remains undone rather than faked.
 
 - **`config-*`** — TLS keys, nginx, nginx log rotation, ufw, fail2ban, sshd.
   Kept a fortnight.
-- **`tickets-*`** — the report database and its attachments. Kept 90 days, to
-  match the retention `/privacy` states: holding backups of deleted reports for
-  longer than the reports themselves would make that promise false.
+- **`tickets-*`** — the report database and its attachments. Archives are kept
+  for about 90 days from creation. A report deleted from the live database can
+  therefore remain in an older archive for about 90 additional days, as
+  `/privacy` explains. Failed backup cleanup can extend that period.
 
 The ticket archive is the one that matters and it was **missing entirely** until
 an audit pointed it out — the backup covered the configuration, which is in this
@@ -177,7 +178,12 @@ ranges change; re-run the script to pick up new ones.
 
 ## Deploying the site
 
-The site itself is generated, not stored:
+The site itself is generated, not stored. Build from the reviewed, committed
+revision containing the current publication records, page copy and assets;
+record its commit ID with the deployment. Keep a full backup of the live web
+root outside that directory before publishing. Compare the generated root files
+with production so ownership-verification files are not mistaken for retired
+pages. The deployment tests cover the three currently recorded Naver files.
 
 ```bash
 node site/build.mjs                       # -> site/dist

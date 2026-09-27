@@ -32,9 +32,9 @@ it is stated rather than glossed over. Mitigations are below.
 
 **Detection is currently manual, and this section used to claim otherwise.** It
 said canaries run daily against dedicated throwaway accounts, exercising login,
-code generation and confirmation fetching. No such workflow exists — the
-repository contains `ci.yml` and `release.yml` and nothing scheduled — so the
-sentence described the intent as though it were the arrangement.
+code generation and confirmation fetching. There is still no scheduled workflow
+that exercises live Steam, so that sentence described the intent as though it
+were the arrangement.
 
 The intent stands: hear about a Valve-side break from a robot within 24 hours
 rather than from an angry forum thread in 72. Until that is built, breaks are
