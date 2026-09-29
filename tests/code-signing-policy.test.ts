@@ -183,10 +183,10 @@ describe('what the project says about signing', () => {
 		const signed = rendered('download', true);
 		const unsigned = rendered('download', false);
 		expect(signed.split('What is finished')[1]?.split('What is still missing')[0]).toMatch(
-			/Windows installers and the portable executable signed and timestamped/
+			/Windows installers and the portable executable are signed and timestamped/
 		);
-		expect(signed.split('What is still missing')[1]).not.toContain('code-signing certificate');
-		expect(unsigned.split('What is still missing')[1]).toContain('code-signing certificate');
+		expect(signed.split('What is still missing')[1]).not.toContain('A publisher code signature');
+		expect(unsigned.split('What is still missing')[1]).toContain('A publisher code signature');
 		expect(unsigned).not.toContain('Microsoft Azure Artifact Signing');
 	});
 });

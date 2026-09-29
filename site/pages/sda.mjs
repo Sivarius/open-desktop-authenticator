@@ -1,308 +1,237 @@
 export default {
 	slug: 'steam-desktop-authenticator',
-	updated: '2026-09-26',
-	navTitle: 'About SDA',
-	title: 'Steam Desktop Authenticator (SDA), explained',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
+	navTitle: 'SDA & ODA',
+	title: 'Steam Desktop Authenticator: Original SDA & ODA',
 	description:
-		'What SDA is, what a maFile actually contains, why searching for it is risky, and how to keep Steam Guard on your PC without losing the account.',
+		'Find the original Steam Desktop Authenticator, compare it with Steam Mobile and ODA, and choose the right download or maFile migration route.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		headline: 'Steam Desktop Authenticator: what it is, and how to use it safely',
+		headline: 'Steam Desktop Authenticator: Original SDA & ODA',
 		description:
-			'An explanation of Steam Desktop Authenticator, maFiles, and the risks of downloading it from search results.',
+			'Find the original SDA project, compare the three authenticator options, and plan an SDA-to-ODA migration.',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
-		// The head carried a modified time and the Article object did not, so the
-		// two disagreed about whether this page had ever been revised.
-		dateModified: '2026-09-12',
+		dateModified: '2026-09-30',
 		mainEntityOfPage: `${s.origin}/steam-desktop-authenticator`
 	}),
-	/*
-	 * **The provenance clause in "This project" is load-bearing.**
-	 *
-	 * A pass that pulled a false signature claim out of five sentences rewrote
-	 * three of them to say "published checksums and build provenance" and left
-	 * this one carrying checksums alone — so the card whose whole job is
-	 * convincing an SDA user that this is checkable listed less evidence than the
-	 * release actually ships, while /verify step 4 and /download both send people
-	 * to the attestation it had stopped mentioning. Understating is a smaller
-	 * fault than overclaiming and still the wrong one for this page.
-	 *
-	 * **A JS comment, not an HTML one.** The first version of this note was
-	 * written inside the template and rendered straight into
-	 * site/dist/steam-desktop-authenticator.html — a maintainer's aside shipped to
-	 * every visitor. It also claimed the phrase order in the signing sentence made
-	 * the paragraph fail verify.mjs loudly if a flag were flipped back, which is
-	 * backwards: a qualifier inside UNBUILT_CAPABILITY's window makes that check
-	 * pass, not fail. Nothing here is doing that job, and the phrase order is
-	 * ordinary English.
-	 */
 	body: (s) => `
 		<article>
-			<h1>Steam Desktop Authenticator: what it is, and how to use it safely</h1>
-
+			<h1>Steam Desktop Authenticator: Original SDA &amp; ODA</h1>
 			<p class="lede">
-				Steam Desktop Authenticator — almost always shortened to SDA — is a Windows
-				program that implements Steam's mobile-authenticator functions on a computer.
-				It is not Valve's phone-transfer feature. This page
-				explains what it does, what it stores, why the search results for it are
-				dangerous, and what your options are. It is not a download page for SDA, and we
-				are not its authors.
+				<strong>Steam Desktop Authenticator (SDA)</strong> is the original community
+				Windows app from Jessecar96. <strong>Open Desktop Authenticator (ODA)</strong>
+				is a separate desktop app published by ${s.publisher}. Choose the original
+				project, Valve's phone app, or ODA below.
 			</p>
 
-			<!--
-				This page ranks for the query that gets people robbed, so the official
-				repository belongs above the fold rather than in a paragraph two
-				screens down. Somebody who reads one sentence and leaves should still
-				leave with the right link.
-			-->
-			<div class="callout callout-warn">
-				<h2>Before anything else: SDA is no longer maintained</h2>
-				<p>
-					Its own README states that it is ${s.sda.notice}, and
-					${s.sda.authorsAdvice}. That is the project's own assessment of its own
-					software, and it matters more than any opinion on this page.
-					<strong>Steam's official mobile authenticator is the right answer for most
-					people</strong>, and this page will not pretend otherwise.
-				</p>
-				<p>
-					The rest of this page explains what SDA is, what it stores and why searching
-					for it is dangerous — because many people still run it, still
-					search for it, and are still handed counterfeits when they do. We have no
-					usage figures for somebody else's software and will not invent any.
-				</p>
-			</div>
+			<nav class="jump recovery-shortcuts" aria-label="Authenticator download choices">
+				<ul>
+					<li><a href="${s.sda.repo}" rel="noopener">Original SDA</a></li>
+					<li><a href="https://store.steampowered.com/mobile" rel="noopener">Steam Mobile</a></li>
+					<li><a href="/download">Download ODA</a></li>
+				</ul>
+			</nav>
 
-			<div class="origin-note">
-				<p>
-					<strong>If you are going to use it regardless, the only real home is
-					<a href="${s.sda.repo}" rel="noopener">github.com/${s.sda.author}/SteamDesktopAuthenticator</a>.</strong>
-					A lookalike domain, mirror or forum attachment does not establish that a file
-					is the original release. Even a byte-identical copy would not change SDA's
-					unsupported status.
-				</p>
-				<a class="button button-quiet" href="${s.sda.repo}" rel="noopener">The real repository →</a>
+			<div class="grid recovery-choices" aria-label="Choose an authenticator">
+				<section>
+					<h2>Original SDA</h2>
+					<p>
+						<strong>SDA is no longer maintained.</strong> Its authors recommend
+						Steam Mobile. If you need to identify the original software or its
+						releases, start with Jessecar96's repository.
+					</p>
+					<p><a class="button button-quiet" href="${s.sda.repo}" rel="noopener">Original SDA repository</a></p>
+				</section>
+				<section>
+					<h2>Steam Mobile</h2>
+					<p>
+						<strong>Valve's official option for Android and iPhone.</strong>
+						Use it for sign-in and trade confirmations on your phone.
+						We recommend it when you do not need a desktop workflow.
+					</p>
+					<p><a class="button button-quiet" href="https://store.steampowered.com/mobile" rel="noopener">Get Steam Mobile</a></p>
+				</section>
+				<section>
+					<h2>Open Desktop Authenticator</h2>
+					<p>
+						<strong>An independent, open-source desktop alternative.</strong>
+						Generate codes, review confirmations and import SDA maFiles.
+						Windows and Linux packages are published; testing limits are below.
+					</p>
+					<p><a class="button" href="/download">Download ODA ${s.publication.github.latestVersion}</a></p>
+					<p><a href="/import-from-sda">Already have SDA? Import your maFiles →</a></p>
+				</section>
 			</div>
-
-			<h2>What Steam Guard actually is</h2>
 			<p>
-				When you enable Steam Guard Mobile Authenticator, Steam gives your device two
-				long-lived secrets and keeps a copy:
+				ODA is not affiliated with Valve or SDA's authors, and is not an official
+				SDA release or an endorsed successor. We publish ODA and wrote this comparison.
 			</p>
+
+			<h2>What ODA looks like</h2>
+			<figure class="recovery-product-shot">
+				<a href="/assets/oda-accounts-demo-v150.png" aria-label="View the ODA 1.5.0 demonstration screenshot at full size">
+					<img src="/assets/oda-accounts-demo-v150.png" width="1600" height="900"
+						alt="ODA account dashboard with two fictional accounts, code copy controls, maFile import and confirmation buttons."
+						loading="lazy" decoding="async">
+				</a>
+				<figcaption>
+					ODA 1.5.0 interface, rendered with fictional accounts and demonstration
+					codes. This illustrates the controls; it is not a live Steam-session test.
+				</figcaption>
+			</figure>
+			<p>
+				Each account has its own code and a route to its pending confirmations.
+				The <strong>Import maFiles</strong> action reads existing SDA account files;
+				<strong>Export</strong> lets you keep a separate copy. ODA stores accounts
+				in a local encrypted vault. The <a href="/">product overview</a> explains
+				its features, and the <a href="/download">download page</a> identifies
+				the current packages and their requirements.
+			</p>
+
+			<h2 id="comparison">Which option fits your setup?</h2>
+			<div class="tbl" role="region" aria-labelledby="comparison" tabindex="0">
+				<table>
+					<thead>
+						<tr><th scope="col">Decision</th><th scope="col">Original SDA</th><th scope="col">Steam Mobile</th><th scope="col">ODA</th></tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row">Who publishes it?</th>
+							<td>Jessecar96 and community contributors; unsupported.</td>
+							<td>Valve, the operator of Steam.</td>
+							<td>${s.publisher}; independent open-source project.</td>
+						</tr>
+						<tr>
+							<th scope="row">Published platforms</th>
+							<td>Windows; see the original repository's requirements.</td>
+							<td>Android or iOS.</td>
+							<td>Windows and x64 Linux packages. Check the <a href="/download">package and architecture choices</a>; no macOS package is published.</td>
+						</tr>
+						<tr>
+							<th scope="row">Daily workflow</th>
+							<td>Desktop codes and trade confirmations; continued compatibility is not assured.</td>
+							<td>QR sign-in, sign-in approvals, and trade and Market confirmations on your phone.</td>
+							<td>Desktop codes and trade/Market confirmations, with multiple accounts in one vault.</td>
+						</tr>
+						<tr>
+							<th scope="row">Existing SDA files</th>
+							<td>Keep the maFiles folder, encryption passphrase and matching manifest.</td>
+							<td>Follow Valve's mobile setup or account-recovery instructions.</td>
+							<td>Imports plaintext or SDA-encrypted maFiles. Exports plaintext maFiles without the Steam refresh token or proxy settings.</td>
+						</tr>
+						<tr>
+							<th scope="row">Where to get it</th>
+							<td>The original project's GitHub repository and releases.</td>
+							<td>App links on Valve's Steam Mobile page.</td>
+							<td>ODA's Microsoft Store listing or GitHub releases, linked from <a href="/download">Download ODA</a>.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>
+				Sources: <a href="${s.sda.repo}" rel="noopener">SDA's README</a>,
+				<a href="https://store.steampowered.com/mobile" rel="noopener">Valve's mobile features and app links</a>,
+				<a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Steam Guard guidance</a>,
+				and <a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">ODA's published release</a>.
+				For a deeper choice based on recovery, updates and where your secrets live,
+				<a href="/alternatives">compare the alternatives</a>.
+			</p>
+
+			<h2>Already using SDA? Start with your existing files</h2>
+			<p>
+				Importing a maFile copies its existing authenticator data into ODA.
+				It does not remove or replace the authenticator on Steam. Keep your original
+				SDA installation and an independent backup while checking the new setup.
+			</p>
+			<ol>
+				<li>
+					<strong>Make a copy of the SDA maFiles folder.</strong> For encrypted files,
+					keep the matching <code>manifest.json</code> and your SDA passphrase.
+					A Steam password cannot decrypt those files.
+				</li>
+				<li>
+					<strong>Install ODA and create a vault.</strong> Choose
+					<strong>Import maFiles</strong>, select the copied files and include the
+					manifest when encrypted. Turn off automatic confirmations while checking.
+				</li>
+				<li>
+					<strong>Review before importing.</strong> Check account names, duplicates
+					and warnings. Proxy settings from a file are optional; leave them off unless
+					you intend to use that route. Read each account's import result.
+				</li>
+				<li>
+					<strong>Check the two functions separately.</strong> Compare codes for the
+					same account. Then sign in when ODA asks and check that confirmations load.
+					Matching codes alone does not verify the confirmation secret or session.
+				</li>
+			</ol>
+			<p>
+				<a class="button" href="/import-from-sda">Follow the complete SDA import guide</a>
+			</p>
+			<p>
+				If you have only the phone authenticator, use the separate
+				<a href="/move-steam-authenticator-to-pc">phone-to-PC guide</a>.
+				If you have lost the working authenticator and its files,
+				<a href="/lost-authenticator">choose an account-recovery route</a> first.
+			</p>
+
+			<h2>What to check before choosing a desktop authenticator</h2>
 			<dl class="defs">
-				<dt><code>shared_secret</code></dt>
+				<dt>Keep control of the files</dt>
 				<dd>
-					The seed for the five-character login codes. It is a time-based one-time
-					password: your device and Steam both hash the secret together with the
-					current thirty-second window, and get the same answer without ever talking
-					to each other. Anyone holding this secret can generate your login
-					codes for as long as that authenticator stays on the account — it does not
-					expire on its own, and only removing or replacing it stops them.
+					A maFile contains authenticator credentials: <code>shared_secret</code>
+					generates login codes; <code>identity_secret</code> is used for
+					confirmations together with a valid session. Do not upload these files
+					to online viewers or support tickets. <a href="/what-is-a-mafile">See the file format and backup requirements</a>.
 				</dd>
-				<dt><code>identity_secret</code></dt>
+				<dt>Separate device risk from download verification</dt>
 				<dd>
-					The seed used to authenticate trade and market-confirmation requests. With
-					this secret and a valid session, software can approve a pending confirmation;
-					the secret alone cannot initiate a trade or create a logged-in session.
+					Malware on a trading PC can threaten both its Steam session and a desktop
+					authenticator. A separate phone reduces that shared exposure. Checking a
+					download's origin does not remove this trade-off or prove its code is safe.
+					<a href="/security">Read ODA's security boundaries</a>.
 				</dd>
-				<dt>The revocation code</dt>
+				<dt>Verify the actual ODA release</dt>
 				<dd>
-					A short code in the form <code>R12345</code>, which Valve now calls your
-					<a href="/steam-revocation-code">recovery code</a>. It is shown during setup
-					and can be retrieved again while the authenticator is still accessible. It is how
-					you detach the authenticator if you lose the device. If you do not have it
-					and you lose your authenticator, a linked phone number or previously generated
-					backup codes may still help. Otherwise use Steam Support's recovery process.
+					Version ${s.publication.github.latestVersion}
+					${s.release.checksums ? 'publishes SHA-256 checksums.' : 'does not publish SHA-256 checksums.'}
+					${
+						s.release.checksums && s.release.signed
+							? 'Its checksum list carries a Sigstore signature.'
+							: 'No signed checksum list is recorded for this release.'
+					}
+					${
+						s.release.codeSigned
+							? 'Its direct Windows downloads are signed and timestamped as MASTERPANEL LLC.'
+							: 'Its direct Windows downloads do not have a publisher code signature.'
+					}
+					Store packages are signed separately by Microsoft.
+					${s.release.reproducible ? '' : 'Builds are not yet reproducible.'}
+					<a href="/verify">Follow the verification steps</a> to check file hashes,
+					available signatures and build provenance. ODA's signing instructions
+					do not apply to original SDA.
+				</dd>
+				<dt>Read what has actually been tested</dt>
+				<dd>
+					The <a href="${s.repo}/blob/v${s.publication.github.latestVersion}/docs/FOUNDER_TEST_PLAN.md" rel="noopener">maintainer's test record</a>
+					describes Windows testing of imports, code matching and confirmations.
+					This includes earlier releases, not a new test of every flow in the
+					current version. Linux manual launch checks, live two-account proxy
+					isolation and the browser's signed-in Steam handoff remain recorded gaps.
+					${s.release.audited ? '' : 'ODA has no independent security audit.'}
 				</dd>
 			</dl>
 
-			<h2>What a maFile is</h2>
-			<p>
-				SDA stores each account in a file named after the SteamID with a
-				<code>.maFile</code> extension. It is JSON, and a typical one carries the
-				authenticator secrets and account metadata above, and may also hold session
-				data that has not expired. In other words: <strong>a maFile is the
-				account's second factor, in a file, on disk.</strong>
-			</p>
-			<p>
-				SDA can encrypt maFiles with a passphrase. When it does, the file contents are
-				base64 ciphertext and the salt and initialisation vector live beside it in
-				<code>manifest.json</code> — which is why an encrypted maFile cannot be
-				decrypted without that manifest, and why copying only the <code>.maFile</code>
-				to a new machine leaves you with something you cannot open.
-			</p>
-			<div class="callout">
-				<p>
-					<strong>The practical consequence:</strong> treat a maFile as an account
-					credential, not an ordinary settings file. It normally does not contain the
-					password, but it may contain both authenticator secrets and usable session
-					tokens. Changing the password alone does not rotate the authenticator secrets.
-				</p>
-			</div>
-
-			<h2>Why people use a desktop authenticator at all</h2>
-			<p>
-				Steam's own mobile app is the intended route, and for most people it is the
-				right one. Traders reach for a desktop tool for reasons that are practical
-				rather than exotic:
-			</p>
-			<ul>
-				<li>
-					Managing confirmations alongside a desktop trading workflow can reduce
-					switching between devices. Bulk controls depend on the application and version.
-				</li>
-				<li>
-					A desktop code can be copied locally. Valve's mobile app also offers QR sign-in
-					and sign-in approval, so using a phone does not always mean retyping a code.
-				</li>
-				<li>
-					Accounts outlive phones. People who have lost an authenticator to a broken
-					handset tend to want the secret somewhere they control.
-				</li>
-			</ul>
-			<p>
-				The trade-off continues after downloading: storing the Steam session and its
-				authenticator on one computer exposes both to malware on that computer. A
-				separate phone reduces that shared exposure, although it does not prevent phishing.
-			</p>
-
-			<h2>Looking for the Steam Desktop Authenticator download?</h2>
-			<div class="callout callout-warn">
-				<p>
-					<strong>Get it from the project's own repository, and nowhere else:</strong>
-					<a href="${s.sda.repo}" rel="noopener">github.com/${s.sda.author}/SteamDesktopAuthenticator</a>.
-					SDA is released there by ${s.sda.author}. Any other site offering a
-					&ldquo;Steam Desktop Authenticator download&rdquo; — an installer, a zip, a
-					mirror, a &ldquo;fixed&rdquo; or &ldquo;updated&rdquo; build — is not the
-					project, whatever the page looks like.
-				</p>
-			</div>
-			<p>
-				If you take one thing from this page, take the two minutes to check what you
-				downloaded before you open a <code>.maFile</code> with it:
-			</p>
-			<ol class="signs">
-				<li>
-					<strong>Confirm the address.</strong> Releases live on the same repository as
-					the source. A download page that has no source attached to it has nothing
-					tying the file to the project.
-				</li>
-				<li>
-					<strong>Compare a checksum against a trusted release record, if provided.</strong>
-					A hash beside a file detects a mismatch but does not independently authenticate
-					its publisher. <a href="/verify">Our guide explains the distinction</a>;
-					ODA's signing and attestation commands do not apply to SDA.
-					<span class="hint">
-						Check which verification files the original SDA release actually supplies.
-						Do not assume it provides ODA's signature or provenance records. If it does
-						not provide an authenticated checksum, there is no checksum-origin check
-						to perform; start from the ${s.sda.author} repository linked above and
-						retain the unsupported-software warning.
-					</span>
-				</li>
-				<li>
-					<strong>Never enter a maFile, password or API key into a web page</strong>
-					offering to check, repair or convert it.
-				</li>
-			</ol>
-			<p>
-				We publish <a href="/">an independent alternative</a>, which gives us a stake
-				in this comparison. Our recommendation for most people remains Valve's mobile
-				app. Download provenance does not make unsupported SDA a maintained product.
-			</p>
-
-			<h2>Why searching for "steam desktop authenticator download" is the dangerous part</h2>
-			<p>
-				SDA is distributed as source and as releases on its project page. The name,
-				however, is generic enough that a great many other sites rank for it, and some
-				of them may distribute unofficial or modified builds. SDA's own README warns
-				about counterfeits. The following is a possible attack path, not a measurement
-				of current search rankings or the behavior of every clone:
-			</p>
-			<ol>
-				<li>A site that looks like a product page, often with a stolen screenshot.</li>
-				<li>
-					A file served directly by an unrelated website, rather than a link to the
-					official ${s.sda.author} release page. SDA itself ships as a zip, so the
-					archive is not the warning sign — who is handing it to you is.
-				</li>
-				<li>
-					A build can generate correct codes while copying your maFile or retaining
-					the passphrase you enter. Functionality does not prove safety.
-				</li>
-				<li>
-					The attacker may use copied credentials immediately or later. A quiet period
-					does not mean the file was safe.
-				</li>
-			</ol>
-			<p>
-				<a href="/scam-clones">We have written up the specific patterns and what to check
-				for</a>, because the single most useful thing this project can do for somebody
-				is make them harder to rob, whether or not they ever use our software.
-			</p>
-
-			<h2>Your options, honestly</h2>
-			<div class="grid">
-				<section>
-					<h3>Steam's mobile app</h3>
-					<p>
-						Official, maintained by Valve, and our recommended default. If you are not
-						trading in volume and you are not sure what a maFile is, this is the
-						answer and you can stop reading.
-					</p>
-				</section>
-				<section>
-					<h3>SDA itself</h3>
-					<p>
-						No longer supported; its authors recommend the official mobile app. If you
-						still need the original release, get it from its own source
-						repository and its own releases — never from a search advertisement, a
-						YouTube description, or a Discord message.
-					</p>
-				</section>
-				<section>
-					<h3>This project</h3>
-					<p>
-						An independent, open-source alternative, written to be checkable: public
-						source, builds produced in public CI, and no self-updating. Version
-						${s.release.version} publishes SHA-256 checksums, a Sigstore signature over
-						that checksum list, and build provenance naming the workflow and commit
-						that produced the bytes. Builds are not yet reproducible.
-						${
-							s.release.codeSigned
-								? 'The direct Windows downloads are signed and timestamped as MASTERPANEL LLC using Microsoft Azure Artifact Signing.'
-								: 'This release has no publisher code signature on its direct Windows downloads.'
-						}
-						Linux packages use the checksum-list signature and provenance checks.
-						Microsoft signs the package it distributes through the Store —
-						<a href="/download">the download page tracks where each one stands</a>.
-					</p>
-				</section>
-			</div>
-
-			<h2>How this project relates to SDA</h2>
-			<p>
-				ODA is a separate implementation, not an official SDA release or an endorsed
-				successor. It is built in the open and reads the
-				same <code>.maFile</code> format so that nobody is trapped by their choice of
-				tool. If you decide to leave, the application
-				<a href="/import-from-sda">exports your accounts back out in the same
-				format</a>. A security tool that holds your secrets hostage is not a security
-				tool.
-			</p>
-
-			<h2>Related reading</h2>
+			<h2>Help with an existing authenticator</h2>
 			<ul class="plain next">
-				<li><a href="/scam-clones">How the fake SDA sites work</a></li>
-				<li><a href="/what-is-a-mafile">What is inside a maFile</a></li>
-				<li><a href="/steam-guard-code-not-working">If SDA's codes are being refused</a></li>
-				<li><a href="/encrypted-mafile">Encrypted maFiles and the manifest</a></li>
-				<li><a href="/alternatives">How the options compare</a></li>
-				<li><a href="/lost-authenticator">If you have already lost access</a></li>
-				<li><a href="/verify">Verifying that a download is genuine</a></li>
-				<li><a href="/import-from-sda">Moving maFiles into this application</a></li>
-				<li><a href="/security">What this application does with your secrets</a></li>
+				<li><a href="/steam-guard-code-not-working">Codes rejected: check the account and clock</a></li>
+				<li><a href="/encrypted-mafile">Encrypted maFile: find the manifest and passphrase</a></li>
+				<li><a href="/approve-steam-confirmations-desktop">Confirmations missing or failing</a></li>
+				<li><a href="/steam-revocation-code">Find or use a Steam recovery code</a></li>
+				<li><a href="/scam-clones">Check a suspicious authenticator download</a></li>
 			</ul>
 		</article>`
 };

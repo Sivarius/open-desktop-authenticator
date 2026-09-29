@@ -10,17 +10,17 @@
 
 export default {
 	slug: 'steam-inventory-stolen',
-	updated: '2026-09-26',
+	updated: '2026-09-30',
 	navTitle: 'Our story',
-	title: 'A fake SDA download emptied my Steam inventory',
+	title: 'Losing a Steam inventory after a suspected fake SDA download',
 	description:
-		'A first-hand account: a poisoned search result, a two-week wait, and an inventory sold on the Community Market to buy the thief’s own listings.',
+		'A team member describes losing Steam items after a suspected fake SDA download: what they observed, what remains unverified, and recovery lessons.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		headline: 'A fake SDA download emptied my Steam inventory',
+		headline: 'Losing a Steam inventory after a suspected fake SDA download',
 		description:
-			'A first-hand account of a counterfeit Steam Desktop Authenticator download and the theft that followed.',
+			'A team member’s account of a suspected counterfeit authenticator, subsequent unauthorised Market activity and the limits of the available evidence.',
 		author: { '@type': 'Organization', name: s.publisher },
 		publisher: { '@type': 'Organization', name: s.publisher },
 		dateModified: s.updated,
@@ -28,12 +28,17 @@ export default {
 	}),
 	body: (s) => `
 		<article>
-			<h1>A fake SDA download emptied my Steam inventory</h1>
+			<h1>Losing a Steam inventory after a suspected fake SDA download</h1>
 
 			<p class="lede">
 				A member of our team recounts losing their Steam inventory after installing a
-				counterfeit SDA download. Their experience motivated this project. The story
+				suspected counterfeit SDA download. Their experience motivated this project. The story
 				below records their recollection; it is not an independently verified incident report.
+			</p>
+			<p>
+				<strong>Dealing with unauthorised activity now?</strong>
+				<a href="/scam-clones#already-ran-it">Start with the account-recovery steps</a>
+				from a trusted device. This account is background reading, not a recovery procedure.
 			</p>
 
 			<div class="callout">
@@ -133,8 +138,8 @@ export default {
 					immediately.
 				</li>
 				<li>
-					<strong>Bookmark the real release page.</strong> Not the search. The search is
-					the attack surface.
+					<strong>Bookmark a verified release page.</strong> Check that a new download
+					still comes from the publisher you intended to use.
 				</li>
 				<li>
 					<strong>Check the file, not the website.</strong> A convincing page proves

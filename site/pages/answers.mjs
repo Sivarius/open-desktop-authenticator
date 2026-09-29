@@ -6,24 +6,7 @@ import { releaseGaps, sentenceList, countPhrase } from '../markup.mjs';
 const originalSdaRepo = (site) =>
 	site.sda?.repo ?? 'https://github.com/Jessecar96/SteamDesktopAuthenticator';
 
-/**
- * Pages that answer a question somebody is actually typing.
- *
- * **On how these were chosen.** There is no query data for this domain yet — it
- * has never been served to the public, so Search Console has nothing and there
- * is no analytics history to read. Anyone claiming otherwise would be inventing
- * numbers. These three exist because they cover distinct intents the rest of the
- * site could not answer at all:
- *
- *  - someone who has read the word "maFile" and does not know what it is;
- *  - someone who has already lost access and is looking for a way back, which is
- *    the highest-urgency moment in this whole subject;
- *  - someone explicitly shopping for something other than SDA.
- *
- * Each is a page we can write better than a content farm, because the answers
- * come from having implemented the format and the recovery paths. That is the
- * only durable reason to rank for anything.
- */
+/** Distinct reference, recovery and product-comparison tasks. */
 
 export const mafile = {
 	slug: 'what-is-a-mafile',
@@ -325,12 +308,13 @@ export const alternatives = {
 	parent: 'docs',
 	guide: true,
 	sourced: (s) =>
-		`Compared against <a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Valve's Steam Guard guidance</a> and <a href="${originalSdaRepo(s)}" rel="noopener">SDA's official repository</a>`,
-	updated: '2026-09-26',
+		`Options checked against <a href="https://store.steampowered.com/mobile" rel="noopener">Valve's mobile-app feature list</a>, <a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">its setup guidance</a>, <a href="${originalSdaRepo(s)}" rel="noopener">SDA's official repository</a> and <a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">ODA's published release</a>. This comparison is written by ODA's publisher`,
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	navTitle: 'Alternatives',
 	title: 'Steam authenticator alternatives to SDA, compared',
 	description:
-		'Steam authenticator alternatives compared honestly: Steam Mobile, SDA and Open Desktop Authenticator — including where the right answer is not ours.',
+		'Compare Steam Mobile, original SDA and ODA by device, account workflow, backups, maintenance and updates. Choose a route for your existing accounts.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'Article',
@@ -344,11 +328,29 @@ export const alternatives = {
 		<article>
 			<h1>Steam authenticator alternatives to SDA, compared</h1>
 			<p class="lede">
-				Three realistic options, and the honest case for each — including the one where
-				the answer is not us. We would rather you chose correctly than chose ours.
+				For a new setup, Steam Mobile is the recommended starting point. If you need
+				to manage existing SDA maFiles on a computer, ODA offers an import route.
+				The original SDA is no longer supported. Compare the workflow and recovery
+				requirements below before changing a working authenticator.
 			</p>
+			<p class="hint">MASTERPANEL LLC publishes ODA and writes this comparison.
+				ODA is independent of Valve and SDA's authors.</p>
 
-			<h2>Steam Mobile — the default, and the right answer for most people</h2>
+			<h2>Choose by what you need to do</h2>
+			<div class="tbl" role="region" aria-label="Authenticator choices by task" tabindex="0">
+				<table>
+					<thead><tr><th scope="col">Your situation</th><th scope="col">Start with</th><th scope="col">What to check</th></tr></thead>
+					<tbody>
+						<tr><th scope="row">A new account setup with a working smartphone</th><td><a href="https://store.steampowered.com/mobile" rel="noopener">Steam Mobile</a></td><td>Keep its recovery code and a usable recovery route before changing phones.</td></tr>
+						<tr><th scope="row">Existing SDA accounts and maFile backups</th><td><a href="/import-from-sda">ODA's import workflow</a></td><td>Keep the source files. Encrypted SDA files also need their manifest and passphrase.</td></tr>
+						<tr><th scope="row">Several accounts</th><td>Compare the interface you need</td><td>Steam Mobile supports multiple accounts too. ODA shows account cards and codes on the desktop; account count alone does not require a desktop app.</td></tr>
+						<tr><th scope="row">Authenticator currently on a phone</th><td><a href="/steam-mobile-vs-desktop-authenticator">The device-choice guide</a></td><td>Importing an existing maFile is different from replacing a phone authenticator. Read the transfer consequences before moving it.</td></tr>
+						<tr><th scope="row">Finding the genuine original SDA</th><td><a href="${originalSdaRepo(s)}" rel="noopener">Jessecar96's repository</a></td><td>It identifies the original project but does not make it maintained. Its authors recommend Steam Mobile.</td></tr>
+					</tbody>
+				</table>
+			</div>
+
+			<h2>Steam Mobile: official phone workflow</h2>
 			<p>
 				<a href="https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134" rel="noopener">Valve's own app</a>.
 				It is maintained by the people who run the service, it comes
@@ -358,9 +360,8 @@ export const alternatives = {
 				you retain a recovery route; plan that before changing devices.
 			</p>
 			<p>
-				<strong>Choose it if:</strong> you are not confirming listings in bulk, you are
-				not sure what a maFile is, or you would rather not be responsible for storing a
-				maFile. It is our recommended default; you still need to secure the phone,
+				<strong>Choose it if:</strong> you want Valve's phone sign-in and confirmation
+				workflow and do not need to manage maFiles on a computer. Secure the phone,
 				review approvals and preserve recovery access.
 			</p>
 			<p>
@@ -370,7 +371,7 @@ export const alternatives = {
 				the recovery preparations described above.
 			</p>
 
-			<h2>Steam Desktop Authenticator — no longer supported</h2>
+			<h2>Original SDA: keep a migration plan</h2>
 			<p>
 				The original SDA is a longstanding community desktop implementation. Its
 				<a href="${originalSdaRepo(s)}" rel="noopener">README says it is no longer supported</a>,
@@ -383,17 +384,24 @@ export const alternatives = {
 				we do not recommend starting with unsupported software.
 			</p>
 			<p>
-				<strong>Against it:</strong> there is no promised maintenance when Steam or
+				<strong>Limitation:</strong> there is no promised maintenance when Steam or
 				security requirements change. The project's own warning about
 				<a href="/scam-clones">counterfeit downloads</a> adds a separate acquisition risk.
 			</p>
 
-			<h2>Open Desktop Authenticator — this project</h2>
+			<h2>ODA: maFiles and confirmations on desktop</h2>
 			<p>
-				An independent implementation published by the team writing this comparison.
-				Public source, builds in public CI, no updater inside ODA, and
-				<a href="/security">a documented security model that includes what it cannot
-				protect you from</a>. Every release publishes checksums and build provenance.
+				ODA imports SDA maFiles, displays login codes and lets you review Steam trade
+				and market confirmations. Its vault stores account secrets encrypted with your
+				passphrase. <a href="/download">Published packages</a> target Windows and x64
+				Linux; the download page distinguishes packages from completed runtime testing.
+				Read the <a href="/security">security model</a> before giving it live secrets.
+			</p>
+			<p>
+				<strong>Maintenance and release evidence:</strong> inspect the public source,
+				CI history and <a href="/verify">verification evidence available for the release</a>.
+				Direct downloads
+				are updated manually; Store updates follow your Store settings.
 				${
 					releaseGaps(s).length
 						? `${countPhrase(releaseGaps(s).length)} not yet done:
@@ -404,22 +412,21 @@ export const alternatives = {
 				}
 			</p>
 			<p>
-				<strong>Choose it if:</strong> you want a desktop authenticator and you want to
-				be able to check what it does — or have somebody else check.
+				<strong>Choose it if:</strong> you need the desktop account view or want to
+				migrate existing maFiles, and you can maintain secure backups and the computer
+				holding them. Automatic confirmation is optional and off by default; leave it
+				off if you need to review each action.
 			</p>
 			<p>
-				<strong>Against it, plainly:</strong> it is new. Version 1.0 was published on
-				${s.releasedOn}, with no years of community scrutiny behind it and no track
-				record comparable to a mature project. Source availability and provenance do
-				not substitute for an independent security audit. Desktop custody puts the
+				<strong>Limitations:</strong> ODA is a young project. Source availability and
+				provenance do not substitute for an independent security audit. Desktop custody puts the
 				second factor on the same computer you may use to trade; use Valve's mobile
 				app if you do not need that trade-off.
 			</p>
 
 			<h2>The comparison that actually matters</h2>
 			<p>
-				Not the feature list — the failure modes. Ask of any authenticator, including
-				ours:
+				Check the following before trusting any option with your account:
 			</p>
 			<ol>
 				<li><strong>Can I verify that what I ran is what was published?</strong></li>
@@ -428,16 +435,16 @@ export const alternatives = {
 				<li><strong>Who controls updates, and how are they authenticated?</strong> Every update changes the code entrusted with the secret; delaying security fixes also carries risk.</li>
 				<li><strong>What can it approve without asking me?</strong></li>
 			</ol>
-			<p>
-				A tool that answers those five well is a tool worth using, whoever wrote it.
-			</p>
+			<p>For SDA-to-ODA migration, keep the source backup and check codes, Steam sign-in
+				and confirmations separately. A successful file import only establishes that the
+				file was accepted. <a href="/import-from-sda">Follow the migration and verification steps</a>.</p>
 
 			<h2>Related</h2>
 			<ul class="plain next">
-				<li><a href="/steam-mobile-vs-desktop-authenticator">Mobile app or desktop: an honest comparison</a></li>
-				<li><a href="/steam-desktop-authenticator">Steam Desktop Authenticator explained</a></li>
-				<li><a href="/verify">How to verify any download</a></li>
-				<li><a href="/download">Our release status</a></li>
+				<li><a href="/steam-mobile-vs-desktop-authenticator">Mobile or desktop: custody and recovery decisions</a></li>
+				<li><a href="/steam-desktop-authenticator">Original SDA and ODA: identities and download routes</a></li>
+				<li><a href="/verify">How to verify an ODA download</a></li>
+				<li><a href="/download">ODA packages and release status</a></li>
 			</ul>
 		</article>`
 };

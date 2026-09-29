@@ -114,11 +114,11 @@ describe('release prose distinguishes source and public versions', () => {
 		);
 	});
 
-	it('keeps historical first-release statements explicitly tied to 1.0', () => {
+	it('does not attach the current release date to the historical 1.0 release', () => {
 		const all = pageSources()
 			.map(({ source }) => source)
 			.join('\n');
-		expect(all).toContain('Version 1.0 was published on');
+		expect(all).not.toMatch(/Version 1\.0 was published on[^`]*s\.releasedOn/);
 	});
 });
 

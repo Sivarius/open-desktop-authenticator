@@ -267,8 +267,12 @@ const QUALITY_CASES = [
 	{
 		name: 'ledger proof left only in a hidden comment',
 		beforeBuild: () => {
-			replaceOnce('site/pages/owners.mjs', 'site/editorial.mjs', 'site/editorial-ledger.mjs');
-			replaceOnce('site/pages/owners.mjs', '</article>`', '<!-- site/editorial.mjs --></article>`');
+			replaceOnce('site/pages/owners.mjs', 'docs/FOUNDER_TEST_PLAN.md', 'docs/test-record.md');
+			replaceOnce(
+				'site/pages/owners.mjs',
+				'</article>`',
+				'<!-- docs/FOUNDER_TEST_PLAN.md --></article>`'
+			);
 		},
 		expected: /owners: editorial proof is absent from the authored article/
 	},

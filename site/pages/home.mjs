@@ -11,8 +11,8 @@ const downloadForSourceVersion = (site) => {
 
 export default {
 	slug: 'index',
-	updated: '2026-09-27',
-	reviewed: '2026-09-27',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	title: 'Open Desktop Authenticator — Steam Guard on your PC',
 	navTitle: 'Home',
 	description:
@@ -80,15 +80,19 @@ export default {
 			     alt="" aria-hidden="true">
 			<h1>Open Desktop Authenticator</h1>
 			<p class="lede">
-				<strong>An open-source Steam authenticator for the desktop.</strong>
-				It generates Steam Guard codes on your computer, approves trades and
-				market listings, and imports the <code>.maFile</code> accounts you already
-				have. The source and release-verification instructions are public.
+				<strong>Steam Guard codes and confirmations on your computer.</strong>
+				Open Desktop Authenticator (ODA) is a free, open-source app for Windows and
+				Linux. View codes for your accounts, review trade and market confirmations,
+				and import existing SDA <code>.maFile</code> backups into an encrypted vault.
 			</p>
 			<div class="hero-actions">
-				<a class="button" href="/download">Download ${s.publication.github.latestVersion}</a>
-				<a class="button button-quiet" href="/verify">How to verify a build</a>
+				<a class="button" href="/download">Download ODA ${s.publication.github.latestVersion}</a>
+				<a class="button button-quiet" href="/import-from-sda">Import from SDA</a>
 			</div>
+			<p class="hint">
+				Published by MASTERPANEL LLC. ODA is independent of Valve and the original
+				SDA project. <a href="/steam-desktop-authenticator">Looking for Steam Desktop Authenticator?</a>
+			</p>
 			${
 				s.release.codeSigned
 					? `<p class="release-highlight">
@@ -127,6 +131,13 @@ export default {
 
 	body: (s) => `
 		<article>
+			<figure class="recovery-product-shot">
+				<img src="/assets/oda-accounts-demo-v150.png" width="1600" height="900"
+					alt="ODA accounts screen with account cards, Steam Guard code timers and import controls"
+					loading="lazy" decoding="async">
+				<figcaption>ODA v1.5.0 interface, captured with fictional demo accounts and codes.
+					This illustrates the account view; it is not a live Steam session or a new release test.</figcaption>
+			</figure>
 			<div class="callout">
 				<h2>Status: ${
 					s.publication.github.current && s.publication.store.current
@@ -138,16 +149,15 @@ export default {
 								: `${s.version} is the upcoming source version`
 				}</h2>
 				<p>
-					${publicationSummary(s)} <a href="/download">The download page</a> links
-					both official channels. This page still hosts no installer and never will —
-					every button here links outward.
+					${publicationSummary(s)} Choose a Windows installer, portable build or
+					x64 Linux package on <a href="/download">the download page</a>.
+					Published packages and platforms tested by a person are listed separately there.
 				</p>
 				<p>
 					${
 						releaseGaps(s).length
-							? `What is still missing is written down rather than left for you to find:
-								${sentenceList(releaseGaps(s))}.
-								<a href="/download">The download page tracks each of those.</a>`
+							? `Current limits: ${sentenceList(releaseGaps(s))}.
+								<a href="/download">Read the release and testing details.</a>`
 							: `Everything this page once listed as outstanding is done.
 								<a href="/download">The download page shows where each one stands.</a>`
 					}
@@ -157,41 +167,6 @@ export default {
 					Linux verification and checksum-list signatures — <a href="/code-signing-policy">read it here</a>.
 				</p>
 			</div>
-			${
-				s.alternativeTo
-					? `<section class="community-listing" aria-labelledby="community-listing-title">
-				<div>
-					<h2 id="community-listing-title">Find us on AlternativeTo</h2>
-					<p>Explore our listing, compare alternatives, and share your experience with ODA.</p>
-				</div>
-				<a href="${s.alternativeTo.url}?utm_source=badge&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">
-					<img src="${s.alternativeTo.badge}" alt="Open Desktop Authenticator — listed on AlternativeTo"
-						width="244" height="79" loading="lazy">
-				</a>
-			</section>`
-					: ''
-			}
-
-			<h2>Why this exists</h2>
-			<p>
-				<a href="/steam-desktop-authenticator">Steam Desktop Authenticator</a> — SDA —
-				brought Steam Guard to PCs and helped inspire this project. Its authors now
-				warn that it is unmaintained and unsafe to use. Counterfeit downloads are an
-				additional risk: malicious builds can copy the authenticator secrets inside a
-				maFile and put your account and inventory at risk. A familiar name, search
-				ranking or working code display does not establish that a download is genuine.
-				<a href="/scam-clones">Read the evidence and the checks to make</a>.
-			</p>
-			<p>
-				We think the answer is a tool where the dangerous parts are visible.
-				<a href="/security">Everything in this application that touches a secret</a> is
-				readable in the open, it is built in public CI from that source, and the site
-				tells you <a href="/verify">how to check a download against what was
-				published</a>. Reproducible builds — where you compile the tag yourself and get
-				the same bytes — are the goal and are not finished; the
-				<a href="/download">download page</a> tracks what is actually done.
-			</p>
-
 			<h2>What it does</h2>
 			<div class="grid">
 				<section>
@@ -247,11 +222,40 @@ export default {
 				</section>
 			</div>
 
-			<h2>What it will not do</h2>
+			${
+				s.alternativeTo
+					? `<section class="community-listing" aria-labelledby="community-listing-title">
+				<div>
+					<h2 id="community-listing-title">Find us on AlternativeTo</h2>
+					<p>Explore our listing, compare alternatives, and share your experience with ODA.</p>
+				</div>
+				<a href="${s.alternativeTo.url}?utm_source=badge&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">
+					<img src="${s.alternativeTo.badge}" alt="Open Desktop Authenticator — listed on AlternativeTo"
+						width="244" height="79" loading="lazy">
+				</a>
+			</section>`
+					: ''
+			}
+
+			<h2>Why this exists</h2>
 			<p>
-				A short list, because the things a security tool refuses to do are more
-				informative than the things it offers.
+				ODA provides a desktop workspace for people who already manage Steam accounts
+				and maFile backups on a PC. It is a separate implementation, with its own
+				source, release process and support. The original
+				<a href="/steam-desktop-authenticator">Steam Desktop Authenticator and ODA</a>
+				are different projects; that guide links the genuine original and explains
+				your choices, including Valve's official mobile app.
 			</p>
+			<p>
+				Using a desktop authenticator puts the Steam session and its second factor
+				on the same computer. If you do not need that workflow, use
+				<a href="https://store.steampowered.com/mobile" rel="noopener">Steam Mobile</a>
+				on a separate phone. If you choose ODA, review its
+				<a href="/security">security model</a>, <a href="/verify">verify the download</a>
+				and keep an independent backup before importing accounts.
+			</p>
+
+			<h2>What it will not do</h2>
 			<ul class="plain">
 				<li>
 					<strong>No ODA backend. No ODA account. No cloud sync. No telemetry.</strong>
@@ -284,7 +288,7 @@ export default {
 				<li><a href="/scam-clones">How the fake authenticator sites work</a></li>
 				<li><a href="/security">The security model, in detail</a></li>
 				<li><a href="/import-from-sda">Bringing your existing maFiles across</a></li>
-				<li><a href="/alternatives">Which authenticator you should actually use</a></li>
+				<li><a href="/alternatives">Compare authenticator options for your workflow</a></li>
 			</ul>
 		</article>`
 };

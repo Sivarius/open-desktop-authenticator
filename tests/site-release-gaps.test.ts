@@ -373,10 +373,10 @@ describe('the pages that carry the sentence', () => {
 
 	// Mechanical publication checks catch their specified patterns, not every
 	// possible false sentence. Keep that boundary alongside the release gaps.
-	it('does not present automated site checks as a complete factual review', () => {
+	it('does not present source review, tests or signatures as a safety guarantee', () => {
 		const text = words(pageBySlug('faq').body(site({ ...NOTHING, signed: true })));
-		expect(text).toMatch(/Automated site checks catch specified contradictory claims/);
-		expect(text).toMatch(/do not establish that every sentence is correct/);
+		expect(text).toMatch(/Source review, tests and signatures address different risks/);
+		expect(text).toMatch(/none guarantees that software is harmless/);
 	});
 
 	/*

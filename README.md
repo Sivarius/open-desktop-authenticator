@@ -1,7 +1,7 @@
 # Open Desktop Authenticator
 
 An open-source desktop authenticator for Steam. Windows and Linux.
-A maintained successor to SDA.
+An independently developed alternative to SDA, unaffiliated with Valve or SDA's authors.
 
 Developed, owned, and published by [MASTERPANEL LLC](https://masterspanel.com) ·
 Official ODA website: [opendesktopauthenticator.com](https://opendesktopauthenticator.com)
@@ -43,19 +43,20 @@ Find the project on [AlternativeTo](https://alternativeto.net/software/open-desk
 
 ## Why this exists
 
-The tool an entire trading economy depends on — Steam Desktop Authenticator — is
-no longer maintained. Search for it and page one is full of clone sites shipping
-modified binaries that steal accounts. Our founder lost about **$3,000** to
-exactly that scam, and the sites are still there, resurfacing under new domains
-every time one gets reported.
+The original [Steam Desktop Authenticator project](https://github.com/Jessecar96/SteamDesktopAuthenticator)
+is no longer supported and warns about counterfeit downloads. A team member's
+[account of losing a Steam inventory](https://opendesktopauthenticator.com/steam-inventory-stolen)
+after installing a suspected counterfeit helped motivate ODA. That account is
+personal testimony, not an independently verified forensic report.
 
-Open source alone does not fix this. Attackers compile open source with malware
-added. What fixes it is a chain a stranger can walk without trusting anyone:
+ODA provides a desktop option with public source and identifiable release channels.
+Users can inspect the connection between the publisher, source and distributed files:
 
 **website → company → GitHub org → source → public CI build → published hash + provenance**
 
-So: every release is built in public CI from a tag, published with hashes and
-provenance, by a named company that does not hide where it came from. It reaches
+Direct releases are built in public CI from a tag and published with hashes and
+provenance. These checks establish release origin, not that the software is free
+of vulnerabilities. ODA reaches
 you through the Microsoft Store, which re-signs the package, or from GitHub
 Releases, where you can check the bytes yourself.
 
@@ -66,7 +67,8 @@ produced it. The Store package is built by that same workflow run, but it is the
 submitted to Partner Center by hand and re-signed by Microsoft — so what you can
 verify there is that Microsoft distributed it, not which commit it came from.
 That is a real limit, it is Microsoft's design rather than ours, and it is the
-trade you make for a package Windows never warns about.
+trade-off of Store distribution. Store signing does not guarantee that every device
+policy will permit the application.
 
 ### Don't trust us. Verify us.
 
@@ -155,12 +157,12 @@ the record of how the Steam protocol actually behaves.
 
 Steam Desktop Authenticator was created by **Jessecar96** and community
 contributors. It is no longer maintained. This is an independent, modern
-open-source successor inspired by it — not a fork, and not affiliated with it.
+independent open-source alternative inspired by it — not a fork, and not affiliated with it.
 
 **DoctorMcKay's** open-source Steam libraries are how this protocol is
 documented in practice, and we use them where they are the right tool.
-**`steam-session` handles signing in** — it is the flow every Steam tool uses and
-reimplementing it was a mistake we made once and reverted (D14). `steam-totp` is
+**`steam-session` handles signing in.** ODA uses its maintained implementation
+instead of duplicating that work (D14). `steam-totp` is
 not shipped, but our code generation is checked against it on every push (D13).
 `steamcommunity` is not shipped either, for reasons recorded in Q19. Open Desktop
 Authenticator is an independent project and is not affiliated with or endorsed by

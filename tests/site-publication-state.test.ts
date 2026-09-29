@@ -305,11 +305,9 @@ describe('per-channel publication output', () => {
 			verifiedOn: '2026-09-27',
 			architectures: ['x64']
 		});
-		expect(text(download.body(site))).toMatch(
-			/Store 1\.5\.1 package recorded in our publication record is x64/
-		);
+		expect(text(download.body(site))).toMatch(/Store 1\.5\.1 \(x64\)/);
 		expect(text(download.body(site))).toContain(
-			'the Store does not currently offer a native ARM64 ODA package'
+			'The recorded Store package is x64; use GitHub for native ARM64.'
 		);
 
 		const software = softwareFor(site);
