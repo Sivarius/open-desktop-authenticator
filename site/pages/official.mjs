@@ -54,8 +54,8 @@ const OURS = [
 
 export const official = {
 	slug: 'official',
-	updated: '2026-09-12',
-	reviewed: '2026-09-12',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	navTitle: 'Official domains',
 	title: 'Official domains for Open Desktop Authenticator',
 	description:
@@ -135,7 +135,7 @@ export const official = {
 				not proof of a fake; a lookalike page offering its own build needs independent
 				verification. If you ran an untrusted authenticator and gave it Steam
 				credentials or maFiles, treat those secrets as potentially compromised and
-				<a href="/lost-authenticator">work through the recovery steps</a> rather than
+				<a href="/scam-clones#already-ran-it">work through the compromised-account steps</a> rather than
 				hoping. ${s.name} cannot undo that, and neither can we.
 			</p>
 		</article>`

@@ -1079,54 +1079,6 @@ main.has-hero {
 	min-height: 52px;
 }
 
-/*
- * **The prompt is a dialog, because of where the reader is standing.**
- *
- * It is the last element in the article and the download buttons are near the
- * top. Measured on the built page at a 1920x889 viewport: pressing "Get it from
- * the Microsoft Store" at y=463 scrolled the reader 3,798px to a card at the
- * very bottom, immediately below the review section it duplicated, and left the
- * button they had just pressed 3,335px above the fold. An ask that teleports
- * somebody to the far end of the page reads as the page breaking, not as a
- * question.
- *
- * So it opens where they already are — whichever button they pressed, wherever
- * they had scrolled to — and the page behind it does not move at all.
- *
- * Only while it is open. `hidden` keeps it out of the flow entirely, and if the
- * stylesheet never arrives it is an ordinary block at the end of the article
- * with a working link in it, which is the same failure mode the script has.
- *
- * `safe center` rather than plain centring: a short window would otherwise
- * centre a tall card by pushing its top out of reach, and the heading is the
- * part that explains why the thing appeared.
- */
-.ask-prompt {
-	border-color: var(--line-strong);
-	margin-top: 28px;
-}
-.ask-prompt:not([hidden]) {
-	position: fixed;
-	inset: 0;
-	z-index: 60;
-	display: grid;
-	place-items: safe center;
-	margin: 0;
-	padding: 24px;
-	border: 0;
-	border-radius: 0;
-	background: rgba(3, 6, 9, 0.72);
-	overflow-y: auto;
-}
-.ask-prompt:not([hidden]) .ask-body {
-	width: min(560px, 100%);
-	padding: 26px 28px;
-	border: 1px solid var(--line-strong);
-	border-radius: var(--radius);
-	background: var(--panel);
-	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-}
-
 /* ------------------------------------------------------------------ give -- */
 
 /* Three ways to pay somebody else, side by side and equally weighted. */
@@ -1775,35 +1727,12 @@ button.button:active {
 		padding: 15px 16px;
 	}
 
-	/*
-	 * The header stops being sticky on a phone.
-	 *
-	 * Nine navigation links wrap to three rows at 375px, and stuck to the top
-	 * that bar held 190px of an 812px screen — a quarter of the display, on every
-	 * page, permanently, so a quarter of every article was unreachable without
-	 * more scrolling. Sticky navigation earns its space when it is one compact
-	 * row; at three rows it is a menu that refuses to go away.
-	 *
-	 * It stays at the top of the document, where a scroll upward still finds it,
-	 * and the skip link still jumps past it for keyboard and screen-reader use.
-	 */
+	/* Keep the mobile header in document flow so content gets the full screen when scrolling. */
 	.masthead {
 		position: static;
 	}
 
-	/*
-	 * Two deliberate rows, rather than one row that ran out of space.
-	 *
-	 * The desktop header is `justify-content: space-between` with wrapping, which
-	 * on a phone put the mark alone on the first line and left the links to fall
-	 * underneath it, ragged and hard against the left edge. Nothing was broken and
-	 * it looked broken — the giveaway of a wrapped flex row is that the two halves
-	 * are aligned to different things.
-	 *
-	 * So on a narrow screen it stops being a row at all. The mark is centred on a
-	 * line of its own, a rule separates it, and the links are centred beneath —
-	 * symmetrical, which reads as a decision instead of an accident.
-	 */
+	/* A wordmark and one scrollable navigation row preserve space for the page's answer. */
 	.masthead .wrap {
 		display: block;
 		padding: 0 18px;
@@ -1813,10 +1742,17 @@ button.button:active {
 		padding: 13px 0 12px;
 	}
 	.masthead nav {
-		justify-content: center;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		max-width: 100%;
 		gap: 2px 4px;
 		padding: 9px 0 11px;
 		border-top: 1px solid var(--line);
+	}
+	.masthead nav a {
+		flex: 0 0 auto;
+		white-space: nowrap;
 	}
 
 	/*
@@ -2389,6 +2325,35 @@ article > .signals {
  * document, which on a phone is the difference between a readable table and a
  * page that slides sideways under the thumb.
  */
+.recovery-shortcuts {
+	display: none;
+}
+.recovery-choices h2 {
+	margin: 0 0 10px;
+	font-size: 1.25rem;
+	line-height: 1.3;
+}
+.recovery-product-shot {
+	margin: 28px 0;
+	max-width: 100%;
+	overflow: hidden;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--bg-lift);
+}
+.recovery-product-shot img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.recovery-product-shot figcaption {
+	padding: 14px 18px;
+	border-top: 1px solid var(--line);
+	font-size: 0.86rem;
+	line-height: 1.55;
+	color: var(--muted);
+}
+
 .tbl {
 	margin: 28px 0;
 	overflow-x: auto;
@@ -2507,6 +2472,10 @@ article > .jump {
 }
 
 @media (max-width: 720px) {
+	.recovery-shortcuts {
+		display: block;
+		margin: 22px 0;
+	}
 	.answer {
 		padding: 20px 18px 18px 22px;
 	}
@@ -2594,16 +2563,7 @@ article > .jump {
 	color: var(--text);
 }
 
-/*
- * Download options, narrowed to the one that fits.
- *
- * The base state shows every path, because it is what somebody with no
- * JavaScript sees and a download page that offers nothing when a script fails
- * would be the worst possible failure on this particular page. `download.js`
- * then stamps the platform on the container and the rules below hide what does
- * not apply — the Store link is meaningless on Linux, and the direct downloads
- * are a footnote on Windows rather than a second front door.
- */
+/* Download choices remain available on every platform. */
 .download-primary {
 	margin-top: 1.25rem;
 }
@@ -2629,10 +2589,3 @@ article > .jump {
 .download-alt p {
 	margin-top: 0.75rem;
 }
-
-[data-download][data-platform='windows'] .download-linux,
-[data-download][data-platform='linux'] .download-windows {
-	display: none;
-}
-
-/* Anything we could not identify keeps both, which is the honest default. */

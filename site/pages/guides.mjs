@@ -5,351 +5,168 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-27',
-	reviewed: '2026-09-27',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	navTitle: 'Download',
-	script: 'download.js',
-	title: 'Open Desktop Authenticator download and release status',
+	title: 'Download Open Desktop Authenticator for Windows and Linux',
 	description:
-		'Download Open Desktop Authenticator for Windows and Linux. Install from the Microsoft Store, or take a build from GitHub and verify it yourself.',
+		'Download ODA from Microsoft Store or GitHub: Windows x64/ARM64 installers, portable x64 and Linux packages. Check release and testing limits.',
 	body: (s) => `
 		<article>
-			<h1>Download</h1>
+			<h1>Download Open Desktop Authenticator</h1>
+			<p class="lede">${publicationSummary(s)} Choose your package below.
+				These are ODA downloads, an independent alternative to
+				<a href="/steam-desktop-authenticator">the original Steam Desktop Authenticator</a>.</p>
+
 			<div class="callout" data-download>
-				<h2>Two places, and nowhere else</h2>
-				<p>
-					${publicationSummary(s)} <strong>Those are our two official download
-					channels.</strong> Follow those exact listings rather than a mirror or a
-					lookalike domain. This site links to the downloads; it does not serve an
-					installer itself.
-					<a href="/official">The full list of addresses we publish from</a> is
-					short, and anything outside it is not ours.
-				</p>
-
-				<div class="download-primary download-windows">
-					<div class="download-actions">
-						<a class="button" href="${s.store.url}" rel="noopener" data-got-it="the Store build">Microsoft Store ${s.publication.store.latestVersion}</a>
-						<a class="button button-quiet" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="the Windows GitHub build">${s.release.codeSigned ? 'Signed Windows' : 'Windows'} ${s.publication.github.latestVersion} on GitHub</a>
-					</div>
-					${
-						s.release.codeSigned
-							? `<p class="download-why">
-						<strong>GitHub ${s.publication.github.latestVersion} Windows downloads are signed by MASTERPANEL LLC</strong>
-						using Microsoft Azure Artifact Signing. Choose an x64, ARM64 or combined installer,
-						or the portable x64 build. <a href="/verify">Check the publisher signature</a>.
-					</p>`
-							: ''
-					}
-					<p class="download-why">
-						Microsoft signs ODA's Store AppX package and checks its integrity during
-						installation. This avoids the SmartScreen download warning associated with
-						direct downloads; it is not a guarantee that an application is safe.
-						Check that the listing names <strong>MASTERPANEL LLC</strong> as publisher.
-						Store updates can install automatically, subject to your Store settings.
-						<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">Microsoft's package-signing requirements</a> and
-						<a href="https://support.microsoft.com/en-us/windows/apps/turn-on-automatic-app-updates" rel="noopener">update settings</a> explain those checks.
-					</p>
-					<p class="download-why">
-						<strong>The Store ${s.publication.store.latestVersion} package recorded in our
-						<a href="${s.repo}/blob/main/site/publication.mjs" rel="noopener">publication record</a> is
-						x64.</strong> Windows 11 on Arm supports
-						<a href="https://support.microsoft.com/en-us/surface/drivers-firmware/using-software-and-peripherals-on-surface-arm-based-devices" rel="noopener">x64 emulation</a>.
-						For a native ARM64 build, use the ARM64 installer on
-						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">the GitHub ${s.publication.github.latestVersion} release</a>;
-						the Store does not currently offer a native ARM64 ODA package.
-					</p>
+				<h2>Choose your download</h2>
+				<div class="download-actions">
+					<a class="button" href="${s.store.url}" rel="noopener">Microsoft Store ${s.publication.store.latestVersion}</a>
+					<a class="button button-quiet" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">GitHub ${s.publication.github.latestVersion}: all packages</a>
 				</div>
-
-				<div class="download-primary download-linux">
-					<p>
-						<a class="button" href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="the Linux build">Download ${s.publication.github.latestVersion} for Linux</a>
-					</p>
-					<p class="download-why">
-						An x64 AppImage and a Debian/Ubuntu <code>.deb</code>, published on the
-						releases page. There is no native Linux ARM64 package in this release.
-						<a href="/verify">Verify the downloaded file</a> using the checksums,
-						checksum-list signature and build provenance attestation.
-					</p>
-				</div>
-
-				<details class="download-alt">
-					<summary>Portable builds and direct-download details</summary>
-					<p>
-						Direct installation packages are on
-						<a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener" data-got-it="a build from the release page">the GitHub ${s.publication.github.latestVersion} release page</a>,
-						including the portable build, which has no Store equivalent — its vault,
-						settings and recovery data stay beside the executable, so it can run from
-						a USB stick. The single-file launcher extracts Electron and Chromium runtime
-						files to Windows Temp while it runs and normally removes them on exit. Use this route
-						if the Store is unavailable or you need a portable build. An organisation's
-						device policy may still block an application; a portable build does
-						not bypass that policy.
-					</p>
-					<p>
-						${
-							s.release.codeSigned
-								? `<strong>The direct Windows downloads are code-signed and timestamped as
-								MASTERPANEL LLC using Microsoft Azure Artifact Signing.</strong> Check for a
-								valid signature and that publisher name before running the file.`
-								: '<strong>This GitHub release has no publisher code signature on its Windows downloads.</strong>'
-						}
-						SmartScreen may still warn, and device policy may block a signed application.
-						An unrecognised-app warning and a malware detection are different findings;
-						a signature is not a reason to dismiss a security alert.
-						<a href="/verify">The verification steps</a> establish the published origin
-						of a file, not whether its code is harmless.
-					</p>
-				</details>
+				<p>The Store package is x64. GitHub offers native x64 and ARM64 Windows installers,
+					portable x64, and x64 Linux packages. Check your computer's system type before
+					choosing an installer.</p>
 			</div>
 
-			<!--
-				The most useful thing this page can do today.
+			<div class="tbl" role="region" aria-label="ODA packages and update routes" tabindex="0">
+				<table>
+					<thead><tr><th scope="col">Your device or workflow</th><th scope="col">Package</th><th scope="col">Updates and limits</th></tr></thead>
+					<tbody>
+						<tr><th scope="row">Windows, with Microsoft Store</th><td><a href="${s.store.url}" rel="noopener">Store ${s.publication.store.latestVersion}</a> (x64)</td><td>Store-managed updates, subject to your settings. The recorded Store package is x64; use GitHub for native ARM64.</td></tr>
+						<tr><th scope="row">Intel/AMD Windows PC</th><td><code>open-desktop-authenticator-${s.publication.github.latestVersion}-x64-setup.exe</code></td><td>Direct installer; download later updates manually.</td></tr>
+						<tr><th scope="row">Windows on Arm</th><td><code>open-desktop-authenticator-${s.publication.github.latestVersion}-arm64-setup.exe</code></td><td>Native ARM64 installer. Native ARM64 execution is not claimed in the release's manual test record.</td></tr>
+						<tr><th scope="row">One installer for x64 and ARM64 Windows</th><td><code>open-desktop-authenticator-${s.publication.github.latestVersion}-setup.exe</code></td><td>Combined installer from the same GitHub release.</td></tr>
+						<tr><th scope="row">Portable Windows x64</th><td><code>open-desktop-authenticator-${s.publication.github.latestVersion}-portable.exe</code></td><td>Vault/settings stay beside the executable. Keep that data when replacing the executable to update.</td></tr>
+						<tr><th scope="row">Linux x64</th><td><code>open-desktop-authenticator-${s.publication.github.latestVersion}-x86_64.AppImage</code> or <code>open-desktop-authenticator-${s.publication.github.latestVersion}-amd64.deb</code></td><td>Published packages; Linux manual runtime checks remain uncompleted in the maintainer record. No Linux ARM64 package.</td></tr>
+					</tbody>
+				</table>
+			</div>
+			<p>Get every direct package from the <a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">GitHub release assets</a>.
+				Do not select the source-code ZIP when you want an installer. No macOS build is published.
+				Windows builds target Windows 10 version 1809 or later and Windows 11; that minimum
+				is not a recommendation to use an operating system without security updates.</p>
 
-				Somebody arrives here wanting a Steam authenticator, finds there is
-				nothing to download, and goes back to a search result — which is the
-				precise sequence that cost the person who runs this site their
-				inventory. Sending them to the genuine original instead is worth more
-				than keeping them on a page with no build on it.
-			-->
-			<h2>What to use today</h2>
-			<p>
-				Start with Valve's app. If you specifically need a desktop tool, compare the
-				alternatives and their limitations before installing:
-			</p>
-			<ol class="signs">
-				<li>
-					<strong>Steam's official mobile authenticator.</strong> Maintained by the
-					people who run the service, distributed through Apple's and Google's own
-					stores. Valve provides account-recovery routes if the phone is lost.
-					Use <a href="https://store.steampowered.com/mobile" rel="noopener">Valve's mobile-app page</a>
-					to find the store links. If you are here
-					because you searched for a desktop authenticator, this is still probably what
-					you want.
-				</li>
-				<li>
-					<strong>The original Steam Desktop Authenticator: a legacy option we do not
-					recommend for a new setup.</strong> Its own README says it is
-					${s.sda.notice}, and its authors' position is that
-					${s.sda.authorsAdvice}. That is their assessment of their own software and it
-					deserves more weight than ours. Unmaintained software that holds a Steam Guard
-					secret does not get safer with time. If you use it anyway, take it from
-					<a href="${s.sda.repo}" rel="noopener">github.com/${s.sda.author}/SteamDesktopAuthenticator</a>
-					and nowhere else — not a mirror, not a lookalike domain, not a sponsored
-					result.
-				</li>
-				<li>
-					<strong>This project.</strong> There is a release to check now, and the
-					links at the top of this page are it. We still put Valve's own app first,
-					because for most people it is the better answer and saying otherwise to win
-					an install would be the same mistake in the other direction.
-				</li>
+			<h2>Two official download channels</h2>
+			<p>The Microsoft Store listing and this project's GitHub releases are the two official
+				channels. This website links to them and does not serve an installer itself.
+				Check <strong>MASTERPANEL LLC</strong> as publisher and use the
+				<a href="/official">official-address reference</a> if a link looks unfamiliar.</p>
+			<p>Microsoft signs the Store AppX package and checks its integrity during installation.
+				The Store's package signature is separate from a publisher signature on a direct
+				download. See <a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">Microsoft's signing requirements</a>
+				and <a href="https://support.microsoft.com/en-us/windows/apps/turn-on-automatic-app-updates" rel="noopener">Store update settings</a>.</p>
+			<p>${
+				s.release.codeSigned
+					? `<strong>GitHub ${s.publication.github.latestVersion} Windows downloads are signed and timestamped as MASTERPANEL LLC</strong>
+					using Microsoft Azure Artifact Signing.`
+					: '<strong>This GitHub release has no publisher code signature on its Windows downloads.</strong>'
+			}
+				SmartScreen may still warn, and device policy may block an application. A valid
+				signature is not a reason to dismiss a malware detection.
+				<a href="/verify">Verify the file before running it</a>.</p>
+
+			<h2>Install or update without losing your accounts</h2>
+			<ol>
+				<li><strong>Back up first if you already use ODA.</strong> Keep an independent encrypted
+					vault backup, its passphrase and recovery information. Updating the app and replacing
+					an account's Steam authenticator are different operations.</li>
+				<li><strong>Choose one distribution route.</strong> The Store manages its edition's updates.
+					Direct GitHub builds can report a newer release but do not download or install it.
+					The portable build has no Store equivalent.</li>
+				<li><strong>For a new setup, create your vault.</strong> Then use
+					<a href="/import-from-sda">Import maFiles</a> for existing SDA files, or follow
+					<a href="/docs">the setup documentation</a>. A phone authenticator requires a
+					different <a href="/move-steam-authenticator-to-pc">transfer workflow</a>.</li>
 			</ol>
-			<div class="origin-note">
-				<p>
-					We would rather lose you to Valve's app than have you install something
-					abandoned on our recommendation. Sending people to unmaintained security
-					software while leaving out its author's own warning is the behaviour this
-					site exists to complain about.
-				</p>
-				<a class="button button-quiet" href="${s.sda.repo}" rel="noopener">Read SDA's own notice →</a>
-			</div>
-
-			<h2>Why this page still lists the alternatives</h2>
-			<p>
-				Because the reason this project exists is that somebody searching for a desktop
-				authenticator lands on a page and installs whatever it offers. A download page
-				that answers only "install ours" trains exactly that habit, which is the habit
-				that costs people their inventories. Naming the alternatives, and the real home
-				of each, is worth more than the installs it loses us.
-			</p>
-
-			<h2>What is finished</h2>
-			<ul>
-				<li>Implemented features: codes, confirmations, enrollment, import and export, encrypted vault and recovery files.</li>
-				<li>The security posture described on the <a href="/security">security page</a>.</li>
-				<li>An automated test suite configured to run on pushes to main and pull requests.</li>
-				${
-					s.release.codeSigned
-						? `<li>Windows installers and the portable executable signed and timestamped as
-					MASTERPANEL LLC using Microsoft Azure Artifact Signing. Linux packages use
-					the checksum-list signature and provenance checks below; they do not carry a
-					platform code signature. <a href="/code-signing-policy">Read the signing policy</a>.</li>`
-						: ''
-				}
-				${
-					/*
-					 * **The checksum-list signature is listed here, under the flag, rather
-					 * than as a fourth entry in "What is still missing" below.**
-					 *
-					 * It used to live down there in both directions: one `<li>` whose signed
-					 * branch read "The checksum list <em>is</em> signed. Every release carries
-					 * SHA256SUMS.txt.sig ...", sitting under a heading that says "What is
-					 * still missing" and a lead-in promising the reader is being told what has
-					 * not been done. A finished thing announced as an outstanding one is the
-					 * same class of error the release flags exist to prevent, only aimed at
-					 * the reader's comprehension instead of at the facts — and nothing catches
-					 * it, because `CLAIMS` in site/verify.mjs skips the entry while the flag is
-					 * true and `STALE_ABSENCE` only ever hunts for absence phrasings.
-					 *
-					 * An earlier draft bridged the position instead, ending the signed branch
-					 * with "The two things still missing are below." That parses, but it makes
-					 * the heading a lie the next sentence then apologises for, and it only
-					 * reads correctly for as long as this item happens to sit above the
-					 * remaining ones. The neighbouring reproducible-builds entry already
-					 * survives the build only because "cannot yet" lands inside a
-					 * 200-character qualifier window, so a second position-dependent sentence
-					 * in the same list is a second thing that breaks silently when somebody
-					 * reorders it. Moving the item leaves both headings literally true
-					 * whichever way the flag points, which is the reading a careful editor
-					 * arrives at without having to reconcile anything.
-					 *
-					 * The wording changes with the move as well: entries in this list are
-					 * plain noun phrases and the ones below lead with a bold claim, so the
-					 * sentence is rewritten to the grammar of the list it now belongs to
-					 * rather than carried over intact from the one it left.
-					 */
-					s.release.signed
-						? `<li>
-					A signature over the checksum list: the current GitHub release carries
-					<code>SHA256SUMS.txt.sig</code> and the certificate that goes with it, so
-					you can check that the list itself came from our workflow rather than only
-					that your download matches the list.
-					<a href="/verify">Step 5 walks through it.</a>
-				</li>`
-						: ''
-				}
-				<li>
-					Maintainer testing against live Steam accounts, documented in
-					<a href="${s.repo}/blob/main/docs/PHASE0_FINDINGS.md" rel="noopener">the protocol findings</a> and
-					<a href="${s.repo}/blob/main/docs/AUTHENTICATOR_TRANSFER.md" rel="noopener">the transfer record</a>.
-					The transfer record covers sign-in, a real transfer, codes and fetching the
-					confirmation list; it explicitly does not claim a live approval of a pending
-					trade. These records and automated tests are not an independent audit.
-				</li>
-			</ul>
-
-			<h2>What is still missing</h2>
-			<p>Stated here rather than left for you to discover:</p>
-			<ul>
-				${
-					s.release.codeSigned
-						? ''
-						: `<li>
-					<strong>A code-signing certificate for this release's direct Windows downloads.</strong>
-					Use its published checksums and provenance. The Store AppX package has a separate
-					Microsoft signature. <a href="/code-signing-policy">Read the signing policy</a>.
-				</li>`
-				}
-				${
-					/*
-					 * Absent from this list entirely once the flag is true, because what it
-					 * describes is then finished and is stated up under "What is finished" —
-					 * the note there explains why it moved rather than being bridged in place.
-					 *
-					 * The conditional wraps the whole `<li>` instead of sitting inside one, so
-					 * the signed rendering has three bullets rather than three bullets and an
-					 * empty one.
-					 */
-					s.release.signed
-						? ''
-						: `<li>
-					<strong>The checksum list is not signed yet.</strong> The release workflow
-					signs it now, but it started doing so after the current release was
-					published — so there is no <code>SHA256SUMS.txt.sig</code> to fetch for the
-					build you can download today. <a href="/verify">Step 5 says so plainly</a>
-					rather than printing a command that cannot succeed.
-				</li>`
-				}
-				<li>
-					<strong>Reproducible builds.</strong> You cannot yet rebuild the tag and
-					compare bytes with ours. The provenance attestation identifies the build
-					workflow and commit; it does not substitute for an independent rebuild.
-				</li>
-				<li>
-					<strong>An independent audit.</strong> The project has maintainer test records
-					and automated checks, but no published independent security audit.
-				</li>
-			</ul>
-
-			<p>
-				Free software under the MIT licence — no ODA account or subscription, and
-				nothing to cancel. <a href="${s.repo}/blob/main/LICENSE" rel="noopener">Read the
-				licence</a>, or <a href="/uninstall">read how to remove it and its data</a>
-				before you install rather than after.
-			</p>
-
-			<h2>Building it yourself</h2>
-			<p>
-				The source is public and can be built and run by anyone comfortable with
-				Node.js. You no longer have to — there are builds now — but the option is the
-				point: the public source lets you inspect the implementation behind a
-				release. That inspection still requires expertise; public code alone is not
-				a security assessment.
-			</p>
-			<p><a class="button" href="${s.repo}" rel="noopener">View the source repository</a></p>
+			<p>The portable launcher keeps account data beside the executable but extracts runtime
+				files to Windows Temp while running. It normally removes those runtime files on exit.
+				Portable packaging does not bypass an organisation's device policy.</p>
 
 			<h2>Installing a verified Linux download</h2>
-			<p>
-				Choose one package. On Debian or Ubuntu, from the download directory, run
+			<p>Choose one package. On Debian or Ubuntu, from the download directory, run
 				<code>sudo apt install ./open-desktop-authenticator-${s.publication.github.latestVersion}-amd64.deb</code>.
 				For the AppImage, enable its executable permission in your file manager, or run
 				<code>chmod +x ./open-desktop-authenticator-${s.publication.github.latestVersion}-x86_64.AppImage</code>,
-				then open it. Run ODA as your normal user. If it does not launch, report the
-				error and your distribution/version through <a href="/support">support</a>.
-			</p>
+				then open it as your normal user. If it does not launch, report the error and your
+				distribution/version through <a href="/support">support</a>. Package availability
+				does not establish compatibility with every distribution.</p>
 
-			<h2>Checking what you downloaded</h2>
-			<p>
-				Each application download is listed with a SHA-256 checksum in
-				<code>SHA256SUMS.txt</code> on the release page, alongside a build provenance
-				attestation that ties those exact bytes to the public workflow run that produced
-				them. <a href="/verify">The verification steps walk through both</a> — worth
-				reading once before you need them rather than in a hurry afterwards.
-			</p>
+			<h2>What is finished</h2>
+			<ul>
+				<li>Implemented features include codes, confirmations, enrollment, import/export,
+					an encrypted vault and recovery files. <a href="/security">Read their security boundaries</a>.</li>
+				<li>${
+					s.release.checksums
+						? 'Published checksums in <code>SHA256SUMS.txt</code> identify the release bytes.'
+						: 'A published checksum list is not available for this release.'
+				}
+					<a href="/verify">Follow the available verification procedure</a>, including how
+					to inspect build provenance and the producing workflow.</li>
+				${
+					s.release.codeSigned
+						? `<li>Windows installers and the portable executable are signed and
+					timestamped as MASTERPANEL LLC using Microsoft Azure Artifact Signing. Linux packages
+					do not carry a platform code signature.</li>`
+						: ''
+				}
+				${
+					s.release.checksums && s.release.signed
+						? `<li>The current GitHub release includes <code>SHA256SUMS.txt.sig</code>
+					and its certificate for checking the checksum list's origin.</li>`
+						: ''
+				}
+				<li><a href="${s.repo}/releases/tag/v${s.publication.github.latestVersion}" rel="noopener">The release notes</a>
+					identify its automated and manual checks. Historical maintainer testing is recorded in
+					<a href="${s.repo}/blob/main/docs/FOUNDER_TEST_PLAN.md" rel="noopener">the founder test plan</a>.
+					Those older observations are not a new test of every current package.</li>
+			</ul>
 
-${reviewAsk(s, { got: 'Did this page stop you downloading the wrong thing?' })}
+			<h2>What is still missing</h2>
+			<ul>
+				${
+					s.release.codeSigned
+						? ''
+						: `<li>A publisher code signature for this release's direct
+					Windows downloads. Store package signing is separate; see the <a href="/code-signing-policy">signing policy</a>.</li>`
+				}
+				${
+					s.release.checksums && s.release.signed
+						? ''
+						: `<li>The checksum list is not signed yet for this release;
+					there is no <code>SHA256SUMS.txt.sig</code> to verify. <a href="/verify">Check the available verification steps</a>.</li>`
+				}
+				${
+					s.release.reproducible
+						? ''
+						: `<li><strong>Reproducible builds.</strong> Independently rebuilding
+					the tag to match the published bytes is not yet established. Build provenance does
+					not substitute for that comparison.</li>`
+				}
+				${
+					s.release.audited
+						? ''
+						: `<li><strong>An independent security audit.</strong> Maintainer test
+					records and automated checks do not establish independent review.</li>`
+				}
+				<li><strong>Manual coverage for every platform and workflow.</strong> The maintainer record
+					still lists Linux runtime, live two-account proxy isolation and the signed-in browser
+					handoff as gaps. The release notes do not claim native ARM64 execution.</li>
+			</ul>
 
-			<!--
-				Revealed once a download has actually started, which is the only moment
-				on this page where the reader has received the thing the review would be
-				about. Hidden to begin with and hidden again for anybody who says no,
-				because an ask that ignores an answer is not an ask.
-			-->
-			<!--
-				Shown when a download route is clicked, before the browser follows it.
-				Never a gate: the link the reader asked for is the first control in the
-				block and works whether or not they do anything else here, and if this
-				script does not run the link is an ordinary link.
+			<h2>Source, licence and help</h2>
+			<p>ODA is free software under the <a href="${s.repo}/blob/main/LICENSE" rel="noopener">MIT licence</a>,
+				with no ODA account or subscription. The <a href="${s.repo}" rel="noopener">source repository</a>
+				includes build instructions. Public code and release signatures establish inspectability
+				and origin; they do not establish harmlessness.</p>
+			<ul class="plain next">
+				<li><a href="/verify">Verify your ODA download</a></li>
+				<li><a href="/import-from-sda">Import existing SDA accounts</a></li>
+				<li><a href="/uninstall">Remove ODA while preserving account access</a></li>
+				<li><a href="/alternatives">Compare options before choosing a desktop authenticator</a></li>
+			</ul>
 
-				It asks them to come back afterwards rather than to review now. The rule
-				this site holds itself to is in markup.mjs: a review from somebody who
-				has not used the thing is worth nothing to the reader it is meant to
-				reassure. They are one click from a download, so they have not used it.
-			-->
-			<aside class="ask ask-prompt" data-review-prompt hidden
-			       role="dialog" aria-modal="true" aria-labelledby="review-prompt-title">
-				<div class="ask-body">
-					<h2 id="review-prompt-title">One thing before you go</h2>
-					<p>
-						Continue to the download below. When you have
-						actually used it — today, next week, whenever — come back and say how it
-						went. Reviews can describe other users' experiences; they do not verify an
-						installer's origin or safety. Use the release verification guide for that
-						origin check.
-					</p>
-					<p class="hint">
-						Nothing is offered in return. Positive and negative feedback are welcome,
-						subject to the review platform's moderation rules.
-					</p>
-					<div class="ask-actions">
-						<a class="button" href="#" data-review-continue rel="noopener">Continue to the download →</a>
-						<a class="button button-quiet" href="${s.reviews.write}" rel="noopener nofollow">Write a review →</a>
-						<button type="button" class="button button-quiet" data-review-dismiss>
-							Do not ask again
-						</button>
-					</div>
-				</div>
-			</aside>
+${reviewAsk(s, { got: 'Did the download and setup instructions help?' })}
 		</article>`
 };
 
@@ -357,55 +174,72 @@ export const importFromSda = {
 	slug: 'import-from-sda',
 	parent: 'docs',
 	guide: true,
-	updated: '2026-09-12',
-	reviewed: '2026-09-26',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	sourced: (s) =>
-		`Version covered: ODA ${s.version}. Import behavior checked against <a href="${s.repo}/tree/v${s.version}/src/main/import" rel="noopener">the tagged implementation</a>, <a href="${s.repo}/blob/v${s.version}/tests/import-service.test.ts" rel="noopener">its service tests</a>, and <a href="${s.sda.repo}" rel="noopener">SDA's published format</a>`,
+		`Version covered: ODA ${s.version}. Steps checked against <a href="${s.repo}/blob/v${s.version}/src/renderer/screens/ImportAccounts.tsx" rel="noopener">the release's import screen</a>, <a href="${s.repo}/tree/v${s.version}/src/main/import" rel="noopener">import implementation</a> and <a href="${s.repo}/blob/v${s.version}/tests/import-service.test.ts" rel="noopener">service tests</a>. This is a source review, not a new live Steam migration test`,
 	navTitle: 'Import',
 	title: 'Import maFiles from SDA',
 	description:
-		'Moving accounts from SDA: which files to select, why encrypted maFiles need manifest.json, what is checked before anything is stored, and how to leave.',
+		'Import readable or encrypted SDA maFiles into ODA. Keep your source files, resolve import warnings, and check codes and confirmations separately.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'HowTo',
 		name: 'Import maFiles from Steam Desktop Authenticator',
 		publisher: { '@type': 'Organization', name: s.publisher },
 		step: [
-			{ '@type': 'HowToStep', name: 'Find your maFiles directory' },
+			{ '@type': 'HowToStep', name: 'Back up the SDA folder and create or unlock an ODA vault' },
 			{ '@type': 'HowToStep', name: 'Select the files, including manifest.json if encrypted' },
 			{ '@type': 'HowToStep', name: 'Enter the SDA passphrase if the files are encrypted' },
-			{ '@type': 'HowToStep', name: 'Review what was found and choose what to keep' }
+			{ '@type': 'HowToStep', name: 'Review accounts and import the selected rows' },
+			{
+				'@type': 'HowToStep',
+				name: 'Check codes, Steam session and confirmation access separately'
+			}
 		]
 	}),
 	body: () => `
 		<article class="guide">
 			<h1>Importing maFiles from Steam Desktop Authenticator</h1>
 			<p class="lede">
-				Your accounts are yours. Import reads the same <code>.maFile</code> format SDA
-				writes, shows you what it found, and stores nothing until you say so.
+				In ODA, open <strong>Import maFiles → Choose files</strong>, select your SDA
+				files, unlock them if encrypted, and review the accounts before importing.
+				ODA reads the source files without moving or changing them. This copies an
+				existing authenticator; it does not enroll a new one or transfer it off a phone.
 			</p>
 
 			<h2>Before you start</h2>
 			<div class="callout">
 				<p>
-					<strong>Do not delete your SDA installation.</strong> Keep it until you have
-					confirmed the imported accounts generate the same codes. Importing copies;
-					it does not move. There is no step here that alters your existing files.
-					Turn off automatic confirmation while checking the new setup, so neither
-					application approves items before you have reviewed them.
+					<strong>Keep an independent backup of the complete SDA folder.</strong>
+					Do not delete the original or remove Steam Guard to perform this import.
+					Turn off automatic confirmation in both applications while checking the setup.
+					Retain the backup after migration; matching login codes alone does not verify
+					every credential in a maFile.
 				</p>
 			</div>
 
-			<h2>1. Find your maFiles</h2>
+			<h2>1. Prepare the vault and find your maFiles</h2>
+			<p><a href="/download">Install the ODA package for your device</a>, then create
+				or unlock its vault. Keep the ODA vault passphrase separately from your backup.
+				It may be different from the password you used to encrypt SDA files.</p>
 			<p>
 				They live in the <code>maFiles</code> folder inside your SDA installation
 				directory, one <code>.maFile</code> per account, named after the SteamID —
 				plus a <code>manifest.json</code>.
 			</p>
+			<ul>
+				<li><strong>Readable files:</strong> select the account's <code>.maFile</code>.</li>
+				<li><strong>Encrypted SDA files:</strong> retain each <code>.maFile</code>, its matching
+					<code>manifest.json</code> and the SDA encryption passphrase as a recovery set.</li>
+				<li><strong>No maFile, only a phone authenticator:</strong> this guide cannot export
+					secrets from Steam Mobile. Read the <a href="/move-steam-authenticator-to-pc">phone-to-PC transfer guide</a>.</li>
+			</ul>
 
 			<h2>2. Select them</h2>
 			<p>
-				Choose <em>Import maFiles</em> and select the account files. If your maFiles are
+				Choose <strong>Import maFiles</strong> on the accounts screen, then
+				<strong>Choose files…</strong> and select the account files. If your maFiles are
 				encrypted you also need <code>manifest.json</code>: it holds the salt and
 				initialisation vector, and without it an encrypted maFile cannot be decrypted at
 				all. If you select an encrypted file and forget the manifest, the application
@@ -416,7 +250,9 @@ export const importFromSda = {
 			<p>
 				You will be asked for the passphrase you set in SDA — not your Steam password,
 				and not the passphrase for this application's vault. It is used to decrypt the
-				files in memory and is not stored.
+				files in memory and is not stored. Select <strong>Decrypt</strong>; readable
+				accounts then appear under <strong>Found</strong>. If no files are encrypted,
+				skip this step.
 			</p>
 
 			<h2>4. Review what was found</h2>
@@ -436,29 +272,61 @@ export const importFromSda = {
 					option without that code; Steam may offer recovery through a linked phone
 					number or Steam Support. <a href="/lost-authenticator">Recovery routes</a>.
 				</li>
-				<li>A proxy setting found inside the file, which you can adopt or discard.</li>
+				<li>A proxy setting found inside the file. Its separate opt-in starts off;
+					leave it off unless you recognise and still use that routing address.</li>
 				<li>
 					Files that could not be read at all, and why. A missing or empty
 					<code>identity_secret</code> is rejected here rather than imported.
 				</li>
 			</ul>
 			<p>
-				Tick the accounts you want and confirm the import. Read the result for each
-				account: a warning or failed row is not a successful import. If you replace an
-				existing entry, you replace that vault's stored copy; keep a backup first.
+				Check the account name and SteamID, tick only the rows you want, then select
+				<strong>Import</strong> with the displayed account count. Existing vault accounts
+				start unticked: choosing one permits replacing its stored copy. Back up the vault
+				before doing that. If you opted into a proxy, a separate dialog identifies its
+				address before import; decline it if you do not recognise the destination.
+			</p>
+			<p>
+				Read each <strong>Result</strong> row: <em>imported</em> and <em>replaced</em>
+				mean the vault entry was written; <em>skipped</em> does not. An imported account
+				can still have a recovery-backup warning that needs attention.
 				Uncommitted staged files are discarded when you leave, lock the vault, or the
 				ten-minute staging window expires.
 			</p>
 
 			<h2>5. Confirm the codes match</h2>
 			<p>
-				Put the two applications side by side and check that an imported account shows
-				the same five characters as SDA does. Same secret, same clock, same code. That
-				checks the code-generating secret at that moment. It does not check the
-				confirmation secret, recovery code or Steam session. Sign in when ODA requests
-				it and check that confirmations load; review the recipient and items before
-				approving anything. Keep an independent backup even after these checks pass.
+				Put ODA and a working copy of that account's authenticator side by side and
+				compare the five-character codes within the same time window. If they differ,
+				check the account and <a href="/steam-guard-code-not-working">time synchronisation</a>.
+				Matching codes checks code generation at that moment, not all account functions.
 			</p>
+			<dl class="defs">
+				<dt>Steam session and confirmations</dt>
+				<dd>Open Confirmations for that account and sign in when prompted. Refresh the list.
+					A successfully loaded empty list is different from a sign-in or connection error;
+					neither a matching code nor a file import proves a pending confirmation can be approved.
+					<a href="/approve-steam-confirmations-desktop">Troubleshoot the session and review workflow</a>.
+					Do not create or approve a trade merely to finish this guide.</dd>
+				<dt>Recovery and backups</dt>
+				<dd>Keep the original backup and confirm you can read the saved recovery information.
+					Record the recovery code outside the vault where available. Do not deactivate
+					Steam Guard to test a code; <a href="/steam-revocation-code">review the recovery-code guidance</a>.</dd>
+			</dl>
+
+			<h2>If an import does not complete</h2>
+			<div class="tbl" role="region" aria-label="Import problems and next steps" tabindex="0">
+				<table>
+					<thead><tr><th scope="col">What ODA shows</th><th scope="col">Next step</th></tr></thead>
+					<tbody>
+						<tr><th scope="row">Encrypted, missing manifest</th><td>Choose the files again with the matching <code>manifest.json</code> from the same SDA backup. A passphrase cannot replace missing encryption parameters.</td></tr>
+						<tr><th scope="row">Decryption failed</th><td>Check the SDA encryption passphrase and that the manifest belongs to those files. It is not your Steam password or ODA vault passphrase. <a href="/encrypted-mafile">Diagnose encrypted files</a>.</td></tr>
+						<tr><th scope="row">Already in the vault</th><td>Leave it unticked to preserve the existing entry. Replace only when the selected file is the copy you intend to use.</td></tr>
+						<tr><th scope="row">Not imported or unusable secret</th><td>Read the reason on that file's row. Use a known-good backup; changing the extension or inventing missing fields cannot reconstruct an authenticator.</td></tr>
+						<tr><th scope="row">Staging expired or vault locked</th><td>Unlock the vault and choose the files again. Nothing left only in the preview was imported.</td></tr>
+					</tbody>
+				</table>
+			</div>
 
 			<h2>Leaving again</h2>
 			<p>
@@ -474,7 +342,7 @@ export const importFromSda = {
 
 			<h2>Related</h2>
 			<ul class="plain next">
-				<li><a href="/steam-desktop-authenticator">What is actually inside a maFile</a></li>
+				<li><a href="/what-is-a-mafile">What is actually inside a maFile</a></li>
 				<li><a href="/encrypted-mafile">Encrypted maFiles: the password and the manifest</a></li>
 				<li><a href="/security">How they are stored once imported</a></li>
 				<li><a href="/docs">Full documentation</a></li>
@@ -695,8 +563,8 @@ ${reviewAsk(s, { got: 'Did this cover what you needed to remove?' })}
 
 export const docs = {
 	slug: 'docs',
-	updated: '2026-09-12',
-	reviewed: '2026-09-12',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	navTitle: 'Docs',
 	title: 'Documentation: setup, codes, confirmations and backups',
 	description:
@@ -705,10 +573,16 @@ export const docs = {
 		<article>
 			<h1>Documentation</h1>
 			<p class="lede">
-				The product manual and the Steam Guard reference library, grouped by the task
-				you are trying to complete. If something here is wrong or missing,
-				<a href="/support">tell us</a> — documentation faults are treated as faults.
+				Choose the task you need to complete, then follow the relevant steps.
+				This page also covers ODA's vault, backups and everyday controls.
 			</p>
+			<ul class="plain next">
+				<li><a href="/steam-desktop-authenticator"><strong>Choose an authenticator</strong></a> — original SDA, Steam Mobile or ODA.</li>
+				<li><a href="/download"><strong>Get ODA for your device</strong></a> — packages, updates and release verification.</li>
+				<li><a href="/import-from-sda"><strong>Bring existing SDA accounts into ODA</strong></a> — readable or encrypted maFiles.</li>
+				<li><a href="/lost-authenticator"><strong>Recover lost account access</strong></a> — branches for the phone, backups or recovery code you still have.</li>
+				<li><a href="/steam-guard-trade-holds"><strong>Identify a trade restriction</strong></a> — match Steam's message to the available action.</li>
+			</ul>
 
 			<h2>Getting started</h2>
 			<dl class="defs">
@@ -742,7 +616,7 @@ export const docs = {
 					entry after 30 seconds by default, configurable in Settings. This does not
 					clear clipboard history, cloud sync or copies already read by other apps.
 				</dd>
-				<dt>Confirmations</dt>
+				<dt><a href="/approve-steam-confirmations-desktop">Confirmations</a></dt>
 				<dd>
 					Trades and market listings awaiting approval, with what Steam said about
 					each: what is being traded, with whom, and when it was raised. Approve or
@@ -767,7 +641,7 @@ export const docs = {
 
 			<h2>Keeping access</h2>
 			<dl class="defs">
-				<dt>Revocation codes</dt>
+				<dt><a href="/steam-revocation-code">Revocation codes</a></dt>
 				<dd>
 					The code that detaches an authenticator from Steam. Revealing one requires
 					your passphrase again even when the vault is unlocked. Store it somewhere
@@ -854,26 +728,28 @@ export const docs = {
 				<dt><a href="/steam-guard-without-phone">Steam Guard without a smartphone</a></dt>
 				<dd>The difference between needing a mobile device and keeping a phone number for recovery.</dd>
 				<dt><a href="/approve-steam-confirmations-desktop">Trade confirmations on desktop</a></dt>
-				<dd>How confirmation signing works and which secret and session it requires.</dd>
+				<dd>Review pending actions, diagnose an empty or failed list, and understand required access.</dd>
 				<dt><a href="/steam-mobile-vs-desktop-authenticator">Mobile app or desktop</a></dt>
 				<dd>The security, recovery and convenience trade-offs between device types.</dd>
 				<dt><a href="/alternatives">Authenticator options compared</a></dt>
-				<dd>Valve's app, SDA and this project, including the case against choosing ours.</dd>
+				<dd>Compare the options by existing accounts, workflow, updates and backups.</dd>
 				<dt><a href="/faq">Product FAQ</a></dt>
 				<dd>Short answers about cost, platform support, privacy, imports and losing a passphrase.</dd>
 			</dl>
+			<p>For a missing step or documentation error, <a href="/support">send a report</a>
+				with the page URL and app version. Do not include account secrets.</p>
 		</article>`
 };
 
 export const faq = {
 	slug: 'faq',
 	parent: 'docs',
-	updated: '2026-09-26',
-	reviewed: '2026-09-26',
+	updated: '2026-09-30',
+	reviewed: '2026-09-30',
 	navTitle: 'FAQ',
-	title: 'FAQ: Steam Guard codes, maFiles and security',
+	title: 'ODA FAQ: accounts, imports, privacy and recovery',
 	description:
-		'Is it free, does it work with SDA maFiles, can it take my items, and what happens if I lose my passphrase. Answers about Open Desktop Authenticator.',
+		'ODA answers: cost, maFile import, offline codes, platforms, automatic confirmations and lost vault passphrases. Links to setup and recovery steps.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
@@ -888,7 +764,10 @@ export const faq = {
 	}),
 	body: (s) => `
 		<article>
-			<h1>Frequently asked questions</h1>
+			<h1>Open Desktop Authenticator FAQ</h1>
+			<p class="lede">Short answers about the ODA application. For step-by-step tasks,
+				use the <a href="/docs">documentation</a>; for original SDA download and
+				maintenance information, see <a href="/steam-desktop-authenticator">SDA and ODA</a>.</p>
 			${FAQ_ITEMS.map(
 				(item) => `
 			<section class="faq-item">
@@ -897,16 +776,6 @@ export const faq = {
 			</section>`
 			).join('')}
 
-			<!--
-				The troubleshooting hub.
-
-				Put here rather than in the navigation deliberately. These pages answer
-				Steam problems rather than questions about this application, so they do
-				not belong in a nav bar aimed at someone evaluating the product — but
-				they were reachable only from the sitemap, which for the busiest of them
-				meant no internal link at all. A reader who arrives at the FAQ with a
-				broken authenticator is exactly the person they are for.
-			-->
 			<section class="faq-item">
 				<h2>Common Steam Guard problems</h2>
 				<p>
@@ -917,7 +786,7 @@ export const faq = {
 					<li><a href="/steam-guard-code-not-working">My codes are being refused</a> — start with the clock</li>
 					<li><a href="/move-steam-authenticator-new-phone">Moving to a new phone</a> — and the two-day versus fifteen-day difference</li>
 				<li><a href="/move-steam-authenticator-to-pc">Moving one to a PC</a> — what Steam's transfer actually does to the phone's copy</li>
-				<li><a href="/steam-guard-trade-holds">Every trade hold and restriction</a> — by cause and duration, quoted from Valve</li>
+				<li><a href="/steam-guard-trade-holds">Trade holds and restrictions</a> — identify the message and what you can do</li>
 					<li><a href="/steam-revocation-code">Finding my recovery code</a> — the R-code, and where it still is</li>
 					<li><a href="/lost-authenticator">I have lost access completely</a></li>
 					<li><a href="/steam-guard-without-phone">Doing this without a smartphone</a></li>
@@ -943,29 +812,20 @@ const FAQ_ITEMS = [
 		a: `<p>Yes — including SDA-encrypted files with the matching <code>manifest.json</code> and SDA passphrase. Exports are <strong>unencrypted</strong> maFiles and omit Steam refresh tokens and proxy configuration. Keep them secure, and sign in and set routing again in the destination app. <a href="/import-from-sda">How importing and exporting work</a>.</p>`
 	},
 	{
-		q: 'How do I know this is not itself a scam?',
+		q: 'How can I check an ODA download?',
 		plain: (s) =>
-			`The source and release ${s.publication.github.latestVersion ?? s.publication.store.latestVersion} are public. Check official distribution addresses and verify release signatures and provenance. Those checks establish origin, not that the software is harmless; no independent security audit is published.`,
-		/*
-		 * **Derived, because this paragraph made a promise it was breaking.**
-		 *
-		 * Its last sentence says the site refuses to build if any page goes on
-		 * saying something is missing after it is not — and this paragraph was
-		 * saying "Nothing signs the checksum list" long after cosign started
-		 * signing it. The claim was true of the machinery and false of the page
-		 * making it. Now the list comes from the flags, so the sentence is
-		 * describing something that actually holds.
-		 */
+			`The source and release ${s.publication.github.latestVersion ?? s.publication.store.latestVersion} are public. Check official distribution addresses and follow the available release verification steps. Those checks establish origin, not that the software is harmless. ${s.release.audited ? 'Consult the security page for review scope and limitations.' : 'No independent security audit is published.'}`,
+		// Keep the visible limits derived from the shared release record.
 		a: (s) => {
 			const open = releaseGaps(s, 'sentence');
-			const enforcement = `<a href="/download">The download page tracks those limits</a>. Automated site checks catch specified contradictory claims, but do not establish that every sentence is correct.`;
+			const enforcement = `<a href="/download">The download page tracks those limits</a>. Source review, tests and signatures address different risks; none guarantees that software is harmless.`;
 			return `<p>Start with <a href="/official">the official addresses</a>, the public source and <a href="/verify">the release verification steps</a>. The publisher identifies itself as MASTERPANEL LLC. A company name, public code or successful signature check is not a guarantee of harmless software: signatures establish origin, while review and testing assess behaviour.</p>
 			<p>${
 				open.length
-					? `And here is what is <strong>not</strong> finished, because a page that only lists the reassuring half is doing the thing it warns you about. ${open.join(' ')} ${enforcement}`
+					? `Current release limits: ${open.join(' ')} ${enforcement}`
 					: `Everything this answer used to list as unfinished is now done. ${enforcement}`
 			}</p>
-			<p>We would rather you were sceptical of us and safe than trusting and robbed.</p>`;
+			<p>For how ODA stores secrets and where its protections end, read the <a href="/security">security model</a>.</p>`;
 		}
 	},
 	{
@@ -988,7 +848,7 @@ const FAQ_ITEMS = [
 		a: `<p>No. It is an independent project, not affiliated with or endorsed by Valve Corporation or the authors of Steam Desktop Authenticator. It supports SDA's maFile format for migration. Format compatibility is not an endorsement from SDA or Valve.</p>`
 	},
 	{
-		q: 'Will it steal my items while I am not looking?',
+		q: 'Can ODA approve confirmations automatically?',
 		plain:
 			'An authenticator that approves trades can authorise item transfers. ODA automatic confirmation is off by default and limited to trades and market listings; it can still approve an unwanted request of those types. Account-recovery confirmations are excluded from automatic approval.',
 		a: `<p>ODA holds secrets that can authorise trade and market confirmations, so it must be treated as sensitive software. <strong>Automatic confirmation can approve an unwanted trade or sale</strong> if the request appears on Steam. It is off by default and configured per account; only trades and market listings are allowed, while account-recovery requests are held back and reported.</p><p>That restriction does not make automatic trading safe on a compromised account. Leave automatic confirmation off when you need to check every recipient and item. <a href="/security">Read the security model and its limits</a>.</p>`

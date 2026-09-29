@@ -7,11 +7,11 @@ const publishedSourceVersion = (site) => site.publication?.github?.latestVersion
 
 export const scamClones = {
 	slug: 'scam-clones',
-	updated: '2026-09-12',
+	updated: '2026-09-30',
 	navTitle: 'Scam clones',
 	title: 'Fake Steam authenticator downloads',
 	description:
-		'Counterfeit SDA builds steal maFiles and drain inventories. The patterns to recognise, what a real release looks like, and what to do if you ran one.',
+		'Ran a suspicious Steam authenticator? Secure your account from a trusted device. Before downloading, check the publisher and release evidence.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'Article',
@@ -24,20 +24,69 @@ export const scamClones = {
 		<article>
 			<h1>Fake Steam authenticator downloads</h1>
 			<p class="lede">
-				A counterfeit authenticator does not need to break any cryptography. It only
-				needs access to your readable maFile or an unlocked vault. This page describes
-				what a malicious build can do, how to check a release's origin, and
-				what to do if you think you have already run one.
+				If you ran a suspicious authenticator or gave it your maFiles, start recovery
+				from a different, trusted device. Working Steam Guard codes do not establish
+				that a download is safe. If you have not run it, check its origin before opening it.
 			</p>
+			<nav class="jump" aria-label="Choose your situation">
+				<ul>
+					<li><a href="#already-ran-it">I already ran it</a></li>
+					<li><a href="#before-downloading">I am checking a download</a></li>
+				</ul>
+			</nav>
+
+			<h2 id="already-ran-it">If you already ran a suspicious authenticator</h2>
+			<div class="callout callout-warn">
+				<p>
+					Treat credentials exposed to the suspect program as compromised. Use a
+					different, trusted device for recovery. Importing the same maFile into a
+					genuine application does not invalidate an attacker's copy.
+				</p>
+			</div>
+			<ol>
+				<li>
+					<strong>Stop using the suspect computer and secure your email account.</strong>
+					Disconnect the computer from the network. From a trusted device, change any
+					exposed email password and review its sessions and recovery settings.
+					Email access can let an attacker undo Steam recovery.
+				</li>
+				<li><strong>Recover control of Steam and change its password.</strong> Start at
+					<a href="https://help.steampowered.com/en/faqs/view/0A94-F308-34A5-1988" rel="noopener">Steam's account-recovery instructions</a> if
+					you cannot sign in. Review authorised devices and revoke unfamiliar sessions.
+					Do not approve sign-in requests you did not initiate.</li>
+				<li>
+					<strong>Replace the compromised authenticator.</strong> Use Steam's
+					<a href="https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31" rel="noopener">authenticator-removal instructions</a>, then set up a
+					fresh authenticator, preferably in Valve's mobile app. Removing it invalidates
+					its old authenticator secrets; changing a vault passphrase does not. Removal
+					also brings Steam trade and Market restrictions. This step does not revoke
+					every other kind of stolen credential, so complete the other steps too.
+				</li>
+				<li>
+					<strong>Review and revoke any Steam Web API key</strong> at
+					<a href="https://steamcommunity.com/dev/apikey" rel="noopener">Steam's API-key page</a>,
+					including one you did not create. A key is a separate credential, not the same
+					as a password or session; its presence is not required for account theft.
+				</li>
+				<li>
+					<strong>Cancel pending unauthorised activity.</strong> Review trade offers,
+					held trades, unsold Market listings and buy orders. Check eligible protected
+					trades immediately. Report the incident through Steam Support and retain
+					transaction IDs and the suspect download address without sharing your maFile.
+				</li>
+				<li>
+					<strong>Clean or reinstall the affected system before trusting it again.</strong>
+					Deleting the authenticator program alone does not establish that malware is
+					gone. Change other credentials exposed on that computer from a trusted device.
+				</li>
+			</ol>
 
 			<div class="callout">
 				<p>
-					<strong>Evidence and scope.</strong>
 					<a href="https://github.com/Jessecar96/SteamDesktopAuthenticator" rel="noopener">SDA's own repository warns about fake builds that steal accounts</a>.
-					Our <a href="/steam-inventory-stolen">team member's account of a theft</a>
-					is personal testimony, not a forensic analysis of a binary. The capabilities
-					below explain the risk of handing secrets to malware; they do not establish
-					what every counterfeit does or how long it waits.
+					The explanation below describes what exposed credentials can enable.
+					It does not identify what a particular download did; that requires examining
+					the file and the affected account.
 				</p>
 			</div>
 
@@ -49,16 +98,16 @@ export const scamClones = {
 			</p>
 			<ul>
 				<li>
-					<strong>Copies the maFile out.</strong> The whole file, containing the shared
+					<strong>Copy the maFile.</strong> The whole file, containing the shared
 					secret, the identity secret, a revocation code and possibly session tokens.
 				</li>
 				<li>
-					<strong>Keeps the passphrase.</strong> If your maFiles are encrypted, the
+					<strong>Keep the passphrase.</strong> If your maFiles are encrypted, the
 					program receives the passphrase when you type it and can retain it or the
 					decrypted secrets. Encryption at rest cannot stop this.
 				</li>
 				<li>
-					<strong>Auto-approves a confirmation it created.</strong> With the identity
+					<strong>Approve a confirmation.</strong> With the identity
 					secret <em>and a valid Steam session</em>, software can approve a pending
 					confirmation. An attacker with sufficient account access can initiate the
 					transaction too. The identity secret alone is not a logged-in session.
@@ -118,7 +167,7 @@ export const scamClones = {
 				credentials. Use that time to recover control, not to test whether the attacker waits.
 			</p>
 
-			<h2>Warning signs and their limits</h2>
+			<h2 id="before-downloading">Before downloading: check the source</h2>
 			<ol class="signs">
 				<li>
 					<strong>The download has no verified connection to the project.</strong>
@@ -196,57 +245,12 @@ export const scamClones = {
 			</ul>
 			<p><a href="/verify">Step-by-step instructions for checking all of that</a>.</p>
 
-			<h2>If you think you already ran one</h2>
-			<div class="callout callout-warn">
-				<p>
-					Treat credentials exposed to the suspect program as compromised. Use a
-					different, trusted device for recovery. Importing the same maFile into a
-					genuine application does not invalidate an attacker's copy.
-				</p>
-			</div>
-			<ol>
-				<li>
-					<strong>Stop using the suspect computer and secure your email account.</strong>
-					Disconnect the computer from the network. From a trusted device, change any
-					exposed email password and review its sessions and recovery settings.
-					Email access can let an attacker undo Steam recovery.
-				</li>
-				<li><strong>Recover control of Steam and change its password.</strong> Start at
-					<a href="https://help.steampowered.com/" rel="noopener">Steam Support</a> if
-					you cannot sign in. Review authorised devices and revoke unfamiliar sessions.
-					Do not approve sign-in requests you did not initiate.</li>
-				<li>
-					<strong>Replace the compromised authenticator.</strong> Use Steam's
-					<a href="/lost-authenticator">removal or recovery process</a>, then set up a
-					fresh authenticator, preferably in Valve's mobile app. Removing it invalidates
-					its old authenticator secrets; changing a vault passphrase does not. Removal
-					also brings Steam trade and Market restrictions. This step does not revoke
-					every other kind of stolen credential, so complete the other steps too.
-				</li>
-				<li>
-					<strong>Review and revoke any Steam Web API key</strong> at
-					<a href="https://steamcommunity.com/dev/apikey" rel="noopener">Steam's API-key page</a>,
-					including one you did not create. A key is a separate credential, not the same
-					as a password or session; its presence is not required for account theft.
-				</li>
-				<li>
-					<strong>Cancel pending unauthorised activity.</strong> Review trade offers,
-					held trades, unsold Market listings and buy orders. Check eligible protected
-					trades immediately. Report the incident through Steam Support and retain
-					transaction IDs and the suspect download address without sharing your maFile.
-				</li>
-				<li>
-					<strong>Clean or reinstall the affected system before trusting it again.</strong>
-					Deleting the authenticator program alone does not establish that malware is
-					gone. Change other credentials exposed on that computer from a trusted device.
-				</li>
-			</ol>
-
 			<h2>Related</h2>
 			<ul class="plain next">
 				<li><a href="/steam-inventory-stolen">What this looked like when it happened to us</a></li>
 				<li><a href="/verify">How to verify a download</a></li>
-				<li><a href="/steam-desktop-authenticator">What SDA and maFiles are</a></li>
+				<li><a href="/steam-desktop-authenticator">Original SDA and the ODA alternative</a></li>
+				<li><a href="/what-is-a-mafile">Which secrets a maFile contains</a></li>
 				<li><a href="/support">Report a suspected clone site</a></li>
 			</ul>
 
@@ -529,7 +533,7 @@ ${reviewAsk(s, { got: 'Did these steps help you check a download?' })}
 
 export const security = {
 	slug: 'security',
-	updated: '2026-09-27',
+	updated: '2026-09-30',
 	navTitle: 'Security',
 	title: 'Security model: how your Steam secrets are stored',
 	description: (s) =>
@@ -569,8 +573,8 @@ export const security = {
 			</p>
 			<ul>
 				<li>
-					<strong>A recovery file per account</strong>, created during enrollment or
-					transfer. If writing it fails, ODA reports that recovery still needs attention.
+					<strong>A recovery file per account</strong>, created during import, enrollment
+					or transfer. If writing it fails, ODA reports that recovery still needs attention.
 					It remains after local account removal and needs the passphrase in use when
 					it was written; changing the vault passphrase does not rewrite existing
 					standalone recovery files.

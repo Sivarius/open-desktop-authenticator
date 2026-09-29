@@ -34,16 +34,16 @@ const record = (value, evidence) => {
 
 const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 	index: record(
-		'A current, plain-language map of what ODA does, deliberately refuses to do, and where the real builds are available.',
-		'It exposes release-channel status, open security gaps, data flows, non-goals, source, checksums, signatures and provenance from the same shared release facts used across the site.'
+		'Understand ODA as a product, see its account interface and choose a download or an existing-account import without first reading the project history.',
+		'It shows an accurately labeled real interface with fictional fixtures, routes readers to separate product-choice and migration guides, and derives availability and release limitations from shared publication facts.'
 	),
 	'steam-desktop-authenticator': record(
-		'A safe starting point for people searching for SDA: what it is, what a maFile holds, and which option is sensible now.',
-		'It links the original Jessecar96 repository, repeats SDA’s maintenance warning, and distinguishes official Steam Mobile, genuine SDA and ODA by source and release evidence.'
+		'Identify the original SDA project and choose between its repository, Valve’s mobile app and ODA’s independent desktop alternative, with a clear route for existing SDA files.',
+		'The three choices link to the actual products, a source-backed comparison explains their workflows, a labeled real UI demo illustrates ODA, and migration checks distinguish codes from confirmation access.'
 	),
 	'scam-clones': record(
-		'An actionable explanation of how counterfeit authenticators steal an inventory, how to spot one, and what to do after exposure.',
-		'It explains what copied secrets can enable, distinguishes trade holds, Market restrictions and CS2 Trade Protection, and gives an ordered incident-response path with primary sources and release-verification limits.'
+		'A guide that first routes exposed users to account recovery, then helps people who have not run a download check its origin before handing it Steam secrets.',
+		'Its ordered response links Steam account recovery, distinguishes replacing copied authenticator secrets from changing a password, and explains applicable Market and CS2 recovery limits using primary sources.'
 	),
 	'steam-inventory-stolen': record(
 		'A clearly attributed account of a suspected counterfeit authenticator, explaining why working codes do not establish that a download is safe.',
@@ -82,16 +82,16 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'It anchors the available recovery paths to Valve’s own instructions and closes with testable backup practices rather than promising an impossible bypass.'
 	),
 	'steam-revocation-code': record(
-		'A practical explanation of what the R-code can do, where to retrieve it while access remains, and how to store it.',
-		'It links Valve’s current recovery-code steps, distinguishes the code from other backup codes, and spells out both its powers and its limits.'
+		'Choose a recovery-code route based on the phone, account backup or recovery access still available, then preserve the current code before a device is lost.',
+		'It uses Valve’s current recovery instructions, names the optional maFile field and local backup checks, and distinguishes removing an authenticator from recovering secrets or using emergency login codes.'
 	),
 	'move-steam-authenticator-new-phone': record(
 		'A branching plan that helps users choose transfer, phone recovery, revocation-code recovery or Steam Support without accidentally taking a 15-day path.',
 		'Every stated duration links to Valve’s Guard, restrictions or transfer guidance, and an original two-versus-fifteen-day diagram makes the consequence visible.'
 	),
 	'move-steam-authenticator-to-pc': record(
-		'An explanation of what a phone-to-PC transfer changes, what it requires, and what restriction follows.',
-		'It combines Valve’s documented transfer rules with a clearly labeled transfer performed on a real account, including a separate section for what was observed rather than documented.'
+		'Follow ODA’s phone-to-PC transfer prerequisites and actual controls while preserving recovery access and knowing how to respond if a transfer stops partway through.',
+		'It separates Valve’s documented phone policy from ODA’s historical one-account observation, checks procedure against the transfer implementation, and avoids promising an account-specific restriction duration.'
 	),
 	'steam-guard-trade-holds': record(
 		'One comparison of Steam holds and restrictions by trigger, duration and avoidability, including the costly remove-and-re-enrol path.',
@@ -106,8 +106,8 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'It cites Valve’s current no-number setup route, labels the one-account completion as an observation, and itemizes the SMS transfer and recovery capabilities the user gives up.'
 	),
 	'approve-steam-confirmations-desktop': record(
-		'A mechanism-level explanation of what signs a trade confirmation and why a desktop program can do it.',
-		'It combines Valve’s confirmation and hold documentation with the long-running open node-steamcommunity protocol implementation, then gives two concrete safety questions for evaluating any tool.'
+		'Review a pending Steam confirmation on a desktop, distinguish signing from accepting a trade, and diagnose a missing or incomplete list before approving anything.',
+		'The procedure names ODA’s real confirmation controls, separates code generation from authenticated session access, and checks incomplete-list and approval behavior against the application and Valve guidance.'
 	),
 	'steam-mobile-vs-desktop-authenticator': record(
 		'A decision guide that recommends Valve’s mobile app by default and identifies the narrower cases where desktop custody may be worth it.',
@@ -142,8 +142,8 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'The page contains the actual report workflow, describes each report state and retention behavior, and links the public SECURITY policy and GitHub private vulnerability reporting.'
 	),
 	owners: record(
-		'A named publisher, its relevant operating context, the reason it built an authenticator, and the editorial standard behind the guides.',
-		'It links the company’s other public properties, the application source and private vulnerability channel, and states that Steam claims are checked against Valve, SDA claims against source, and live observations labeled as such.'
+		'Identify the publisher, its commercial relationships, the basis of product documentation and the correct route for an ordinary correction or private vulnerability report.',
+		'It links source history, official channels and the maintainer test record, discloses AI assistance and publisher accountability, and distinguishes historical observations from independent audit or current platform testing.'
 	),
 	credits: record(
 		'A dependency-level account of whose reverse engineering makes desktop Steam authentication possible and how readers can support that maintainer directly.',
@@ -175,11 +175,7 @@ const PROOFS_BY_SLUG = {
 		'SDA is no longer maintained',
 		'identity_secret'
 	],
-	'scam-clones': [
-		'What the malicious build actually does',
-		'My items are trade-locked, so I am safe',
-		'SHA256SUMS'
-	],
+	'scam-clones': ['0A94-F308-34A5-1988', 'Replace the compromised authenticator', 'SHA256SUMS'],
 	'steam-inventory-stolen': [
 		'Two weeks of nothing',
 		'Community Market',
@@ -198,7 +194,7 @@ const PROOFS_BY_SLUG = {
 		'SHA256SUMS.txt'
 	],
 	'what-is-a-mafile': ['shared_secret', 'identity_secret', 'revocation_code'],
-	'how-to-open-mafile': ['Why should I copy it first?', 'manifest.json', 'account_name'],
+	'how-to-open-mafile': ['Make a working copy first', 'manifest.json', 'account_name'],
 	'encrypted-mafile': [
 		'FileEncryptor.cs',
 		'manifest.json',
@@ -210,9 +206,9 @@ const PROOFS_BY_SLUG = {
 		'No recovery code and no phone number'
 	],
 	'steam-revocation-code': [
-		'https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31',
+		'Checking a retained backup',
 		'revocation_code',
-		'How do I use it to remove an authenticator?'
+		"Using Steam's recovery-code route"
 	],
 	'move-steam-authenticator-new-phone': [
 		'29A9-9EEE-09F0-75F9',
@@ -221,13 +217,13 @@ const PROOFS_BY_SLUG = {
 	],
 	'move-steam-authenticator-to-pc': [
 		'7EFD-3CAE-64D3-1C31',
-		'What we observed doing this',
+		'What changes on Steam, and what has been tested',
 		'What you need before starting'
 	],
 	'steam-guard-trade-holds': [
 		'451E-96B3-D194-50FC',
 		'34A1-EA3F-83ED-54AB',
-		'The 15 days people pay by accident'
+		"Match Steam's reason to the next step"
 	],
 	'steam-guard-code-not-working': [
 		'451E-96B3-D194-50FC',
@@ -236,18 +232,18 @@ const PROOFS_BY_SLUG = {
 	],
 	'steam-guard-without-phone': [
 		'6891-E071-C9D9-0134',
-		'What do I lose by not having a phone number?',
-		'Does a landline or VoIP number work?'
+		'Plan recovery before removing a device from use',
+		'Can I use a landline or VoIP number?'
 	],
 	'approve-steam-confirmations-desktop': [
 		'2E6E-A02C-5581-8904',
-		'How can a desktop program approve them?',
+		'No confirmation appears, or approval fails',
 		'identity_secret'
 	],
 	'steam-mobile-vs-desktop-authenticator': [
 		'7EFD-3CAE-64D3-1C31',
-		'What if I lose the computer?',
-		'Where ODA stands today'
+		'Choose a recovery route before switching',
+		'What if the computer is lost or compromised?'
 	],
 	alternatives: [
 		'6891-E071-C9D9-0134',
@@ -257,14 +253,18 @@ const PROOFS_BY_SLUG = {
 	download: [
 		'https://apps.microsoft.com/detail/9NMM2XJ6HZ1D',
 		'SHA256SUMS.txt.sig',
-		'Two places, and nowhere else'
+		'Two official download channels'
 	],
 	'import-from-sda': ['manifest.json', 'identity_secret', 'Confirm the codes match'],
 	uninstall: ['%APPDATA%\\open-desktop-authenticator', 'vault.json.bak', 'recovery/'],
 	docs: ['Creating a vault', 'Automatic confirmation', 'Recovery files'],
 	faq: ['/blob/main/LICENSE', 'manifest.json', 'revocation_code'],
 	support: ['/security/advisories/new', 'SECURITY.md', 'ODA-7K2M-B9QW'],
-	owners: ['site/editorial.mjs', 'site/verify.mjs', '/security/advisories/new'],
+	owners: [
+		'docs/FOUNDER_TEST_PLAN.md',
+		'Commercial relationships and data',
+		'/security/advisories/new'
+	],
 	credits: [
 		'DoctorMcKay/node-steam-session',
 		'DoctorMcKay/node-steam-totp',

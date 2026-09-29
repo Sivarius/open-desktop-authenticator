@@ -68,7 +68,9 @@ describe('the Store listing copy', () => {
 	it('agrees with the site, which tells the same people the same thing', () => {
 		// Not a string comparison — the two are written for different places and
 		// read differently. What has to match is the count.
-		expect(GUIDES).toMatch(/Those are our two official download\s+channels/);
+		expect(GUIDES).toMatch(
+			/The Microsoft Store listing and this project's GitHub releases are the two official\s+channels/
+		);
 		expect(warning).toMatch(/only two places/i);
 	});
 

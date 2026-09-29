@@ -71,7 +71,16 @@ function trackedFiles(): string[] {
 		encoding: 'utf8',
 		maxBuffer: 32 * 1024 * 1024
 	});
-	return out.split('\0').filter((path) => path !== '');
+	// Unstaged deletions remain in the index but no longer have working-tree bytes.
+	// Ask Git which paths were deleted instead of swallowing arbitrary read errors.
+	const deleted = new Set(
+		execFileSync('git', ['ls-files', '--deleted', '-z'], {
+			cwd: ROOT,
+			encoding: 'utf8',
+			maxBuffer: 32 * 1024 * 1024
+		}).split('\0')
+	);
+	return out.split('\0').filter((path) => path !== '' && !deleted.has(path));
 }
 
 /**

@@ -13,7 +13,7 @@
 
 export const privacy = {
 	slug: 'privacy',
-	updated: '2026-09-12',
+	updated: '2026-09-30',
 	navTitle: 'Privacy',
 	title: 'What this site stores, and for how long',
 	description:
@@ -40,7 +40,8 @@ export const privacy = {
 				web-server request logs normally removed within 14 days, Cloudflare
 				in front of it, Google Analytics, Yandex Metrica, and Trustpilot on the pages that ask you for
 				a review. A delayed or failed log rotation can delay deletion. All of that
-				is listed below, along with what a report holds, how long it lives, the Yandex analytics preference, and the one thing the download page keeps in your own browser.
+				is listed below, along with report retention, the Yandex analytics preference
+				and an old download-page preference that is no longer used.
 			</p>
 
 			<div class="callout">
@@ -213,15 +214,13 @@ export const privacy = {
 					return after the cookie expires or you clear your browser data. The short
 					report reference alone does not grant access.
 				</dd>
-				<dt>Download-page preference kept in your own browser</dt>
+				<dt>Retired download-page preference</dt>
 				<dd>
-					The download page remembers a flag in your browser's local storage: <code>oda.review-prompt.dismissed</code>, set if you turn the
-					review prompt down, follow the link to write a review, or carry on to a build
-					from the prompt itself. It exists so the page can ask you about a review once
-					and then stop asking. This site cannot tell whether you actually downloaded or
-					installed anything, and does not try to.
-					It never leaves your machine, nothing on the server reads it, and clearing your
-					site data removes it. It does not expire on its own.
+					An older download page saved <code>oda.review-prompt.dismissed</code> in local
+					storage after you answered its review request. The current download page
+					no longer reads or writes this preference and opens download links directly.
+					An existing value can remain in your browser until you clear this site's data;
+					it has no automatic expiry. This local preference was not sent to our server.
 				</dd>
 				<dt>Donations and data sharing</dt>
 				<dd>

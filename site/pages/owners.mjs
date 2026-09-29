@@ -57,11 +57,11 @@ const PROJECTS = [
 
 export default {
 	slug: 'owners',
-	updated: '2026-09-12',
+	updated: '2026-09-30',
 	navTitle: 'Who we are',
 	title: 'Who builds Open Desktop Authenticator',
 	description:
-		'Open Desktop Authenticator is published by MASTERPANEL LLC. Who we are, and why a Steam trading company wrote an open-source authenticator.',
+		'Who publishes Open Desktop Authenticator: MASTERPANEL LLC, related businesses, documentation sources, and contacts for corrections or security reports.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@graph': [
@@ -85,7 +85,7 @@ export default {
 	}),
 	body: (s) => `
 		<article>
-			<h1>Who builds this</h1>
+			<h1>Who builds Open Desktop Authenticator</h1>
 
 			<p class="lede">
 				${s.name} is published by <strong>${s.publisher}</strong>. This page identifies
@@ -93,20 +93,18 @@ export default {
 				report a problem.
 			</p>
 
-			<h2>Why this page exists</h2>
+			<h2>The publisher and the project</h2>
 			<p>
-				An authenticator publisher should be identifiable, but a company name, a polished
-				website or a review score does not prove software is safe. An attacker can copy
-				those details. The <a href="/scam-clones">scam clones guide</a> explains how to
-				check a download's origin and what to do after exposure.
+				${s.publisher} develops and publishes ODA as a free, open-source desktop
+				authenticator for Steam. It is an independent product, unaffiliated with Valve
+				or the authors of the original Steam Desktop Authenticator.
 			</p>
-			<p>
-				We are not asking you to trust us because we are named. We are pointing out that
-				a name is one of the few things you can check about a piece of software before
-				you run it, alongside
-				<a href="/verify">the checksum and the build provenance</a> and
-				<a href="${s.repo}" rel="noopener">the source itself</a>. Use all of them.
-			</p>
+			<ul class="plain next">
+				<li><a href="${s.repo}" rel="noopener">Source code and development history</a></li>
+				<li><a href="/official">Official website, repository and Store listing</a></li>
+				<li><a href="/verify">Release-origin and publisher-signature checks</a></li>
+				<li><a href="/support">Report a bug or documentation correction</a></li>
+			</ul>
 
 			<h2>What else we build</h2>
 			<ul class="projects">
@@ -125,71 +123,52 @@ ${PROJECTS.map(
 
 			<h2>Why a Steam trading company wrote an authenticator</h2>
 			<p>
-				The project grew out of the team's experience with Steam accounts and a suspected
-				counterfeit authenticator. We have not published incident statistics that establish
-				how often this happens. A <code>.maFile</code> contains authentication secrets, so
-				giving one to an untrusted program is a serious risk regardless of prevalence.
+				The team works with Steam accounts and trading workflows. ODA grew out of that
+				experience and a team member's
+				<a href="/steam-inventory-stolen">account of a suspected counterfeit authenticator</a>.
+				The story is personal testimony; it is not an independently verified incident report.
 			</p>
 			<p>
-				It also happened to one of us, before any of this existed.
-				<a href="/steam-inventory-stolen">That account is written up in full</a>, because
-				it is the most honest answer to why we bothered.
-			</p>
-			<p>
-				Publishing the source and explaining release verification gives users evidence
-				to inspect. It does not eliminate malicious-download risk, make a compromised PC
-				safe, or replace an independent security audit. Our
-				<a href="/alternatives">comparison of authenticators</a> explains when Valve's
-				official mobile app is the better fit.
+				The product focuses on local account management, SDA file import, Steam Guard
+				codes and desktop confirmations. The
+				<a href="/security">security model</a> explains its limits, including what a
+				compromised PC can expose. The
+				<a href="/alternatives">authenticator comparison</a> includes Valve's official
+				mobile app for people who prefer to keep the authenticator off their desktop.
 			</p>
 
 			<h2>How these guides are written</h2>
 			<p>
-				The documentation on this site starts with the product we maintain and the
-				failure cases we have handled, then checks changeable Steam behaviour against
-				Valve's current support pages and SDA-specific claims against its published
-				source. Where a statement comes from one live test rather than documentation,
-				the page says that plainly instead of turning one observation into a rule.
+				${s.publisher} is responsible for the guides and product claims on this site.
+				Steam rules are checked against Valve's support pages; SDA file-format claims
+				against its published source; ODA procedures against the application and its
+				recorded checks. A result from a live test is labeled with its scope rather
+				than presented as a rule for every account.
 			</p>
 			<p>
-				Pages are split only when they answer a different task: moving an authenticator,
-				recovering one, understanding a maFile, or choosing between tools. They are not
-				generated variants of the same answer. Every page carries its review date, and
-				<a href="/support">documentation corrections</a> are accepted as product bugs.
+				Pages show when they were updated. Guide source notes link the evidence behind
+				changeable instructions. Demo screenshots use fictional data and are labeled
+				separately from live testing. If a step no longer matches Steam or ODA,
+				<a href="/support">send a correction</a> with the page address and app version;
+				leave passwords, maFiles and recovery codes out of the report.
 			</p>
 			<p>
-				<strong>Drafting, editing and fact-checking may use generative AI.</strong> AI output
-				is not evidence. It can help compare related guides, inspect implementation and
-				find source material, but it can also make mistakes.
-				A factual claim still has to trace to primary documentation, the application or
-				SDA source, a reproducible check, or a clearly labelled first-hand observation.
-				${s.publisher} remains responsible for what is published, and a review date moves
-				only when the page has actually been rechecked.
+				<strong>We use generative AI to assist drafting, editing and source review.</strong>
+				AI output is not a source or a test result. Claims still need the documentation,
+				implementation or observed evidence described above, and ${s.publisher}
+				remains responsible for corrections.
 			</p>
 			<p>
-				Before an indexable URL can be built, it must state the reader task it solves and
-				the evidence that makes it worth keeping separate. The
-				<a href="${s.repo}/blob/main/site/editorial.mjs" rel="noopener">editorial ledger</a>
-				is public, and the
-				<a href="${s.repo}/blob/main/site/verify.mjs" rel="noopener">site verifier</a>
-				rejects missing records, absent named evidence, thin pages, duplicated titles or
-				promises, high exact-wording overlap, orphan pages, and guide hierarchies that
-				exist only in markup. It also catches a shorter article copied substantially into
-				a longer one. Those checks do not recognise semantic paraphrases, identify whether
-				prose came from AI, or prove that prose is useful; they prevent the easiest ways a
-				useful site turns into a scaled collection of query variants. The final decision
-				to publish, merge, or remove a page is still editorial.
+				The <a href="${s.repo}/blob/main/docs/FOUNDER_TEST_PLAN.md" rel="noopener">maintainer's test record</a>
+				distinguishes completed checks from outstanding work. It includes historical
+				Windows testing; it is not an independent security audit or confirmation that
+				every published platform has been exercised by a person.
 			</p>
 
-			<h2>The obvious question</h2>
+			<h2>Commercial relationships and data</h2>
 			<p>
-				Two of the projects above are commercial and Steam-adjacent. It is fair to ask
-				whether a company that profits from Steam trading should be trusted with a
-				Steam authenticator, and the honest answer is that you should not have to decide
-				that on vibes.
-			</p>
-			<p>
-				This is precisely why the application is built the way it is. It has
+				The products listed above share a publisher. They do not share an ODA login or
+				cloud account: the application has
 				<strong>no ODA backend, no ODA account, no cloud sync, and no telemetry</strong>.
 				Requested Steam operations contact Valve, and direct GitHub builds can optionally
 				check GitHub for updates; neither service is operated by ${s.publisher}. The

@@ -2,7 +2,7 @@
   "name": "open-desktop-authenticator",
   "version": "1.5.1",
   "private": true,
-  "description": "Open Desktop Authenticator",
+  "description": "Open Desktop Authenticator — an open-source desktop authenticator for Steam, by MASTERPANEL LLC. An independently developed alternative to SDA.",
   "license": "MIT",
   "author": {
     "name": "MASTERPANEL LLC",
