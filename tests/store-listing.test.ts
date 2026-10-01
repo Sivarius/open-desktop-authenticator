@@ -28,16 +28,15 @@ const GUIDES = readFileSync(join(__dirname, '..', 'site', 'pages', 'guides.mjs')
 
 /** The listing's anti-counterfeit paragraph, without its blockquote markers. */
 const warning = (() => {
-	const start = LISTING.indexOf('Never download an authenticator');
+	const start = LISTING.indexOf('> BEFORE YOU INSTALL ANYTHING ELSE');
 	expect(start, 'the anti-counterfeit paragraph is gone from the listing').toBeGreaterThan(-1);
-	return LISTING.slice(start, LISTING.indexOf('Anything else claiming', start) + 200).replace(
-		/^>\s?/gm,
-		''
-	);
+	const end = LISTING.indexOf('> Source, documented threat model', start);
+	expect(end, 'the anti-counterfeit paragraph has no end marker').toBeGreaterThan(start);
+	return LISTING.slice(start, end).replace(/^>\s?/gm, '').replace(/\s+/g, ' ');
 })();
 
 describe('the Store listing copy', () => {
-	it('names both channels a genuine build comes from', () => {
+	it('names both primary publisher release channels', () => {
 		expect(warning).toMatch(/Microsoft Store|This listing/i);
 		expect(warning).toMatch(/GitHub releases page/);
 	});
@@ -57,21 +56,30 @@ describe('the Store listing copy', () => {
 	});
 
 	/*
-	 * And the claim that makes the warning safe to act on: the website serves no
-	 * installer, so "never download from a website, including ours" is not a
-	 * contradiction of the download page.
+	 * The product website links to downloads without serving installers itself.
 	 */
 	it('still says the website hosts no installer', () => {
-		expect(warning).toMatch(/hosts no installer|links to one of those two/i);
+		expect(warning).toMatch(/hosts no installer/i);
 	});
 
 	it('agrees with the site, which tells the same people the same thing', () => {
-		// Not a string comparison — the two are written for different places and
-		// read differently. What has to match is the count.
+		// Both distinguish publisher release channels from a recognized external
+		// distributor; neither should label that distributor a counterfeit.
 		expect(GUIDES).toMatch(
-			/The Microsoft Store listing and this project's GitHub releases are the two official\s+channels/
+			/The Microsoft Store listing and this project's GitHub releases are our primary\s+release channels/
 		);
-		expect(warning).toMatch(/only two places/i);
+		expect(warning).toMatch(
+			/Microsoft Store and our GitHub releases page are our primary release channels/i
+		);
+		expect(GUIDES).toContain('Softonic');
+		expect(warning).toContain('https://open-desktop-authenticator.en.softonic.com/');
+		expect(warning).toMatch(
+			/Softonic listing also offers Windows x64 through an external distributor/
+		);
+		expect(warning).toMatch(/checksums, build provenance and publisher-signature/);
+		expect(warning).not.toMatch(
+			/only two places|anything else claiming to be this application is not ours/i
+		);
 	});
 
 	/*

@@ -40,12 +40,13 @@ exfiltrates maFiles.
 Open source alone does not fix this — attackers compile open source with malware
 added. What actually helps:
 
-- Releases reach users through two channels and no others: the Microsoft Store,
-  which re-signs the package it distributes, and GitHub Releases (§11 S11). The
-  website hosts no binaries and never will — every button on it is a link
-  outward.
-- **The two channels have different failure modes, and the docs say which is
-  which.** Windows verifies a Store package during installation. GitHub v1.5.1
+- Our primary release channels are the Microsoft Store, which re-signs the
+  package it distributes, and GitHub Releases (§11 S11). The recognized
+  [Softonic listing](https://open-desktop-authenticator.en.softonic.com/) also
+  offers Windows x64 through an external distributor. Our product website hosts
+  no binaries — its download links lead outward.
+- **The two primary channels have different failure modes.** Windows verifies a
+  Store package during installation. GitHub v1.5.1
   Windows downloads also carry an Authenticode publisher signature that Windows
   can verify; check for a valid signature naming MASTERPANEL LLC. Downloading a
   file does not perform the separate checksum and build-provenance checks.
@@ -53,8 +54,10 @@ added. What actually helps:
   checks. A publisher signature identifies the signer, not the source commit
   or whether the application is harmless.
 - Every release publishes `SHA256SUMS.txt` and build provenance attestations.
-- We teach one habit above all others: **never download an authenticator from a
-  website — including ours.**
+- A recognized listing does not verify a downloaded file. For a Windows download
+  obtained through Softonic, check its publisher signature, checksum and build
+  provenance against the corresponding GitHub release. Treat other download
+  sources as unverified.
 
 **Residual risk:** a user who never verifies anything. We reduce it by making
 verification a copy-pasteable command, not an exercise.
@@ -90,9 +93,9 @@ Someone compromises a dependency, our build, or our release pipeline.
   the lockfile plus `npm ci` that makes this deterministic rather than the range.
   Every bump is a reviewed PR — Dependabot never auto-merges (§9.4).
 - Builds run in public CI; the workflow is in the repo and its history is public.
-- **Distribution is two channels with different guarantees, and conflating them
-  is itself a risk.** The Microsoft Store package is signed, because Microsoft
-  re-signs what it distributes. Starting with GitHub v1.5.1, the Windows downloads
+- **Our primary release channels have different guarantees.** The Microsoft Store
+  package is signed, because Microsoft re-signs what it distributes. Starting with
+  GitHub v1.5.1, the Windows downloads
   are Authenticode-signed and timestamped as MASTERPANEL LLC through Microsoft
   Azure Artifact Signing. The older v1.5.0 Windows assets remain unsigned, and
   Linux packages do not carry a platform code signature. GitHub downloads also

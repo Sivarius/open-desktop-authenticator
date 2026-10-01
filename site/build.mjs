@@ -409,6 +409,10 @@ export const SITE = {
 		url: 'https://alternativeto.net/software/open-desktop-authenticator/about/',
 		badge: '/assets/alternativeto.svg'
 	},
+	// Canonical listing checked 2026-10-01; Softonic offers the Windows x64 installer.
+	softonic: {
+		url: 'https://open-desktop-authenticator.en.softonic.com/'
+	},
 
 	/*
 	 * What the release pipeline can actually do today.
@@ -1319,7 +1323,8 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 - **Platforms:** ${platformSentence()}
 - **Install from:** Microsoft Store ${SITE.publication.store.latestVersion} (${SITE.store.url}) or GitHub ${SITE.publication.github.latestVersion} (${SITE.repo}/releases/tag/v${SITE.publication.github.latestVersion}).
 - **AlternativeTo listing:** ${SITE.alternativeTo.url}
-- **This website hosts no application binaries**; its installer links lead to the Store or GitHub releases.
+- **Softonic listing (Windows x64):** ${SITE.softonic.url}
+- **This website hosts no application binaries**; Microsoft Store and GitHub are the primary release channels, and Softonic also lists the Windows x64 installer.
 - **Dependencies:** ${SITE.runtimeDependencies} direct, ${SITE.shippedPackages} shipped in total, plus the Electron runtime.
 
 ## What it does

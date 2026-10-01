@@ -11,8 +11,8 @@ const downloadForSourceVersion = (site) => {
 
 export default {
 	slug: 'index',
-	updated: '2026-09-30',
-	reviewed: '2026-09-30',
+	updated: '2026-10-01',
+	reviewed: '2026-10-01',
 	title: 'Open Desktop Authenticator — Steam Guard on your PC',
 	navTitle: 'Home',
 	description:
@@ -43,7 +43,12 @@ export default {
 				alternateName: 'ODA',
 				url: s.origin,
 				description: s.tagline,
-				sameAs: [s.repo, s.store.url, ...(s.alternativeTo ? [s.alternativeTo.url] : [])],
+				sameAs: [
+					s.repo,
+					s.store.url,
+					...(s.alternativeTo ? [s.alternativeTo.url] : []),
+					...(s.softonic ? [s.softonic.url] : [])
+				],
 				applicationCategory: 'SecurityApplication',
 				operatingSystem: 'Windows 10 version 1809 or later, Windows 11, x64 Linux',
 				softwareVersion: s.version,
@@ -233,6 +238,20 @@ export default {
 					<img src="${s.alternativeTo.badge}" alt="Open Desktop Authenticator — listed on AlternativeTo"
 						width="244" height="79" loading="lazy">
 				</a>
+			</section>`
+					: ''
+			}
+
+			${
+				s.softonic
+					? `<section class="community-listing" aria-labelledby="softonic-listing-title">
+				<div>
+					<h2 id="softonic-listing-title">Now listed on Softonic</h2>
+					<p>Find Open Desktop Authenticator for Windows on Softonic, published by MASTERPANEL LLC.
+						The listing offers the x64 installer; <a href="/download">see all download options</a>
+						for ARM64, portable Windows and Linux.</p>
+				</div>
+				<a class="button button-quiet" href="${s.softonic.url}" rel="noopener">View ODA on Softonic</a>
 			</section>`
 					: ''
 			}

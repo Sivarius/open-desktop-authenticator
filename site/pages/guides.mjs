@@ -5,8 +5,8 @@ import { publicationSummary } from '../publication.mjs';
 
 export const download = {
 	slug: 'download',
-	updated: '2026-09-30',
-	reviewed: '2026-09-30',
+	updated: '2026-10-01',
+	reviewed: '2026-10-01',
 	navTitle: 'Download',
 	title: 'Download Open Desktop Authenticator for Windows and Linux',
 	description:
@@ -47,11 +47,20 @@ export const download = {
 				Windows builds target Windows 10 version 1809 or later and Windows 11; that minimum
 				is not a recommendation to use an operating system without security updates.</p>
 
-			<h2>Two official download channels</h2>
-			<p>The Microsoft Store listing and this project's GitHub releases are the two official
-				channels. This website links to them and does not serve an installer itself.
+			<h2>Publisher downloads and Softonic</h2>
+			<p>The Microsoft Store listing and this project's GitHub releases are our primary release channels.
+				This website links to downloads and does not serve an installer itself.
 				Check <strong>MASTERPANEL LLC</strong> as publisher and use the
 				<a href="/official">official-address reference</a> if a link looks unfamiliar.</p>
+			${
+				s.softonic
+					? `<p><strong>Also available on Softonic:</strong>
+					<a href="${s.softonic.url}" rel="noopener">Open Desktop Authenticator for Windows</a>.
+					That listing offers the x64 installer. Use GitHub for native ARM64, portable Windows
+					or Linux packages. For a downloaded ODA installer, check its MASTERPANEL LLC signature
+					and compare its checksum with the matching GitHub release using <a href="/verify">our verification steps</a>.</p>`
+					: ''
+			}
 			<p>Microsoft signs the Store AppX package and checks its integrity during installation.
 				The Store's package signature is separate from a publisher signature on a direct
 				download. See <a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">Microsoft's signing requirements</a>

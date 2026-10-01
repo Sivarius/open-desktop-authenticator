@@ -27,6 +27,12 @@ full SKU `0010`, package `TheMaster.OpenDesktopAuthenticator_1.5.1.0_x64__hrp1nj
 > record does not establish today's Partner Center submission status or which
 > submission is public; verify both before preparing the next listing update.
 
+> **Distribution clarification prepared on 2026-10-01:** the description below
+> now recognizes the external Softonic listing for Windows x64 while retaining
+> the Microsoft Store and GitHub Releases as the primary release channels. This
+> wording is prepared for the next submission; it has not been confirmed in the
+> live Store description.
+
 ---
 
 ## Description
@@ -85,13 +91,19 @@ full SKU `0010`, package `TheMaster.OpenDesktopAuthenticator_1.5.1.0_x64__hrp1nj
 >
 > BEFORE YOU INSTALL ANYTHING ELSE
 >
-> Never download an authenticator from a website, including ours. This listing in
-> the Microsoft Store and our GitHub releases page are the only two places a
-> genuine build comes from. The official product website,
-> https://opendesktopauthenticator.com, hosts no installer — its download buttons
-> lead to one of those two channels. MASTERPANEL LLC's main site,
-> https://masterspanel.com, identifies the same publisher and links to the
-> product. Anything else claiming to be this application is not ours.
+> Check the source and the file before installing an authenticator. This listing
+> in the Microsoft Store and our GitHub releases page are our primary release
+> channels. Our recognized Softonic listing also offers Windows x64 through an
+> external distributor: https://open-desktop-authenticator.en.softonic.com/.
+> Verify a Windows file obtained there against the matching GitHub release's
+> checksums, build provenance and publisher-signature instructions. A listing
+> alone does not verify a file.
+>
+> The official product website, https://opendesktopauthenticator.com, hosts no
+> installer — its download links lead to those primary channels or the recognized
+> Softonic listing. MASTERPANEL LLC's main site, https://masterspanel.com,
+> identifies the same publisher and links to the product. Treat other download
+> sources as unverified.
 >
 > Source, documented threat model and build instructions:
 > https://github.com/opendesktopauthenticator/open-desktop-authenticator
@@ -196,8 +208,8 @@ deciding whether to install.
 - **Screenshots must never show a real account.** Run the application against an
   empty data directory and screenshot that. A listing image is public
   permanently, and a SteamID or persona name in one is not retractable.
-- The description repeats the "never download an authenticator from a website"
-  warning on purpose. It is the single most useful sentence in the listing for
-  the person most at risk, and the Store page is where they arrive.
+- Keep the download guidance consistent with the publisher's primary release
+  channels and recognized external listings. A directory listing does not
+  replace checking the file against the publisher's release evidence.
 - Do not describe the product as audited. It is tested, by the maintainer,
   against live accounts. `README.md` draws the same line and so should this.
