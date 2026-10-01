@@ -34,6 +34,7 @@ export interface PublicationSite {
 	name: string;
 	version: string;
 	publication: PublicationState;
+	softonic?: { version: string };
 	features: { browser: FeatureAvailability; transfer: FeatureAvailability };
 }
 

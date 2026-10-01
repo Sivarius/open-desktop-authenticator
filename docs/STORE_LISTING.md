@@ -28,8 +28,8 @@ full SKU `0010`, package `TheMaster.OpenDesktopAuthenticator_1.5.1.0_x64__hrp1nj
 > submission is public; verify both before preparing the next listing update.
 
 > **Distribution clarification prepared on 2026-10-01:** the description below
-> now recognizes the external Softonic listing for Windows x64 while retaining
-> the Microsoft Store and GitHub Releases as the primary release channels. This
+> names the Microsoft Store, GitHub Releases and Softonic as the three official
+> download sources, with Softonic offering Windows x64. This
 > wording is prepared for the next submission; it has not been confirmed in the
 > live Store description.
 
@@ -91,17 +91,22 @@ full SKU `0010`, package `TheMaster.OpenDesktopAuthenticator_1.5.1.0_x64__hrp1nj
 >
 > BEFORE YOU INSTALL ANYTHING ELSE
 >
-> Check the source and the file before installing an authenticator. This listing
-> in the Microsoft Store and our GitHub releases page are our primary release
-> channels. Our recognized Softonic listing also offers Windows x64 through an
-> external distributor: https://open-desktop-authenticator.en.softonic.com/.
+> Check the source and the file before installing an authenticator. Our three
+> official download sources are this Microsoft Store listing, our GitHub releases
+> page and Softonic. Softonic offers Windows x64 at
+> https://open-desktop-authenticator.en.softonic.com/.
+> Softonic displays Official distributor and Trusted Program labels for ODA.
+> Official distributor indicates authorization from the developer or its
+> designated representative; Trusted Program reflects the VirusTotal scan reported
+> by Softonic.
+> These are Softonic's labels, not an independent audit or a guarantee of safety.
 > Verify a Windows file obtained there against the matching GitHub release's
 > checksums, build provenance and publisher-signature instructions. A listing
 > alone does not verify a file.
 >
 > The official product website, https://opendesktopauthenticator.com, hosts no
-> installer — its download links lead to those primary channels or the recognized
-> Softonic listing. MASTERPANEL LLC's main site, https://masterspanel.com,
+> installer — its download links lead to those three official sources.
+> MASTERPANEL LLC's main site, https://masterspanel.com,
 > identifies the same publisher and links to the product. Treat other download
 > sources as unverified.
 >
@@ -208,8 +213,8 @@ deciding whether to install.
 - **Screenshots must never show a real account.** Run the application against an
   empty data directory and screenshot that. A listing image is public
   permanently, and a SteamID or persona name in one is not retractable.
-- Keep the download guidance consistent with the publisher's primary release
-  channels and recognized external listings. A directory listing does not
-  replace checking the file against the publisher's release evidence.
+- Keep the three official download sources consistent with the website and
+  README. Attribute Softonic's labels to Softonic; they do not replace checking
+  the file against the publisher's release evidence.
 - Do not describe the product as audited. It is tested, by the maintainer,
   against live accounts. `README.md` draws the same line and so should this.

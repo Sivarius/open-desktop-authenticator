@@ -23,7 +23,7 @@
  *
  * `what` says what the address is *for*, because "is this domain yours" is
  * rarely the real question — the real question is "should this address be
- * offering me a download". External listings are identified separately below.
+ * offering me a download". Authorized distributors are included explicitly.
  */
 const OURS = [
 	{
@@ -45,6 +45,12 @@ const OURS = [
 		downloads: true
 	},
 	{
+		address: 'open-desktop-authenticator.en.softonic.com',
+		href: 'https://open-desktop-authenticator.en.softonic.com/',
+		what: 'Softonic, an authorized distributor of the Windows x64 installer. The listing names MASTERPANEL LLC as developer and displays Softonic’s “Trusted Program” and “Official distributor” labels.',
+		downloads: true
+	},
+	{
 		address: 'masterspanel.com',
 		href: 'https://masterspanel.com',
 		what: 'The company that publishes this. Names the product and links back here, which is the other half of the check.',
@@ -59,7 +65,7 @@ export const official = {
 	navTitle: 'Official domains',
 	title: 'Official domains for Open Desktop Authenticator',
 	description:
-		'Check Open Desktop Authenticator publishing addresses, the Microsoft Store and GitHub release channels, and the Softonic Windows listing.',
+		'Check ODA publisher websites and its three official download sources: Microsoft Store, GitHub and Softonic.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'WebPage',
@@ -73,14 +79,14 @@ export const official = {
 
 			<div class="callout">
 				<p>
-					Use the exact addresses on this page to find our publishing channels and
-					the Softonic listing. <strong>A similar name or high search ranking is not
+					Use the exact addresses on this page to find our three official download
+					sources. <strong>A similar name or high search ranking is not
 					proof of origin.</strong> The MIT licence allows others to redistribute or
 					modify the source; that does not make independently built or modified copies ours.
 				</p>
 			</div>
 
-			<h2>Where we publish</h2>
+			<h2>Publisher websites and official download sources</h2>
 			<table class="pairs-table">
 				<thead>
 					<tr><th>Address</th><th>What it is</th><th>Downloads?</th></tr>
@@ -98,16 +104,22 @@ export const official = {
 			</table>
 
 			<p>
-				Our primary release channels are the Microsoft Store listing
-				and the repository's GitHub releases page. <a href="/download">The download page</a> explains
+				Our three official download sources are <strong>Microsoft Store, GitHub and Softonic</strong>.
+				<a href="/download">The download page</a> explains
 				which to take, and <a href="/verify">how to check what you got</a>.
 			</p>
 			${
 				s.softonic
-					? `<h2>Softonic listing</h2>
+					? `<h2>What Softonic's labels mean</h2>
 			<p>
-				ODA is also listed at <a href="${s.softonic.url}" rel="noopener">open-desktop-authenticator.en.softonic.com</a>,
-				with MASTERPANEL LLC named as developer. Softonic operates that site and offers the Windows x64 installer.
+				The <a href="${s.softonic.url}" rel="noopener">ODA listing on Softonic</a>
+				names MASTERPANEL LLC as developer. Softonic's <strong>“Official distributor”</strong> label
+				means it has authorization to offer ODA. Its <strong>“Trusted Program”</strong> label reports
+				a clean VirusTotal scan of the listed file. We checked both labels on 1 October 2026.
+				They are distribution and file-scan information, not an independent security audit of ODA.
+			</p>
+			<p>
+				Softonic operates that site and offers the Windows x64 installer.
 				For an ODA installer obtained there, <a href="/verify">check the publisher signature and compare the file
 				with the matching GitHub release checksum</a>. ARM64, portable Windows and Linux packages are available on GitHub.
 			</p>`

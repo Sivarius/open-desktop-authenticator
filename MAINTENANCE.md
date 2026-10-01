@@ -95,15 +95,15 @@ sites filled.
 ## Release cadence
 
 No fixed schedule. Releases happen when there is something worth shipping:
-a fix, a security patch, or a feature that is finished. Every release is hashed
-and published through our primary release channels: the Microsoft Store and
-GitHub Releases. The recognized
-[Softonic listing](https://open-desktop-authenticator.en.softonic.com/) also offers
-Windows x64 through an external distributor. Our product website hosts no binary.
+a fix, a security patch, or a feature that is finished. Our three official
+download sources are the Microsoft Store, GitHub Releases and
+[Softonic](https://open-desktop-authenticator.en.softonic.com/). Softonic offers
+Windows x64. Our product website hosts no binary.
 
-**The two primary channels are not produced identically.** Every
+**GitHub and Store packages have separate publication and verification paths.** Every
 GitHub artifact is hashed into `SHA256SUMS.txt` and covered by a build
-provenance attestation. The Store package is built by the same workflow run, but
+provenance attestation; use that evidence to verify a Windows file downloaded
+through Softonic too. The Store package is built by the same workflow run, but
 it is uploaded as a workflow artifact rather than a release asset, submitted to
 Partner Center by hand, and re-signed by Microsoft — so it carries Microsoft's
 signature rather than our attestation, and its build step is `continue-on-error`
