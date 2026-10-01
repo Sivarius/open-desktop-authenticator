@@ -338,6 +338,16 @@ describe('per-channel publication output', () => {
 		expect(softwareFor(store).datePublished).toBeUndefined();
 	});
 
+	it('only includes Softonic in the current-version claim after its version is verified', () => {
+		const site = siteFor({ github: { [VERSION]: {} }, store: { [VERSION]: {} } });
+		expect(
+			publicationApi.publicationSummary({ ...site, softonic: { version: VERSION } })
+		).toContain(`${VERSION} is available from three official download sources`);
+		const olderListing = publicationApi.publicationSummary({ ...site, softonic: { version: OLD } });
+		expect(olderListing).not.toContain('available from three official download sources');
+		expect(olderListing).toContain(`Softonic offers the Windows x64 installer for ${OLD}`);
+	});
+
 	it('compares published versions numerically and preserves a newer upcoming source version', () => {
 		const records = { github: { '1.9.0': {}, '1.10.0': {} }, store: oldStore };
 		expect(publicationApi.websiteVersion('1.5.0', records)).toBe('1.10.0');

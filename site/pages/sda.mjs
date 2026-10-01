@@ -1,7 +1,7 @@
 export default {
 	slug: 'steam-desktop-authenticator',
-	updated: '2026-09-30',
-	reviewed: '2026-09-30',
+	updated: '2026-10-01',
+	reviewed: '2026-10-01',
 	navTitle: 'SDA & ODA',
 	title: 'Steam Desktop Authenticator: Original SDA & ODA',
 	description:
@@ -126,7 +126,7 @@ export default {
 							<th scope="row">Where to get it</th>
 							<td>The original project's GitHub repository and releases.</td>
 							<td>App links on Valve's Steam Mobile page.</td>
-							<td>ODA's Microsoft Store listing or GitHub releases, linked from <a href="/download">Download ODA</a>.</td>
+							<td>Three official sources: Microsoft Store, GitHub releases and Softonic, linked from <a href="/download">Download ODA</a>.</td>
 						</tr>
 					</tbody>
 				</table>

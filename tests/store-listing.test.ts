@@ -36,9 +36,11 @@ const warning = (() => {
 })();
 
 describe('the Store listing copy', () => {
-	it('names both primary publisher release channels', () => {
+	it('names all three official download sources', () => {
+		expect(warning).toMatch(/three official download sources/i);
 		expect(warning).toMatch(/Microsoft Store|This listing/i);
 		expect(warning).toMatch(/GitHub releases page/);
+		expect(warning).toContain('Softonic');
 	});
 
 	/**
@@ -63,22 +65,21 @@ describe('the Store listing copy', () => {
 	});
 
 	it('agrees with the site, which tells the same people the same thing', () => {
-		// Both distinguish publisher release channels from a recognized external
-		// distributor; neither should label that distributor a counterfeit.
-		expect(GUIDES).toMatch(
-			/The Microsoft Store listing and this project's GitHub releases are our primary\s+release channels/
-		);
+		// All three sources must be described as official, while downloaded files
+		// still need the verification appropriate to their package.
+		expect(GUIDES).toMatch(/three official download sources/i);
 		expect(warning).toMatch(
-			/Microsoft Store and our GitHub releases page are our primary release channels/i
+			/three official download sources are this Microsoft Store listing, our GitHub releases page and Softonic/i
 		);
 		expect(GUIDES).toContain('Softonic');
 		expect(warning).toContain('https://open-desktop-authenticator.en.softonic.com/');
-		expect(warning).toMatch(
-			/Softonic listing also offers Windows x64 through an external distributor/
-		);
+		expect(warning).toMatch(/Softonic offers Windows x64/);
+		expect(warning).toMatch(/Softonic displays Official distributor and Trusted Program labels/);
+		expect(warning).toMatch(/authorization from the developer or its designated representative/);
+		expect(warning).toMatch(/Trusted Program reflects the VirusTotal scan reported by Softonic/);
 		expect(warning).toMatch(/checksums, build provenance and publisher-signature/);
 		expect(warning).not.toMatch(
-			/only two places|anything else claiming to be this application is not ours/i
+			/only two places|primary release channels|recognized external|anything else claiming to be this application is not ours/i
 		);
 	});
 

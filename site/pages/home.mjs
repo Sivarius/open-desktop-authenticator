@@ -94,6 +94,7 @@ export default {
 				<a class="button" href="/download">Download ODA ${s.publication.github.latestVersion}</a>
 				<a class="button button-quiet" href="/import-from-sda">Import from SDA</a>
 			</div>
+			${s.softonic ? `<p class="hint">Three official download sources: <a href="${s.store.url}" rel="noopener">Microsoft Store</a>, <a href="${s.repo}/releases" rel="noopener">GitHub</a> and <a href="${s.softonic.url}" rel="noopener">Softonic</a>.</p>` : ''}
 			<p class="hint">
 				Published by MASTERPANEL LLC. ODA is independent of Valve and the original
 				SDA project. <a href="/steam-desktop-authenticator">Looking for Steam Desktop Authenticator?</a>
@@ -146,7 +147,9 @@ export default {
 			<div class="callout">
 				<h2>Status: ${
 					s.publication.github.current && s.publication.store.current
-						? `${s.version}, in the Microsoft Store and on GitHub`
+						? s.softonic?.version === s.version
+							? `${s.version}, available from all three sources`
+							: `${s.version}, in the Microsoft Store and on GitHub`
 						: s.publication.github.current
 							? `${s.version} is on GitHub; the Store offers ${s.publication.store.latestVersion}`
 							: s.publication.store.current
@@ -246,10 +249,11 @@ export default {
 				s.softonic
 					? `<section class="community-listing" aria-labelledby="softonic-listing-title">
 				<div>
-					<h2 id="softonic-listing-title">Now listed on Softonic</h2>
+					<h2 id="softonic-listing-title">Available on Softonic</h2>
 					<p>Find Open Desktop Authenticator for Windows on Softonic, published by MASTERPANEL LLC.
-						The listing offers the x64 installer; <a href="/download">see all download options</a>
-						for ARM64, portable Windows and Linux.</p>
+						Softonic displays <strong>“Trusted Program”</strong> and <strong>“Official distributor”</strong> on our listing.</p>
+					<p>Softonic reports a clean VirusTotal scan and confirms authorization to distribute ODA.
+						Its download is the Windows x64 installer. <a href="/download">Compare all three sources and read what the labels mean</a>.</p>
 				</div>
 				<a class="button button-quiet" href="${s.softonic.url}" rel="noopener">View ODA on Softonic</a>
 			</section>`
@@ -279,7 +283,7 @@ export default {
 				<li>
 					<strong>No ODA backend. No ODA account. No cloud sync. No telemetry.</strong>
 					Steam operations you request contact Valve and send the data needed for that
-					operation. In a direct GitHub build, the optional update check asks GitHub's
+					operation. In a direct build from GitHub or Softonic, the optional update check asks GitHub's
 					public releases API whether a newer version exists; GitHub receives that
 					request and its source IP, but no Steam account or vault data. Store builds do
 					not perform that GitHub check. ${browserFeatureCopy(s).security}

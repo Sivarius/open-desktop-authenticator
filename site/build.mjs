@@ -411,7 +411,9 @@ export const SITE = {
 	},
 	// Canonical listing checked 2026-10-01; Softonic offers the Windows x64 installer.
 	softonic: {
-		url: 'https://open-desktop-authenticator.en.softonic.com/'
+		url: 'https://open-desktop-authenticator.en.softonic.com/',
+		version: '1.5.1',
+		verifiedOn: '2026-10-01'
 	},
 
 	/*
@@ -1311,7 +1313,7 @@ const LLMS_SECTIONS = [
 
 ${SITE.name} is an independent desktop alternative to Steam Desktop Authenticator (SDA), which its author ${SITE.sda.author} says is ${SITE.sda.unsupported ? SITE.sda.notice : 'still supported'}. Counterfeit authenticator downloads can steal authentication secrets. Losing your only maFile can remove your local authenticator access, but Steam-side recovery may still be available. This website explains download verification, safe backups and recovery options whether or not someone uses ODA.
 
-No ODA backend. No ODA account. No cloud sync. No application telemetry. Steam operations contact Valve and send the data required for those operations. In direct GitHub builds, an optional update check contacts GitHub; Microsoft Store builds do not perform that check. The in-app browser contacts the sites the user opens and external resources those sites load. This website separately uses analytics and review widgets, disclosed at ${SITE.origin}/privacy.
+No ODA backend. No ODA account. No cloud sync. No application telemetry. Steam operations contact Valve and send the data required for those operations. In direct builds from GitHub or Softonic, an optional update check contacts GitHub; Microsoft Store builds do not perform that check. The in-app browser contacts the sites the user opens and external resources those sites load. This website separately uses analytics and review widgets, disclosed at ${SITE.origin}/privacy.
 
 ODA is developed, owned, and published by MASTERPANEL LLC. The company also operates Master Panel at https://masterspanel.com. ODA and Master Panel are separate products with no shared accounts, data, or integration.
 
@@ -1321,10 +1323,10 @@ ODA is developed, owned, and published by MASTERPANEL LLC. The company also oper
 - **Licence:** MIT. Source: ${SITE.repo}
 - **Publisher:** ${SITE.publisher}, a Steam trading company — which is why it was written.
 - **Platforms:** ${platformSentence()}
-- **Install from:** Microsoft Store ${SITE.publication.store.latestVersion} (${SITE.store.url}) or GitHub ${SITE.publication.github.latestVersion} (${SITE.repo}/releases/tag/v${SITE.publication.github.latestVersion}).
+- **Three official download sources:** Microsoft Store ${SITE.publication.store.latestVersion} (${SITE.store.url}), GitHub ${SITE.publication.github.latestVersion} (${SITE.repo}/releases/tag/v${SITE.publication.github.latestVersion}) and Softonic ${SITE.softonic.version} for Windows x64 (${SITE.softonic.url}).
 - **AlternativeTo listing:** ${SITE.alternativeTo.url}
-- **Softonic listing (Windows x64):** ${SITE.softonic.url}
-- **This website hosts no application binaries**; Microsoft Store and GitHub are the primary release channels, and Softonic also lists the Windows x64 installer.
+- **Softonic labels:** Its ODA listing displays “Trusted Program” (a clean VirusTotal scan reported for the listed file) and “Official distributor” (authorized distribution). Checked 2026-10-01; these are Softonic's labels, not an independent security audit of ODA.
+- **This website hosts no application binaries**; use the three official download sources above. GitHub offers ARM64, portable Windows and Linux packages as well as the Windows x64 installer.
 - **Dependencies:** ${SITE.runtimeDependencies} direct, ${SITE.shippedPackages} shipped in total, plus the Electron runtime.
 
 ## What it does
@@ -1348,7 +1350,7 @@ Non-goals rather than roadmap items: no trade automation beyond confirmations, n
 
 ## How secrets are protected
 
-Steam secrets are encrypted at rest with scrypt and AES-256-GCM behind the user's passphrase. The interface runs isolated with no Node integration, and the vault locks when idle. User-requested Steam operations contact Valve. In direct GitHub builds, an optional update check contacts GitHub; Store builds do not perform it. ${browserFeatureCopy(SITE).security} ${SITE.origin}/security sets out the model, including what it cannot protect against.
+Steam secrets are encrypted at rest with scrypt and AES-256-GCM behind the user's passphrase. The interface runs isolated with no Node integration, and the vault locks when idle. User-requested Steam operations contact Valve. In direct builds from GitHub or Softonic, an optional update check contacts GitHub; Store builds do not perform it. ${browserFeatureCopy(SITE).security} ${SITE.origin}/security sets out the model, including what it cannot protect against.
 
 ## How to check a download is genuine
 

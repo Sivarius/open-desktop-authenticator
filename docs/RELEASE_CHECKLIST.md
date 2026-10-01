@@ -176,8 +176,10 @@ The trust story is only real if it works for someone who does not trust us.
       guarantee about SmartScreen reputation or application behaviour.
 - [ ] `cosign verify-blob` on the checksum list succeeds, run from the downloaded
       copies rather than from the build directory.
-- [ ] The website's Windows button deep-links the Store listing, and its other
-      buttons deep-link GitHub release assets. **The website hosts no binary.**
+- [ ] The website's download buttons link to all three official sources: the
+      Microsoft Store listing, the GitHub release page and Softonic's Windows x64
+      listing. Check the version available at each source separately.
+      **The website hosts no binary.**
 - [ ] `/download` on a Windows browser leads with the Store, and on Linux leads
       with the release page. Both are still reachable with JavaScript off —
       the page must never offer nothing because a script failed.

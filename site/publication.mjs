@@ -1,5 +1,7 @@
 /**
- * Human-verified public release state, kept separate for the two channels.
+ * Human-verified publication state for the GitHub and Microsoft Store builds.
+ * Softonic distributes the direct Windows installer; it is a third download
+ * source, not a separately built edition tracked by this module.
  * A package version, workflow run, or GitHub release cannot prove what Partner
  * Center currently serves, and a Store submission cannot prove GitHub assets.
  */
@@ -112,8 +114,14 @@ export function browserFeatureCopy(site) {
 
 export function publicationSummary(site) {
 	const { github, store } = site.publication;
+	const softonicText = site.softonic?.version
+		? ` Softonic offers the Windows x64 installer for ${site.softonic.version}.`
+		: '';
 	if (github.current && store.current) {
-		return `${site.name} ${site.version} is published in the Microsoft Store and on this project's GitHub releases page.`;
+		if (site.softonic?.version === site.version) {
+			return `${site.name} ${site.version} is available from three official download sources: Microsoft Store, GitHub and Softonic.`;
+		}
+		return `${site.name} ${site.version} is published in the Microsoft Store and on this project's GitHub releases page.${softonicText}`;
 	}
 
 	const githubText = github.latestVersion
@@ -123,10 +131,10 @@ export function publicationSummary(site) {
 		? `The Microsoft Store currently offers ${store.latestVersion}.`
 		: 'The Microsoft Store does not currently offer a public build.';
 	if (github.current) {
-		return `${site.name} ${site.version} is published on GitHub but is not yet published in the Microsoft Store. ${storeText}`;
+		return `${site.name} ${site.version} is published on GitHub but is not yet published in the Microsoft Store. ${storeText}${softonicText}`;
 	}
 	if (store.current) {
-		return `${site.name} ${site.version} is published in the Microsoft Store but is not yet published on GitHub. ${githubText}`;
+		return `${site.name} ${site.version} is published in the Microsoft Store but is not yet published on GitHub. ${githubText}${softonicText}`;
 	}
-	return `${site.name} ${site.version} is the upcoming source version; it is not yet published in either release channel. ${githubText} ${storeText}`;
+	return `${site.name} ${site.version} is the upcoming source version; it is not yet published in either release channel. ${githubText} ${storeText}${softonicText}`;
 }

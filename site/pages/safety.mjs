@@ -323,7 +323,7 @@ export const verify = {
 					<a href="https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-requirements" rel="noopener">re-signs the MSIX/AppX package it distributes</a>.
 					That package signature does not mean each executable inside is individually signed.
 				</dd>
-				<dt>A direct ODA installer, from GitHub or the Softonic listing</dt>
+				<dt>A direct ODA installer, from GitHub or Softonic</dt>
 				<dd>
 					Use the following checks before running it. Browser or antivirus scans,
 					if present, do not establish that it came from the intended release workflow.
@@ -331,7 +331,7 @@ export const verify = {
 			</dl>
 			<p>
 				Use <a href="/download">our download page</a> and
-				<a href="/official">the address reference</a> to find the Store, GitHub and Softonic listing.
+				<a href="/official">the address reference</a> to find all three official download sources: Microsoft Store, GitHub and Softonic.
 				These checks apply to the ODA installer itself. If a file's signature, publisher or
 				checksum does not match the intended release, stop and obtain that release from GitHub
 				instead. A listing or scan label does not replace these checks.
