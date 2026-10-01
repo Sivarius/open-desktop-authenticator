@@ -96,10 +96,12 @@ sites filled.
 
 No fixed schedule. Releases happen when there is something worth shipping:
 a fix, a security patch, or a feature that is finished. Every release is hashed
-and reaches users through exactly two channels: the Microsoft Store, and GitHub
-Releases. The website hosts no binary and never will.
+and published through our primary release channels: the Microsoft Store and
+GitHub Releases. The recognized
+[Softonic listing](https://open-desktop-authenticator.en.softonic.com/) also offers
+Windows x64 through an external distributor. Our product website hosts no binary.
 
-**The two are not produced identically, and this used to say they were.** Every
+**The two primary channels are not produced identically.** Every
 GitHub artifact is hashed into `SHA256SUMS.txt` and covered by a build
 provenance attestation. The Store package is built by the same workflow run, but
 it is uploaded as a workflow artifact rather than a release asset, submitted to

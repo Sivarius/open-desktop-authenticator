@@ -23,7 +23,7 @@
  *
  * `what` says what the address is *for*, because "is this domain yours" is
  * rarely the real question — the real question is "should this address be
- * offering me a download", and only two of these ever should.
+ * offering me a download". External listings are identified separately below.
  */
 const OURS = [
 	{
@@ -54,12 +54,12 @@ const OURS = [
 
 export const official = {
 	slug: 'official',
-	updated: '2026-09-30',
-	reviewed: '2026-09-30',
+	updated: '2026-10-01',
+	reviewed: '2026-10-01',
 	navTitle: 'Official domains',
 	title: 'Official domains for Open Desktop Authenticator',
 	description:
-		'Every address Open Desktop Authenticator is published from, and the two that may offer a download. Anything else using this name is not ours.',
+		'Check Open Desktop Authenticator publishing addresses, the Microsoft Store and GitHub release channels, and the Softonic Windows listing.',
 	structuredData: (s) => ({
 		'@context': 'https://schema.org',
 		'@type': 'WebPage',
@@ -73,11 +73,10 @@ export const official = {
 
 			<div class="callout">
 				<p>
-					This is the complete list. <strong>If an address is not on it, it is not
-					an official publishing address</strong> — however similar the name,
-					however convincing the page, and however high it ranks. We do not designate
-					third-party mirrors or forks as official. The MIT licence allows others to
-					redistribute or modify the source; that does not make their builds ours.
+					Use the exact addresses on this page to find our publishing channels and
+					the Softonic listing. <strong>A similar name or high search ranking is not
+					proof of origin.</strong> The MIT licence allows others to redistribute or
+					modify the source; that does not make independently built or modified copies ours.
 				</p>
 			</div>
 
@@ -99,10 +98,21 @@ export const official = {
 			</table>
 
 			<p>
-				The two official application-download channels are the Microsoft Store listing
+				Our primary release channels are the Microsoft Store listing
 				and the repository's GitHub releases page. <a href="/download">The download page</a> explains
 				which to take, and <a href="/verify">how to check what you got</a>.
 			</p>
+			${
+				s.softonic
+					? `<h2>Softonic listing</h2>
+			<p>
+				ODA is also listed at <a href="${s.softonic.url}" rel="noopener">open-desktop-authenticator.en.softonic.com</a>,
+				with MASTERPANEL LLC named as developer. Softonic operates that site and offers the Windows x64 installer.
+				For an ODA installer obtained there, <a href="/verify">check the publisher signature and compare the file
+				with the matching GitHub release checksum</a>. ARM64, portable Windows and Linux packages are available on GitHub.
+			</p>`
+					: ''
+			}
 
 			<h2>What this page is for</h2>
 			<p>
@@ -130,8 +140,8 @@ export const official = {
 				<a href="/security">the security page</a> has the private channels for that.
 			</p>
 			<p>
-				GitHub and Microsoft can serve the actual file through their own delivery
-				domains after you follow these official links. A delivery redirect alone is
+				GitHub, Microsoft and Softonic can serve files through their own delivery
+				domains after you follow the links above. A delivery redirect alone is
 				not proof of a fake; a lookalike page offering its own build needs independent
 				verification. If you ran an untrusted authenticator and gave it Steam
 				credentials or maFiles, treat those secrets as potentially compromised and

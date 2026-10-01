@@ -8,7 +8,7 @@
 
 export const codeSigningPolicy = {
 	slug: 'code-signing-policy',
-	updated: '2026-09-26',
+	updated: '2026-10-01',
 	navTitle: 'Code signing policy',
 	title: 'Code signing policy',
 	description:
@@ -126,7 +126,7 @@ export const codeSigningPolicy = {
 				worth running whether or not a file is signed.
 			</p>
 			<p>
-				Our two official distribution channels are listed on
+				Our release channels and the Softonic listing are linked from
 				<a href="/official">our official domains page</a>.
 			</p>
 		</article>`

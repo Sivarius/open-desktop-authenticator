@@ -118,7 +118,7 @@ const EDITORIAL_NOTES_BY_SLUG = Object.freeze({
 		'It checks the options against Valve guidance and SDA’s official repository, applies the same practical questions to all three, and states ODA’s youth and unfinished assurances.'
 	),
 	download: record(
-		'A live release-status page that sends readers only to the Store or the project’s GitHub release and shows what each channel actually contains.',
+		'A live release-status page covering the Store, the project’s GitHub release and the Softonic Windows listing, with package and update details.',
 		'Its versions, architectures, signatures and open gaps are derived from the verified publication/release state; it also links the license, source, build route and verification procedure.'
 	),
 	'import-from-sda': record(
@@ -253,7 +253,7 @@ const PROOFS_BY_SLUG = {
 	download: [
 		'https://apps.microsoft.com/detail/9NMM2XJ6HZ1D',
 		'SHA256SUMS.txt.sig',
-		'Two official download channels'
+		'Publisher downloads and Softonic'
 	],
 	'import-from-sda': ['manifest.json', 'identity_secret', 'Confirm the codes match'],
 	uninstall: ['%APPDATA%\\open-desktop-authenticator', 'vault.json.bak', 'recovery/'],

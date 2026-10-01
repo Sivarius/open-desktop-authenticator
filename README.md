@@ -16,8 +16,9 @@ products with no shared accounts, data, or integration.
 > [releases page](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/latest)
 > also provides direct Windows x64, ARM64 and universal installers, a portable
 > x64 build, AppImage and Debian packages; check a direct download against the
-> published checksums. **Those two places, and nowhere else** — anything else
-> claiming to be a build of this is not ours.
+> published checksums. The Microsoft Store and GitHub Releases are our primary
+> release channels. Our [Softonic listing](https://open-desktop-authenticator.en.softonic.com/)
+> also offers Windows x64 through an external distributor.
 >
 > The Store package is signed, because Microsoft re-signs what it distributes.
 > The [v1.5.1 direct Windows downloads](https://github.com/opendesktopauthenticator/open-desktop-authenticator/releases/tag/v1.5.1)
@@ -56,13 +57,12 @@ Users can inspect the connection between the publisher, source and distributed f
 
 Direct releases are built in public CI from a tag and published with hashes and
 provenance. These checks establish release origin, not that the software is free
-of vulnerabilities. ODA reaches
-you through the Microsoft Store, which re-signs the package, or from GitHub
-Releases, where you can check the bytes yourself.
+of vulnerabilities. Our primary release channels are the Microsoft Store, which
+re-signs the package, and GitHub Releases, where you can check the bytes yourself.
 
-**The two channels are not equally provable, and it is worth saying which is
-which.** A GitHub download can be traced all the way back: its hash is published,
-and a sigstore attestation names the workflow run, the commit and the tag that
+**The two primary channels have different verification paths.** A GitHub download
+can be traced all the way back: its hash is published, and a sigstore attestation
+names the workflow run, the commit and the tag that
 produced it. The Store package is built by that same workflow run, but it is then
 submitted to Partner Center by hand and re-signed by Microsoft — so what you can
 verify there is that Microsoft distributed it, not which commit it came from.
@@ -72,10 +72,12 @@ policy will permit the application.
 
 ### Don't trust us. Verify us.
 
-**Never download an authenticator from a website — including ours.** Every button
-on our site links somewhere else: the Microsoft Store listing, or a release asset
-on this repository. The site hosts no binary and never will. Anything else
-claiming to be this application is not.
+**Check the source and the file before installing an authenticator.** Our product
+website hosts no installer. Its download links lead to the Microsoft Store,
+GitHub Releases or the recognized Softonic listing above. Softonic offers its own
+download route; check the actual Windows file against the matching GitHub release's
+checksums, provenance and publisher-signature instructions. A listing alone does
+not verify a file. Treat other download sources as unverified.
 
 On Windows the Store is the route we point people at, because Microsoft re-signs
 the package and nobody has to be talked through comparing a hash on the day they
