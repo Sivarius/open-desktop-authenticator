@@ -1,0 +1,32 @@
+# Copy to .github/workflows/winget-installer-validation.yml only on the dedicated
+# validation branch after review. Do not merge this one-off workflow to main.
+name: ODA released installer validation
+
+on:
+  push:
+    branches:
+      - codex/winget-installer-validation
+
+permissions:
+  contents: read
+
+jobs:
+  released-installer:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: docs/distribution/winget
+      - name: Test released installers in disposable runner profile
+        shell: pwsh
+        run: ./docs/distribution/winget/test-released-installer.ps1
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: oda-winget-installer-validation
+          path: ${{ runner.temp }}/oda-winget-validation/evidence/
+          if-no-files-found: warn
+          retention-days: 30
