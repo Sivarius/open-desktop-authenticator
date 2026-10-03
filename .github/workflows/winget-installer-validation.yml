@@ -30,3 +30,25 @@ jobs:
           path: ${{ runner.temp }}/oda-winget-validation/evidence/
           if-no-files-found: warn
           retention-days: 30
+  winget-manifest:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: docs/distribution/winget
+      - name: Provision official hash-pinned Microsoft WinGet client
+        shell: powershell
+        run: ./docs/distribution/winget/bootstrap-winget.ps1
+      - name: Install and uninstall using the actual WinGet manifest
+        shell: pwsh
+        run: ./docs/distribution/winget/test-winget-manifest.ps1
+      - name: Preserve WinGet client evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: oda-winget-manifest-validation
+          path: ${{ runner.temp }}/oda-winget-client-validation/evidence/
+          if-no-files-found: warn
+          retention-days: 30
