@@ -56,7 +56,7 @@ try {
     # No hash override, malware-scan override, source or package agreement bypass.
     Invoke-WinGetChecked -Arguments @('settings', '--enable', 'LocalManifestFiles', '--disable-interactivity')
     $enabledLocalManifests = $true
-    Invoke-WinGetChecked -Arguments @('install', '--manifest', $manifest, '--silent', '--scope', 'user', '--source', 'winget', '--disable-interactivity')
+    Invoke-WinGetChecked -Arguments @('install', '--manifest', $manifest, '--silent', '--scope', 'user', '--disable-interactivity')
     Start-Sleep -Seconds 2
     Assert-NoOdaProcess
     $entries = @(Get-OdaEntries -Hive HKCU)
